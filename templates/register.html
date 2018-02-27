@@ -1,15 +1,28 @@
-{% extends "_base.html" %}
+{% extends 'layout.html' %}
 
-{% set page_id = 'register' %}
+{% block head %}
+<title>Cmentarz - rejestracja</title>
+{% endblock %}
 
-{% block content %}
-  <div class="row">
-    <div class="col-2"></div>
-
-    <div class="col-8">
-      <h3>Rejestracja</h3>
-    </div>
-
-    <div class="col-2"></div>
-  </div>
+{% block body %}
+    {% from "_formhelpers.html" import render_field %}
+    <form method=post>
+        <div id="register_box">
+            <div class="input_category">Dane wymagane do rejestracji:</div>
+            <div>{{ render_field(form.email, class="input_field") }}</div>
+            <div>{{ render_field(form.password, class="input_field") }}</div>
+            <div>{{ render_field(form.repeat_password, class="input_field") }}</div>
+            <div class="input_category">Dane dodatkowe:</div>
+            <div style="float: left">{{ render_field(form.name, class="input_field_1_2") }}</div>
+            <div style="float: left">{{ render_field(form.last_name, class="input_field_1_2") }}</div>
+            <div style="float: left">{{ render_field(form.city, class="input_field_3_4") }}</div>
+            <div style="float: left">{{ render_field(form.zip_code, class="input_field_1_4") }}</div>
+            <div style="clear: both">{{ render_field(form.street, class="input_field") }}</div>
+            <div style="float: left">{{ render_field(form.house_number, class="input_field_1_2") }}</div>
+            <div style="float: left">{{ render_field(form.flat_number, class="input_field_1_2") }}</div>
+            <div style="clear: both"></div>
+            <input class ="log_reg_button" type=submit value="Rejestruj">
+            <a class="small_redirect_text" href="{{url_for('pages.login')}}">Masz już konto? Zaloguj się!</a>
+        </div>
+    </form>
 {% endblock %}

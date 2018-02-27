@@ -1,0 +1,25 @@
+<div id="navbar">
+    <div class="nav_button_left">
+        <a class="nav_left" href="{{url_for('pages.index')}}">Strona Główna</a>
+    </div>
+    <div class="nav_button_left">
+        <a class="nav_left" href="#">Jakiś guzik</a>
+    </div>
+    <div class="nav_button_left">
+        <a class="nav_left" href="#">Kolejny guzik :)</a>
+    </div>
+    {% if current_user.is_authenticated %}
+    <div class="nav_button_right">
+        <a class="nav_right" href="{{url_for('pages.logout')}}">Wyloguj</a>
+    </div>
+    <div class="nav_log_in_as">Zalogowany jako: <br>{{current_user.email }}</div>
+    {% else %}
+    <div class="nav_button_right">
+        <a class="nav_right" href="{{url_for('pages.register')}}">Rejestruj</a>
+    </div>
+    <div class="nav_button_right">
+        <a class="nav_right" href="{{url_for('pages.login')}}">Zaloguj</a>
+    </div>
+    {% endif %}
+    <div style="clear: both"></div>
+</div>
