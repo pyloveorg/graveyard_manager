@@ -1,0 +1,171 @@
+body {
+  background-color: #9a9a9a;
+
+}
+
+#box {
+  width: 1000px;
+  margin-left: auto;
+  margin-right: auto;
+
+}
+
+#navbar {
+  height: 58px;
+  background-color: #787878;
+}
+
+#login_box {
+  width: 600px;
+  background-color: #cccccd;
+  margin: 200px 200px 0px 200px;
+}
+
+#register_box {
+  width: 600px;
+  background-color: #cccccd;
+  margin: 40px 200px 0px 200px;
+}
+
+.nav_button_right {
+  background-color: #C3B091;
+  float: right;
+  height: 42px;
+  width: 100px;
+  margin: 8px 8px 8px 0px;
+  text-align: center;
+  line-height: 42px;
+  border-radius: 10px;
+}
+
+.nav_button_left {
+  background-color: #C3B091;
+  float: left;
+  height: 42px;
+  width: 140px;
+  margin: 8px 0px 8px 8px;
+  text-align: center;
+  line-height: 42px;
+  border-radius: 10px;
+}
+
+.nav_button_right:hover {
+  background-color: #799966;
+}
+
+.nav_button_left:hover {
+  background-color: #799966;
+}
+
+a.nav_left {
+  display: block;
+  text-decoration: none;
+  color: #111111;
+  height: 42px;
+  width: 140px;
+}
+a.nav_left:hover {
+  color: #343434;
+}
+
+a.nav_right {
+  display: block;
+  text-decoration: none;
+  color: #111111;
+  height: 42px;
+  width: 100px;
+}
+
+a.nav_right:hover {
+  color: #343434;
+}
+
+.nav_log_in_as {
+  float: right;
+  height: 42px;
+  min-width: 100px;
+  margin: 8px 8px 8px 0px;
+  text-align: center;
+  line-height: 21px;
+  font-size: 12px;
+}
+
+.input_field {
+  width: 500px;
+  height: 20px;
+  margin: 0px 45px 3px 45px;
+}
+
+.input_field_3_4 {
+  width: 330px;
+  height: 20px;
+  margin: 0px 0px 3px 45px;
+}
+
+.input_field_1_2 {
+  width: 219.5px;
+  height: 20px;
+  margin: 0px 0px 3px 45px;
+}
+
+.input_field_1_4 {
+  width: 109px;
+  height: 20px;
+  margin: 0px 0px 3px 45px;
+}
+
+.input_field_description {
+  font-size: 14px;
+  margin: 0px 0px 0px 50px;
+}
+
+.input_category {
+  text-align: center;
+  font-size: 18px;
+  padding: 5px 0px 0px 0px;
+}
+
+.small_redirect_text {
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.log_reg_button {
+  width: 80px;
+  height: 35px;
+  margin: 15px 10px 10px 45px;
+}
+
+.error_msg {
+  text-align: center;
+  font-size: 12px;
+  color: #ee1111;
+}
+
+#flash_temp_error {
+  margin: -150px 250px 0px 250px;
+  position: fixed;
+  z-index: 100;
+  width: 500px;
+  height: 70px;
+  background-color: #f1000b;
+  text-align: center;
+  line-height: 70px;
+  font-size: 20px;
+  color: white;
+  border-radius: 35px;
+}
+
+#flash_temp_message {
+  margin: 150px 250px 0px 250px;
+  position: fixed;
+  z-index: 100;
+  width: 500px;
+  height: 70px;
+  background-color: #44ff24;
+  text-align: center;
+  line-height: 70px;
+  font-size: 20px;
+  color: white;
+  border-radius: 35px;
+}
