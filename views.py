@@ -5,6 +5,7 @@
 #importy modułów py
 import bcrypt
 import uuid
+import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeSerializer
@@ -85,8 +86,8 @@ def register():
 @login_required
 def user_page():
     '''ogólny panel ustawień użytkownika'''
-
-    return render_template('user_page.html')
+    graves = Grave.query.filter_by(user_id=current_user.id)
+    return render_template('user_page.html', graves=graves)
 
 
 @pages.route('/user/password', methods=['POST', 'GET'])
@@ -138,6 +139,29 @@ def admin():
         txt = 'cześć adminie'
         return txt
     return redirect(url_for('pages.index'))
+
+
+@pages.route('/add_grave', methods=['POST', 'GET'])
+def add_grave():
+    if request.method == 'POST':
+        name = request.form['name']
+        last_name = request.form['last_name']
+        birth_input = request.form['day_of_birth']
+        day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
+        death_input = request.form['day_of_death']
+        day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
+        parcel_id = 1
+        new_grave = Grave(user_id=current_user.id,
+                          parcel_id=parcel_id,
+                          name=name,
+                          last_name=last_name,
+                          day_of_birth=day_of_birth,
+                          day_of_death=day_of_death)
+        db.session.add(new_grave)
+        db.session.commit()
+        return redirect(url_for('pages.user_page'))
+    return render_template('add_grave.html')
+
 
 @pages.app_errorhandler(401)
 def page_unauthorized(e):

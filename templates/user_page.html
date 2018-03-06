@@ -6,4 +6,16 @@
 <a href="{{ url_for('pages.user_set_pw') }}">zmiana hasła</a>
 <br>
 <a href="{{ url_for('pages.user_set_data') }}">zmiana danych personalnych</a>
+
+<h3><a href="{{ url_for('pages.user_page') }}">Moje groby</a> </h3>
+
+{% if graves %}
+{% for grave in graves %}
+<ol>
+    <ul> {{ grave.name }} {{ grave.last_name }}</ul>
+</ol>
+{% endfor %}
+{% endif %}
+<h3><a href="{{ url_for('pages.add_grave') }}">Utwórz nowy grób</a> </h3>
+
 {% endblock %}
