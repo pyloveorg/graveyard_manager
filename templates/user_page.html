@@ -1,0 +1,9 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Cmentarz - panel użytkownika</title>
+{% endblock %}
+{% block body %}
+<a href="{{ url_for('pages.user_set_pw') }}">zmiana hasła</a>
+<br>
+<a href="{{ url_for('pages.user_set_data') }}">zmiana danych personalnych</a>
+{% endblock %}

@@ -1,4 +1,4 @@
-# graveyard_manager
+# graveyard
 Aplikacja do zarządzania cmentarzem, dla ułatwienia wyobraź sobie, że cmentarz jest prostokątny i można w nim wykorzystywać system współrzędnych (kartezjański)
 1. Rejestracja i logowanie.
 2. Dodawanie, edycja i usuwanie grobów,  moduł rezerwacji miejsca pochówków dodatkowo ze strefami premium.
