@@ -12,10 +12,17 @@
 {% if graves %}
 {% for grave in graves %}
 <ol>
-    <ul> {{ grave.name }} {{ grave.last_name }}</ul>
+    <ul> {{ grave.name }} {{ grave.last_name }} </ul>
+        <form method="get" action="/edit/{{ grave.id }}">
+                <button type="submit">Zmień dane</button>
+        </form>
+        <form method="post" action="/delete/ {{ grave.id }}">
+            <button type="submit">Usuń</button>
+        </form>
 </ol>
+
 {% endfor %}
 {% endif %}
-<h3><a href="{{ url_for('pages.add_grave') }}">Utwórz nowy grób</a> </h3>
+<h3><a href="{{ url_for('pages.add_grave') }}">Rezerwuj nowy grób</a> </h3>
 
 {% endblock %}

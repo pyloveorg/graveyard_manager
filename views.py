@@ -163,6 +163,30 @@ def add_grave():
     return render_template('add_grave.html')
 
 
+@pages.route('/edit/<grave_id>', methods=['POST', 'GET'])
+def edit_grave(grave_id):
+    if request.method == 'POST':
+        grave = Grave.query.filter_by(id=grave_id).first()
+        grave.name = request.form['edited_name']
+        grave.last_name = request.form['edited_last_name']
+        grave.day_of_birth = request.form['edited_birth']
+        grave.day_of_death = request.form['edited_death']
+        # post.text = edited_content
+        # post.subject = edited_subject
+        db.session.commit()
+        return redirect(url_for('pages.user_page'))
+
+    return render_template('edit_grave.html', grave_id=grave_id)
+
+
+@pages.route('/delete/<grave_id>', methods=['POST'])
+def delete_grave(grave_id):
+    grave = Grave.query.filter_by(id=grave_id).first()
+    db.session.delete(grave)
+    db.session.commit()
+    return redirect(url_for('pages.user_page'))
+
+
 @pages.app_errorhandler(401)
 def page_unauthorized(e):
     '''obsługa erroru 401'''
