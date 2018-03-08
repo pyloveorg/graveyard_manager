@@ -11,35 +11,57 @@
 {% endblock %}
 
 {% block body %}
+    {% with message = get_flashed_messages()[0] %}
+        {% if message %}
+            <script type="text/javascript">start_counting("flash_temp_error");</script>
+            <div id="flash_temp_error">
+                {{ message }}
+            </div>
+        {% endif %}
+    {% endwith %}
     {% from "_formhelpers.html" import render_field %}
     <form method=post>
         <div id="register_box">
             {% if request.url_rule.endpoint == 'pages.register' %}
                 <div class="input_category">Dane wymagane do rejestracji:</div>
-                <div>{{ render_field(form.email, class="input_field") }}</div>
+                <div>{{ render_field(form_email.email, class="input_field") }}</div>
             {% endif %}
+
             {% if request.url_rule.endpoint == 'pages.user_set_pw' %}
                 <div class="input_category">Zmiana hasła:</div>
+            {% elif request.url_rule.endpoint == 'pages.user_set_data' %}
+                <div class="input_category">Zmiana danych osobowych:</div>
             {% endif %}
+
+            {% if request.url_rule.endpoint in ['pages.user_set_data', 'pages.user_set_pw']  %}
+                <div>{{ render_field(form_oldpw.old_password, class="input_field") }}</div>
+            {% endif %}
+
             {% if request.url_rule.endpoint in ['pages.register', 'pages.user_set_pw']  %}
-                <div>{{ render_field(form.password, class="input_field") }}</div>
-                <div>{{ render_field(form.repeat_password, class="input_field") }}</div>
+                <div>{{ render_field(form_pw.password, class="input_field") }}</div>
+                <div>{{ render_field(form_pw.repeat_password, class="input_field") }}</div>
             {% endif %}
-            {% if request.url_rule.endpoint in ['pages.register', 'pages.user_set_data']  %}
+
+            {% if request.url_rule.endpoint == 'pages.register' %}
                 <div class="input_category">Dane dodatkowe:</div>
-                <div style="float: left">{{ render_field(form.name, class="input_field_1_2") }}</div>
-                <div style="float: left">{{ render_field(form.last_name, class="input_field_1_2") }}</div>
-                <div style="float: left">{{ render_field(form.city, class="input_field_3_4") }}</div>
-                <div style="float: left">{{ render_field(form.zip_code, class="input_field_1_4") }}</div>
-                <div style="clear: both">{{ render_field(form.street, class="input_field") }}</div>
-                <div style="float: left">{{ render_field(form.house_number, class="input_field_1_2") }}</div>
-                <div style="float: left">{{ render_field(form.flat_number, class="input_field_1_2") }}</div>
+            {% endif %}
+
+            {% if request.url_rule.endpoint in ['pages.register', 'pages.user_set_data']  %}
+                <div style="float: left">{{ render_field(form_data.name, class="input_field_1_2") }}</div>
+                <div style="float: left">{{ render_field(form_data.last_name, class="input_field_1_2") }}</div>
+                <div style="float: left">{{ render_field(form_data.city, class="input_field_3_4") }}</div>
+                <div style="float: left">{{ render_field(form_data.zip_code, class="input_field_1_4") }}</div>
+                <div style="clear: both">{{ render_field(form_data.street, class="input_field") }}</div>
+                <div style="float: left">{{ render_field(form_data.house_number, class="input_field_1_2") }}</div>
+                <div style="float: left">{{ render_field(form_data.flat_number, class="input_field_1_2") }}</div>
                 <div style="clear: both"></div>
             {% endif %}
+
             {% if request.url_rule.endpoint == 'pages.register' %}
                 <input class ="log_reg_button" type=submit value="Rejestruj">
                 <a class="small_redirect_text" href="{{url_for('pages.login')}}">Masz już konto? Zaloguj się!</a>
             {% endif %}
+
             {% if request.url_rule.endpoint in ['pages.user_set_pw', 'pages.user_set_data'] %}
                 <input class ="log_reg_button" type=submit value="Zmień">
                 <a class="small_redirect_text" href="{{url_for('pages.user_page')}}">Powrót bez wprowadzania zmian</a>

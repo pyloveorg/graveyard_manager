@@ -11,7 +11,7 @@ from flask_login import LoginManager, login_user, logout_user, current_user, log
 from itsdangerous import URLSafeSerializer
 
 #importy nasze
-from validate import RegisterForm, LoginForm, ChangePwForm, ChangeDataForm
+from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
 from models import db, User, Grave, Parcel, ParcelType, Family, Payments
 from config import APP
 
@@ -36,17 +36,17 @@ def login():
     '''strona logowania'''
     if current_user.is_authenticated:
         return redirect(url_for('pages.index'))
-    form = LoginForm(request.form)
-    if request.method == 'POST' and form.validate():
-        user_request = User.query.filter_by(email=form.email.data).first()
+    form_login = LoginForm(request.form)
+    if request.method == 'POST' and form_login.validate():
+        user_request = User.query.filter_by(email=form_login.email.data).first()
         if user_request:
-            if bcrypt.checkpw(form.password.data.encode('UTF_8'), user_request.password):
+            if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
                 login_user(user_request)
                 flash('Zostałeś poprawnie zalogowany!')
                 return redirect(url_for('pages.index'))
-        flash('Niepawidłowy e-mail lub hasło')
+        flash('Niepawidłowy e-mail lub hasło!', 'error')
         return redirect(url_for('pages.login'))
-    return render_template('login.html', form=form)
+    return render_template('login.html', form_login=form_login)
 
 
 @pages.route('/logout')
@@ -54,6 +54,7 @@ def login():
 def logout():
     '''wylogowywanie użytkownika i przekierowywanie na stronę główną'''
     logout_user()
+    flash('Zostałeś poprawnie wylogowany!')
     return redirect(url_for('pages.index'))
 
 
@@ -62,24 +63,30 @@ def register():
     '''strona rejestracji'''
     if current_user.is_authenticated:
         return redirect(url_for('pages.index'))
-    form = RegisterForm(request.form)
-    if request.method == 'POST' and form.validate():
+    form_email = EmailForm(request.form)
+    form_pw = PwForm(request.form)
+    form_data = DataForm(request.form)
+    if request.method == 'POST' and all([x.validate() for x in [form_email, form_pw, form_data]]):
         unique_value = str(uuid.uuid4())
-        new_user = User(email=form.email.data,
-                        password=bcrypt.hashpw(form.password.data.encode('UTF_8'),
+        new_user = User(email=form_email.email.data,
+                        password=bcrypt.hashpw(form_pw.password.data.encode('UTF_8'),
                                                bcrypt.gensalt()),
-                        token_id=serializer.dumps([form.email.data, unique_value]),
-                        name=form.name.data,
-                        last_name=form.last_name.data,
-                        city=form.city.data,
-                        zip_code=form.zip_code.data,
-                        street=form.street.data,
-                        house_number=form.house_number.data,
-                        flat_number=form.flat_number.data)
+                        token_id=serializer.dumps([form_email.email.data, unique_value]),
+                        name=form_data.name.data,
+                        last_name=form_data.last_name.data,
+                        city=form_data.city.data,
+                        zip_code=form_data.zip_code.data,
+                        street=form_data.street.data,
+                        house_number=form_data.house_number.data,
+                        flat_number=form_data.flat_number.data)
         db.session.add(new_user)
         db.session.commit()
+        flash('Rejestracja zakończona sukcesem!', 'succes')
         return redirect(url_for('pages.login'))
-    return render_template('user_settings.html', form=form)
+    return render_template('user_settings.html',
+                           form_email=form_email,
+                           form_pw=form_pw,
+                           form_data=form_data)
 
 
 @pages.route('/user', methods=['POST', 'GET'])
@@ -94,16 +101,23 @@ def user_page():
 @login_required
 def user_set_pw():
     '''zmiana hasła użytkownika'''
-    form = ChangePwForm(request.form)
-    if request.method == 'POST' and form.validate():
-        unique_value = str(uuid.uuid4())
-        user = User.query.get(current_user.id)
-        user.password = bcrypt.hashpw(form.password.data.encode('UTF_8'), bcrypt.gensalt())
-        user.token_id = serializer.dumps([user.email, unique_value])
-        db.session.commit()
-        login_user(user)
-        return redirect(url_for('pages.user_page'))
-    return render_template('user_settings.html', form=form)
+    form_pw = PwForm(request.form)
+    form_oldpw = OldPwForm(request.form)
+    if request.method == 'POST' and all([x.validate() for x in [form_pw, form_oldpw]]):
+        if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'),
+                          User.query.get(current_user.id).password):
+            unique_value = str(uuid.uuid4())
+            user = User.query.get(current_user.id)
+            user.password = bcrypt.hashpw(form_pw.password.data.encode('UTF_8'), bcrypt.gensalt())
+            user.token_id = serializer.dumps([user.email, unique_value])
+            db.session.commit()
+            login_user(user)
+            flash('Hasło zostało prawidłowo zmienione!')
+            return redirect(url_for('pages.user_page'))
+        else:
+            flash('Podane hasło jest nieprawidłowe!')
+            return redirect(url_for('pages.user_set_pw'))
+    return render_template('user_settings.html', form_pw=form_pw, form_oldpw=form_oldpw)
 
 
 @pages.route('/user/data', methods=['POST', 'GET'])
@@ -111,7 +125,8 @@ def user_set_pw():
 def user_set_data():
     '''zmiana danych personalnych użytkownika'''
     user = User.query.get(current_user.id)
-    form = ChangeDataForm(request.form,
+    form_oldpw = OldPwForm(request.form)
+    form_data = DataForm(request.form,
                           name=user.name,
                           last_name=user.last_name,
                           city=user.city,
@@ -119,17 +134,23 @@ def user_set_data():
                           street=user.street,
                           house_number=user.house_number,
                           flat_number=user.flat_number)
-    if request.method == 'POST' and form.validate():
-        user.name = form.name.data
-        user.last_name = form.last_name.data
-        user.city = form.city.data
-        user.zip_code = form.zip_code.data
-        user.street = form.street.data
-        user.house_number = form.house_number.data
-        user.flat_number = form.flat_number.data
-        db.session.commit()
+    if request.method == 'POST' and all([x.validate() for x in [form_oldpw, form_data]]):
+        if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'),
+                          User.query.get(current_user.id).password):
+            user.name = form_data.name.data
+            user.last_name = form_data.last_name.data
+            user.city = form_data.city.data
+            user.zip_code = form_data.zip_code.data
+            user.street = form_data.street.data
+            user.house_number = form_data.house_number.data
+            user.flat_number = form_data.flat_number.data
+            db.session.commit()
+            flash('Dane zostały prawidłowo zmodyfikowane!')
+        else:
+            flash('Podane hasło jest nieprawidłowe!')
+            return redirect(url_for('pages.user_set_data'))
         return redirect(url_for('pages.user_page'))
-    return render_template('user_settings.html', form=form)
+    return render_template('user_settings.html', form_oldpw=form_oldpw, form_data=form_data)
 
 
 @pages.route('/admin', methods=['POST', 'GET'])

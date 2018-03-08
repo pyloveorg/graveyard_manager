@@ -10,7 +10,7 @@ from wtforms.validators import ValidationError, input_required, email, length, e
 from models import User
 
 
-class ChangePwForm(Form):
+class PwForm(Form):
     '''klasa wtforms do ustalania hasła użytkownika'''
     password = PasswordField('Hasło:',
                              [input_required(message='Pole wymagane!'),
@@ -19,8 +19,13 @@ class ChangePwForm(Form):
     repeat_password = PasswordField('Powtórz hasło:')
 
 
-class ChangeDataForm(Form):
-    '''klasa wtforms do zmiany danych personalnych użytkownika'''
+class OldPwForm(Form):
+    '''klasa wtforms do weryfikacji aktualnego hasła'''
+    old_password = PasswordField('Aktualne hasło:', [input_required(message='Pole wymagane!')])
+
+
+class DataForm(Form):
+    '''klasa wtforms do ustawiania danych personalnych użytkownika'''
     def digit_or_none(self, field):
         '''pole musi pozostac puste lub być liczbą'''
         if field.data != '':
@@ -42,8 +47,8 @@ class ChangeDataForm(Form):
     flat_number = StringField('Numer mieszkania:', [digit_or_none])
 
 
-class RegisterForm(ChangePwForm, ChangeDataForm):
-    '''klasa wtforms do rejestracji użytkownika'''
+class EmailForm(Form):
+    '''klasa wtforms do rejestracji użytkownika - ustawianie adresu e-mail'''
     def email_in_db(self, field):
         '''sprawdzanie czy adres email nie jest już w bazie'''
         if User.query.filter_by(email=field.data).first():
