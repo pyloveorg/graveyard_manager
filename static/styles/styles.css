@@ -148,7 +148,7 @@ a.nav_right:hover {
   margin: 150px 250px 0px 250px;
   position: fixed;
   z-index: 100;
-  width: 500px;
+  min-width: 500px;
   height: 70px;
   background-color: #f1000b;
   text-align: center;
@@ -162,7 +162,7 @@ a.nav_right:hover {
   margin: 150px 250px 0px 250px;
   position: fixed;
   z-index: 100;
-  width: 500px;
+  min-width: 500px;
   height: 70px;
   background-color: #44ff24;
   text-align: center;
@@ -170,4 +170,5 @@ a.nav_right:hover {
   font-size: 20px;
   color: white;
   border-radius: 35px;
+  padding: 5px;
 }

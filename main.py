@@ -6,19 +6,26 @@
 from flask import Flask
 
 #importy nasze
-from views import pages, login_manager
+from views import pages, login_manager, mail
 from models import db
-from config import DB, APP
+from config import DB, APP, EMAIL
 
 app = Flask(__name__)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = DB.PATH
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = DB.TRACK_MODIFICATIONS
 app.config['SECRET_KEY'] = APP.APP_KEY
-app.register_blueprint(pages)
+app.config['MAIL_SERVER'] = EMAIL.SERVER
+app.config['MAIL_PORT'] = EMAIL.PORT
+app.config['MAIL_USE_SSL'] = EMAIL.SSL
+app.config['MAIL_USERNAME'] = EMAIL.USERNAME
+app.config['MAIL_PASSWORD'] = EMAIL.PASSWORD
+app.config['MAIL_DEFAULT_SENDER'] = EMAIL.DEFAULT_SENDER
 
-db.init_app(app)
+app.register_blueprint(pages)
 login_manager.init_app(app)
+mail.init_app(app)
+db.init_app(app)
 
 if __name__ == '__main__':
     app.run(host=APP.IP, port=APP.PORT, debug=APP.DEBUG)

@@ -8,7 +8,8 @@ import uuid
 import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from itsdangerous import URLSafeSerializer
+from flask_mail import Mail, Message
+from itsdangerous import URLSafeSerializer, URLSafeTimedSerializer, SignatureExpired
 
 #importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
@@ -17,7 +18,9 @@ from config import APP
 
 pages = Blueprint('pages', __name__)
 login_manager = LoginManager()
+mail = Mail()
 serializer = URLSafeSerializer(APP.APP_KEY)
+mail_serializer = URLSafeTimedSerializer(APP.APP_KEY)
 
 @login_manager.user_loader
 def load_user(session_token):
@@ -40,10 +43,11 @@ def login():
     if request.method == 'POST' and form_login.validate():
         user_request = User.query.filter_by(email=form_login.email.data).first()
         if user_request:
-            if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
-                login_user(user_request)
-                flash('Zostałeś poprawnie zalogowany!')
-                return redirect(url_for('pages.index'))
+            if user_request.active_user:
+                if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
+                    login_user(user_request)
+                    flash('Zostałeś poprawnie zalogowany!')
+                    return redirect(url_for('pages.index'))
         flash('Niepawidłowy e-mail lub hasło!', 'error')
         return redirect(url_for('pages.login'))
     return render_template('login.html', form_login=form_login)
@@ -81,12 +85,30 @@ def register():
                         flat_number=form_data.flat_number.data)
         db.session.add(new_user)
         db.session.commit()
-        flash('Rejestracja zakończona sukcesem!', 'succes')
+        register_token = mail_serializer.dumps(form_email.email.data, salt='confirm-email')
+        msg = Message('Confirm your email', recipients=[form_email.email.data])
+        link_url = url_for('pages.confirm_email', register_token=register_token, _external=True)
+        msg.body = 'Link do aktywacji konta: {}'.format(link_url)
+        mail.send(msg)
+        flash('Na podany adres email został wysłany kod weryfikacyjny!', 'succes')
         return redirect(url_for('pages.login'))
     return render_template('user_settings.html',
                            form_email=form_email,
                            form_pw=form_pw,
                            form_data=form_data)
+
+
+@pages.route('/confirm_email/<register_token>')
+def confirm_email(register_token):
+    try:
+        email = mail_serializer.loads(register_token, salt='confirm-email', max_age=100)
+        user = User.query.filter_by(email=email).first()
+        user.active_user = True
+        db.session.commit()
+        flash('Konto zostało aktywowane pomyślnie!', 'succes')
+        return redirect(url_for('pages.login'))
+    except SignatureExpired:
+        return 'Token nieaktywny'
 
 
 @pages.route('/user', methods=['POST', 'GET'])
