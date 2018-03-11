@@ -49,15 +49,9 @@ class DataForm(Form):
 
 class EmailForm(Form):
     '''klasa wtforms do rejestracji użytkownika - ustawianie adresu e-mail'''
-    def email_in_db(self, field):
-        '''sprawdzanie czy adres email nie jest już w bazie'''
-        if User.query.filter_by(email=field.data).first():
-            raise ValidationError('Adres E-mail jest już w użyciu!')
-
     email = StringField('Adres e-mail:',
                         [input_required(message='Pole wymagane!'),
                          email(message='Niepoprawny adres e-mail!'),
-                         email_in_db,
                          length(max=63, message='Adres e-mail przekracza 63 znaki!')])
 
 

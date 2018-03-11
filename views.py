@@ -4,22 +4,22 @@
 
 #importy modułów py
 import bcrypt
-import uuid
 import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_mail import Mail, Message
-from itsdangerous import URLSafeSerializer, URLSafeTimedSerializer, SignatureExpired, BadSignature
+from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 #importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
 from models import db, User, Grave, Parcel, ParcelType, Family, Payments
 from config import APP
+from data_handling import register_new_user, change_user_data, change_user_pw
 
 pages = Blueprint('pages', __name__)
 login_manager = LoginManager()
 mail = Mail()
-serializer = URLSafeSerializer(APP.APP_KEY)
+
 mail_serializer = URLSafeTimedSerializer(APP.APP_KEY)
 
 @login_manager.user_loader
@@ -71,28 +71,30 @@ def register():
     form_pw = PwForm(request.form)
     form_data = DataForm(request.form)
     if request.method == 'POST' and all([x.validate() for x in [form_email, form_pw, form_data]]):
-        unique_value = str(uuid.uuid4())
-        new_user = User(email=form_email.email.data,
-                        password=bcrypt.hashpw(form_pw.password.data.encode('UTF_8'),
-                                               bcrypt.gensalt()),
-                        token_id=serializer.dumps([form_email.email.data, unique_value]),
-                        name=form_data.name.data,
-                        last_name=form_data.last_name.data,
-                        city=form_data.city.data,
-                        zip_code=form_data.zip_code.data,
-                        street=form_data.street.data,
-                        house_number=form_data.house_number.data,
-                        flat_number=form_data.flat_number.data)
-        db.session.add(new_user)
-        db.session.commit()
+        user = User.query.filter_by(email=form_email.email.data).first()
+        if not user:
+            #rejestracja nowego użytkownika
+            new_user = register_new_user(form_email, form_pw, form_data)
+            db.session.add(new_user)
+            db.session.commit()
+        elif not user.active_user:
+            #zmiana danych użytkownika
+            change_user_pw(user, form_pw)
+            change_user_data(user, form_data)
+            db.session.commit()
+        else:
+            flash('Podany adres e-mail jest w użyciu!', 'error')
+            return redirect(url_for('pages.register'))
         #wysyłanie e-maila z linkiem do aktywacji
         register_token = mail_serializer.dumps(form_email.email.data, salt='confirm-email')
         msg = Message('Confirm your email', recipients=[form_email.email.data])
         link_url = url_for('pages.confirm_email', register_token=register_token, _external=True)
-        msg.body = 'Link do aktywacji konta: {}'.format(link_url)
+        with open('static/emails/register_message', 'r') as file:
+            message = file.read().format(link_url)
+        msg.body = message
         mail.send(msg)
         flash('Na podany adres email został wysłany kod weryfikacyjny!', 'succes')
-        return redirect(url_for('pages.login'))
+        return redirect(url_for('pages.index'))
     return render_template('user_settings.html',
                            form_email=form_email,
                            form_pw=form_pw,
@@ -102,7 +104,7 @@ def register():
 @pages.route('/confirm_email/<register_token>')
 def confirm_email(register_token):
     try:
-        email = mail_serializer.loads(register_token, salt='confirm-email', max_age=100)
+        email = mail_serializer.loads(register_token, salt='confirm-email', max_age=3600)
         user = User.query.filter_by(email=email).first()
         if user.active_user:
             flash('Konto już jest aktywne!', 'error')
@@ -130,13 +132,10 @@ def user_set_pw():
     '''zmiana hasła użytkownika'''
     form_pw = PwForm(request.form)
     form_oldpw = OldPwForm(request.form)
+    user = User.query.get(current_user.id)
     if request.method == 'POST' and all([x.validate() for x in [form_pw, form_oldpw]]):
-        if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'),
-                          User.query.get(current_user.id).password):
-            unique_value = str(uuid.uuid4())
-            user = User.query.get(current_user.id)
-            user.password = bcrypt.hashpw(form_pw.password.data.encode('UTF_8'), bcrypt.gensalt())
-            user.token_id = serializer.dumps([user.email, unique_value])
+        if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'), user.password):
+            change_user_pw(user, form_pw)
             db.session.commit()
             login_user(user)
             flash('Hasło zostało prawidłowo zmienione!', 'succes')
@@ -164,13 +163,8 @@ def user_set_data():
     if request.method == 'POST' and all([x.validate() for x in [form_oldpw, form_data]]):
         if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'),
                           User.query.get(current_user.id).password):
-            user.name = form_data.name.data
-            user.last_name = form_data.last_name.data
-            user.city = form_data.city.data
-            user.zip_code = form_data.zip_code.data
-            user.street = form_data.street.data
-            user.house_number = form_data.house_number.data
-            user.flat_number = form_data.flat_number.data
+            #zmiana danych użytkownika
+            change_user_data(user, form_data)
             db.session.commit()
             flash('Dane zostały prawidłowo zmodyfikowane!', 'succes')
         else:
