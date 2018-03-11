@@ -1,0 +1,16 @@
+{% with message = get_flashed_messages(category_filter = ['error'])[0] %}
+    {% if message %}
+        <script type="text/javascript">start_counting("flash_temp_error");</script>
+        <div id="flash_temp_error">
+            {{ message }}
+        </div>
+    {% endif %}
+{% endwith %}
+{% with message = get_flashed_messages(category_filter = ['succes'])[0] %}
+    {% if message %}
+        <script type="text/javascript">start_counting("flash_temp_message");</script>
+        <div id="flash_temp_message">
+            {{ message }}
+        </div>
+    {% endif %}
+{% endwith %}
