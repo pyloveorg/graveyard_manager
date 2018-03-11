@@ -9,7 +9,7 @@ import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from flask_mail import Mail, Message
-from itsdangerous import URLSafeSerializer, URLSafeTimedSerializer, SignatureExpired
+from itsdangerous import URLSafeSerializer, URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 #importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
@@ -46,7 +46,7 @@ def login():
             if user_request.active_user:
                 if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
                     login_user(user_request)
-                    flash('Zostałeś poprawnie zalogowany!')
+                    flash('Zostałeś poprawnie zalogowany!', 'succes')
                     return redirect(url_for('pages.index'))
         flash('Niepawidłowy e-mail lub hasło!', 'error')
         return redirect(url_for('pages.login'))
@@ -58,7 +58,7 @@ def login():
 def logout():
     '''wylogowywanie użytkownika i przekierowywanie na stronę główną'''
     logout_user()
-    flash('Zostałeś poprawnie wylogowany!')
+    flash('Zostałeś poprawnie wylogowany!', 'succes')
     return redirect(url_for('pages.index'))
 
 
@@ -85,6 +85,7 @@ def register():
                         flat_number=form_data.flat_number.data)
         db.session.add(new_user)
         db.session.commit()
+        #wysyłanie e-maila z linkiem do aktywacji
         register_token = mail_serializer.dumps(form_email.email.data, salt='confirm-email')
         msg = Message('Confirm your email', recipients=[form_email.email.data])
         link_url = url_for('pages.confirm_email', register_token=register_token, _external=True)
@@ -103,12 +104,16 @@ def confirm_email(register_token):
     try:
         email = mail_serializer.loads(register_token, salt='confirm-email', max_age=100)
         user = User.query.filter_by(email=email).first()
+        if user.active_user:
+            flash('Konto już jest aktywne!', 'error')
+            return redirect(url_for('pages.index'))
         user.active_user = True
         db.session.commit()
         flash('Konto zostało aktywowane pomyślnie!', 'succes')
         return redirect(url_for('pages.login'))
-    except SignatureExpired:
-        return 'Token nieaktywny'
+    except (SignatureExpired, BadSignature):
+        flash('Podany link jest nieaktywny!', 'error')
+        return redirect(url_for('pages.index'))
 
 
 @pages.route('/user', methods=['POST', 'GET'])
@@ -134,10 +139,10 @@ def user_set_pw():
             user.token_id = serializer.dumps([user.email, unique_value])
             db.session.commit()
             login_user(user)
-            flash('Hasło zostało prawidłowo zmienione!')
+            flash('Hasło zostało prawidłowo zmienione!', 'succes')
             return redirect(url_for('pages.user_page'))
         else:
-            flash('Podane hasło jest nieprawidłowe!')
+            flash('Podane hasło jest nieprawidłowe!', 'error')
             return redirect(url_for('pages.user_set_pw'))
     return render_template('user_settings.html', form_pw=form_pw, form_oldpw=form_oldpw)
 
@@ -167,9 +172,9 @@ def user_set_data():
             user.house_number = form_data.house_number.data
             user.flat_number = form_data.flat_number.data
             db.session.commit()
-            flash('Dane zostały prawidłowo zmodyfikowane!')
+            flash('Dane zostały prawidłowo zmodyfikowane!', 'succes')
         else:
-            flash('Podane hasło jest nieprawidłowe!')
+            flash('Podane hasło jest nieprawidłowe!', 'error')
             return redirect(url_for('pages.user_set_data'))
         return redirect(url_for('pages.user_page'))
     return render_template('user_settings.html', form_oldpw=form_oldpw, form_data=form_data)

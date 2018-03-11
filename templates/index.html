@@ -3,14 +3,7 @@
 <title>Cmentarz - strona główna</title>
 {% endblock %}
 {% block body %}
-    {% with message = get_flashed_messages()[0] %}
-        {% if message %}
-            <script type="text/javascript">start_counting("flash_temp_message");</script>
-            <div id="flash_temp_message">
-                {{ message }}
-            </div>
-        {% endif %}
-    {% endwith %}
+{% include 'flash_msg.html' %}
 <p>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc bibendum arcu nec orci vestibulum,
     pharetra tempus nibh eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Ut
