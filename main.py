@@ -6,7 +6,8 @@
 from flask import Flask
 
 #importy nasze
-from views import pages, login_manager, mail
+from views import pages, login_manager
+from mail_sending import mail
 from models import db
 from config import DB, APP, EMAIL
 

@@ -28,9 +28,10 @@ def register_new_user(form_email, form_pw, form_data):
     return new_user
 
 
-def change_user_pw(user, form_pw):
+def change_user_pw(user, form_pw, form=True):
+    pw = form_pw.password.data if form else form_pw
     unique_value = str(uuid.uuid4())
-    user.password = bcrypt.hashpw(form_pw.password.data.encode('UTF_8'), bcrypt.gensalt())
+    user.password = bcrypt.hashpw(pw.encode('UTF_8'), bcrypt.gensalt())
     user.token_id = serializer.dumps([user.email, unique_value])
 
 

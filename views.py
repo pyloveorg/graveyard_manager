@@ -7,7 +7,6 @@ import bcrypt
 import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from flask_mail import Mail, Message
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 #importy nasze
@@ -15,12 +14,13 @@ from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
 from models import db, User, Grave, Parcel, ParcelType, Family, Payments
 from config import APP
 from data_handling import register_new_user, change_user_data, change_user_pw
+from mail_sending import common_msg
+from generate_data import generate_password
 
 pages = Blueprint('pages', __name__)
 login_manager = LoginManager()
-mail = Mail()
 
-mail_serializer = URLSafeTimedSerializer(APP.APP_KEY)
+temp_serializer = URLSafeTimedSerializer(APP.APP_KEY)
 
 @login_manager.user_loader
 def load_user(session_token):
@@ -51,6 +51,41 @@ def login():
         flash('Niepawidłowy e-mail lub hasło!', 'error')
         return redirect(url_for('pages.login'))
     return render_template('login.html', form_login=form_login)
+
+
+@pages.route('/pw_recovery', methods=['POST', 'GET'])
+def password_recovery():
+    if current_user.is_authenticated:
+        return redirect(url_for('pages.index'))
+    form_email = EmailForm(request.form)
+    if request.method == 'POST' and form_email.validate():
+        user = User.query.filter_by(email=form_email.email.data).first()
+        if user and user.active_user:
+            password_token = temp_serializer.dumps(form_email.email.data, salt='pw-recovery')
+            link_url = url_for('pages.recovery_password',
+                               pw_token=password_token,
+                               _external=True)
+            common_msg('Odzyskiwanie hasła', form_email.email.data, 'pw_recovery', link_url)
+            flash('Na podany adres email zostały wysłane dalsze informacje.', 'succes')
+            return redirect(url_for('pages.index'))
+        flash('Podany adres e-mail nie istnieje!', 'error')
+    return render_template('recovery.html', form_email=form_email)
+
+
+@pages.route('/pw_recovery/<pw_token>')
+def recovery_password(pw_token):
+    try:
+        email = temp_serializer.loads(pw_token, salt='pw-recovery', max_age=3600)
+        user = User.query.filter_by(email=email).first()
+        new_pw = generate_password()
+        change_user_pw(user, new_pw, False)
+        db.session.commit()
+        common_msg('Nowe hasło', email, 'new_password', new_pw)
+        flash('Nowe hasło zostało wysłane na twój e-mail.', 'succes')
+        return redirect(url_for('pages.login'))
+    except (SignatureExpired, BadSignature):
+        flash('Podany link jest nieaktywny!', 'error')
+        return redirect(url_for('pages.index'))
 
 
 @pages.route('/logout')
@@ -86,13 +121,9 @@ def register():
             flash('Podany adres e-mail jest w użyciu!', 'error')
             return redirect(url_for('pages.register'))
         #wysyłanie e-maila z linkiem do aktywacji
-        register_token = mail_serializer.dumps(form_email.email.data, salt='confirm-email')
-        msg = Message('Confirm your email', recipients=[form_email.email.data])
+        register_token = temp_serializer.dumps(form_email.email.data, salt='confirm-email')
         link_url = url_for('pages.confirm_email', register_token=register_token, _external=True)
-        with open('static/emails/register_message', 'r') as file:
-            message = file.read().format(link_url)
-        msg.body = message
-        mail.send(msg)
+        common_msg('Aktywacja konta', form_email.email.data, 'register_message', link_url)
         flash('Na podany adres email został wysłany kod weryfikacyjny!', 'succes')
         return redirect(url_for('pages.index'))
     return render_template('user_settings.html',
@@ -104,7 +135,7 @@ def register():
 @pages.route('/confirm_email/<register_token>')
 def confirm_email(register_token):
     try:
-        email = mail_serializer.loads(register_token, salt='confirm-email', max_age=3600)
+        email = temp_serializer.loads(register_token, salt='confirm-email', max_age=3600)
         user = User.query.filter_by(email=email).first()
         if user.active_user:
             flash('Konto już jest aktywne!', 'error')
