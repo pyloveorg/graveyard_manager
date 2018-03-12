@@ -6,9 +6,6 @@ import re
 from wtforms import Form, StringField, PasswordField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to
 
-#importy nasze
-from models import User
-
 
 class PwForm(Form):
     '''klasa wtforms do ustalania hasła użytkownika'''
