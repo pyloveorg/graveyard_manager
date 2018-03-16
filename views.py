@@ -8,6 +8,7 @@ import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from sqlalchemy import func
 
 #importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
@@ -161,7 +162,9 @@ def confirm_email(register_token):
 def user_page():
     '''ogólny panel ustawień użytkownika'''
     graves = Grave.query.filter_by(user_id=current_user.id)
-    return render_template('user_page.html', graves=graves)
+    parcels = Parcel.query.all()
+    max_p = db.session.query(func.max(Parcel.position_x)).scalar()
+    return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p)
 
 
 @pages.route('/user/password', methods=['POST', 'GET'])
@@ -253,8 +256,6 @@ def edit_grave(grave_id):
         grave.last_name = request.form['edited_last_name']
         grave.day_of_birth = request.form['edited_birth']
         grave.day_of_death = request.form['edited_death']
-        # post.text = edited_content
-        # post.subject = edited_subject
         db.session.commit()
         return redirect(url_for('pages.user_page'))
 

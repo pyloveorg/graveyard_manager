@@ -8,7 +8,7 @@ db = SQLAlchemy()
 
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    active_user = db.Column(db.Boolean, default=False)
+    active_user = db.Column(db.Boolean, default=True)
     token_id = db.Column(db.String(100), unique=True)
     email = db.Column(db.String(63), unique=True, nullable=False)
     password = db.Column(db.String(72), nullable=False)
@@ -32,7 +32,7 @@ class Grave(db.Model):
     name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(120), nullable=False)
     day_of_birth = db.Column(db.DateTime(), nullable=False)
-    day_of_death = db.Column(db.DateTime(), nullable=False)
+    day_of_death = db.Column(db.DateTime(), nullable=True)
 
 
 class Parcel(db.Model):

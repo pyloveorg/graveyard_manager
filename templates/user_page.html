@@ -26,4 +26,27 @@
 {% endif %}
 <h3><a href="{{ url_for('pages.add_grave') }}">Rezerwuj nowy grób</a> </h3>
 
+
+<h3>Mapa cmentarza</h3>
+
+<table width="600" border="1px">
+
+    <thead>
+      <tr>
+        <th></th>
+          {% for i in range(0, max_p) %}
+          <th class="col" width="20" height="20"> {{ i }}</th>
+          {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+    {% for j in range(0, max_p) %}
+      <tr>
+        <th class="row" width="20" height="20"> {{ j }} </th>
+      </tr>
+    {% endfor %}
+
+    <tbody>
+  </table>
+
 {% endblock %}
