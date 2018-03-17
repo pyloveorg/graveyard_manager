@@ -1,15 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''plik zawierający funkcje renderowanych stron'''
+"""Plik zawierający funkcje renderowanych stron."""
 
-#importy modułów py
+# importy modułów py
 import datetime
 import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
-#importy nasze
+# importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
 from models import db, User, Grave, Parcel, ParcelType, Family, Payments
 from config import APP
@@ -22,23 +22,36 @@ login_manager = LoginManager()
 
 temp_serializer = URLSafeTimedSerializer(APP.APP_KEY)
 
+
 @login_manager.user_loader
 def load_user(session_token):
-    '''wczytywanie uzytkownika przy pomocy tokena'''
+    """Wczytywanie uzytkownika przy pomocy tokena."""
     return User.query.filter_by(token_id=session_token).first()
+
+
+@login_manager.unauthorized_handler
+def handle_needs_login():
+    """Obsługa erroru 401.
+
+    Przekierowanie do strony logowania, oraz przekazanie parametru next
+    po zalogowaniu powrót na stronę żądaną.
+    """
+    flash('Musisz się najpierw zalogować!', 'error')
+    return redirect(url_for('pages.login', next=url_for(request.endpoint)))
 
 
 @pages.route('/')
 def index():
-    '''renderowanie strony głównej'''
+    """Renderowanie strony głównej."""
     return render_template('index.html')
 
 
 @pages.route('/login', methods=['GET', 'POST'])
 def login():
-    '''strona logowania'''
+    """Strona logowania."""
     if current_user.is_authenticated:
         return redirect(url_for('pages.index'))
+    next = request.args.get('next')
     form_login = LoginForm(request.form)
     if request.method == 'POST' and form_login.validate():
         user_request = User.query.filter_by(email=form_login.email.data).first()
@@ -47,7 +60,7 @@ def login():
                 if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
                     login_user(user_request)
                     flash('Zostałeś poprawnie zalogowany!', 'succes')
-                    return redirect(url_for('pages.index'))
+                    return redirect(next) if next else redirect(url_for('pages.index'))
         flash('Niepawidłowy e-mail lub hasło!', 'error')
         return redirect(url_for('pages.login'))
     return render_template('login.html', form_login=form_login)
@@ -55,14 +68,16 @@ def login():
 
 @pages.route('/pw_recovery', methods=['POST', 'GET'])
 def password_recovery():
-    '''strona do odzyskiwania hasła - wymaga podania jedynie adresu email, dalsze instrukcje
-    zostają wysłane na podany adres'''
+    """Strona do odzyskiwania hasła.
+
+    Wymaga podania jedynie adresu email, dalsze instrukcje zostają wysłane na podany adres.
+    """
     if current_user.is_authenticated:
         return redirect(url_for('pages.index'))
     form_email = EmailForm(request.form)
     if request.method == 'POST' and form_email.validate():
         user = User.query.filter_by(email=form_email.email.data).first()
-        #sprawdzenie czy użytkownik jest w bazie oraz czy został aktywowany
+        # sprawdzenie czy użytkownik jest w bazie oraz czy został aktywowany
         if user and user.active_user:
             password_token = temp_serializer.dumps(user.token_id, salt='pw-recovery')
             link_url = url_for('pages.recovery_password',
@@ -77,8 +92,11 @@ def password_recovery():
 
 @pages.route('/pw_recovery/<pw_token>')
 def recovery_password(pw_token):
-    '''strona jest generowana i wysyłana drogą mailową w postaci url, po wejściu hasło zostaje
-    zresetowane a następnie wysłane drugim mailem do użytkownika'''
+    """Strona do generowania nowego hasła.
+
+    Jest wysyłana drogą mailową w postaci url, po wejściu hasło zostaje
+    zresetowane a następnie wysłane drugim mailem do użytkownika.
+    """
     try:
         token_id = temp_serializer.loads(pw_token, salt='pw-recovery', max_age=3600)
         user = User.query.filter_by(token_id=token_id).first()
@@ -96,7 +114,7 @@ def recovery_password(pw_token):
 @pages.route('/logout')
 @login_required
 def logout():
-    '''wylogowywanie użytkownika i przekierowywanie na stronę główną'''
+    """Wylogowywanie użytkownika i przekierowywanie na stronę główną."""
     logout_user()
     flash('Zostałeś poprawnie wylogowany!', 'succes')
     return redirect(url_for('pages.index'))
@@ -104,7 +122,7 @@ def logout():
 
 @pages.route('/register', methods=['GET', 'POST'])
 def register():
-    '''strona rejestracji'''
+    """Strona rejestracji."""
     if current_user.is_authenticated:
         return redirect(url_for('pages.index'))
     form_email = EmailForm(request.form)
@@ -113,19 +131,19 @@ def register():
     if request.method == 'POST' and all([x.validate() for x in [form_email, form_pw, form_data]]):
         user = User.query.filter_by(email=form_email.email.data).first()
         if not user:
-            #rejestracja nowego użytkownika
+            # rejestracja nowego użytkownika
             new_user = register_new_user(form_email, form_pw, form_data)
             db.session.add(new_user)
             db.session.commit()
         elif not user.active_user:
-            #zmiana danych użytkownika
+            # zmiana danych użytkownika
             change_user_pw(user, form_pw)
             change_user_data(user, form_data)
             db.session.commit()
         else:
             flash('Podany adres e-mail jest w użyciu!', 'error')
             return redirect(url_for('pages.register'))
-        #wysyłanie e-maila z linkiem do aktywacji
+        # wysyłanie e-maila z linkiem do aktywacji
         register_token = temp_serializer.dumps(form_email.email.data, salt='confirm-email')
         link_url = url_for('pages.confirm_email', register_token=register_token, _external=True)
         common_msg('Aktywacja konta', form_email.email.data, 'register_message', link_url)
@@ -139,8 +157,11 @@ def register():
 
 @pages.route('/confirm_email/<register_token>')
 def confirm_email(register_token):
-    '''strona jest generowana i wysyłana drogą mailową w postaci url, po wejściu status
-    "active_user" zostaje zmieniony z domyślnego False na True co umożliwia zalogowanie'''
+    """Strona do potwierdzania adresu e-mail.
+
+    Jest generowana i wysyłana drogą mailową w postaci url, po wejściu status "active_user" zostaje
+    zmieniony z domyślnego False na True co umożliwia zalogowanie.
+    """
     try:
         email = temp_serializer.loads(register_token, salt='confirm-email', max_age=3600)
         user = User.query.filter_by(email=email).first()
@@ -159,7 +180,7 @@ def confirm_email(register_token):
 @pages.route('/user', methods=['POST', 'GET'])
 @login_required
 def user_page():
-    '''ogólny panel ustawień użytkownika'''
+    """Ogólny panel ustawień użytkownika."""
     graves = Grave.query.filter_by(user_id=current_user.id)
     return render_template('user_page.html', graves=graves)
 
@@ -167,7 +188,7 @@ def user_page():
 @pages.route('/user/password', methods=['POST', 'GET'])
 @login_required
 def user_set_pw():
-    '''zmiana hasła użytkownika'''
+    """Zmiana hasła użytkownika."""
     form_pw = PwForm(request.form)
     form_oldpw = OldPwForm(request.form)
     user = User.query.get(current_user.id)
@@ -175,7 +196,7 @@ def user_set_pw():
         if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'), user.password):
             change_user_pw(user, form_pw)
             db.session.commit()
-            #ponowne zalogowanie - zmiana tokena automatycznie wylogowuje
+            # ponowne zalogowanie - zmiana tokena automatycznie wylogowuje
             login_user(user)
             flash('Hasło zostało prawidłowo zmienione!', 'succes')
             return redirect(url_for('pages.user_page'))
@@ -188,7 +209,7 @@ def user_set_pw():
 @pages.route('/user/data', methods=['POST', 'GET'])
 @login_required
 def user_set_data():
-    '''zmiana danych personalnych użytkownika'''
+    """Zmiana danych personalnych użytkownika."""
     user = User.query.get(current_user.id)
     form_oldpw = OldPwForm(request.form)
     form_data = DataForm(request.form,
@@ -202,7 +223,7 @@ def user_set_data():
     if request.method == 'POST' and all([x.validate() for x in [form_oldpw, form_data]]):
         if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'),
                           User.query.get(current_user.id).password):
-            #zmiana danych użytkownika
+            # zmiana danych użytkownika
             change_user_data(user, form_data)
             db.session.commit()
             flash('Dane zostały prawidłowo zmodyfikowane!', 'succes')
@@ -216,7 +237,7 @@ def user_set_data():
 @pages.route('/admin', methods=['POST', 'GET'])
 @login_required
 def admin():
-    '''panel administratora - wymaga statusu w bazie "admin=True" '''
+    """Panel administratora - wymaga statusu w bazie "admin=True"."""
     if current_user.admin:
         txt = 'cześć adminie'
         return txt
@@ -269,13 +290,7 @@ def delete_grave(grave_id):
     return redirect(url_for('pages.user_page'))
 
 
-@pages.app_errorhandler(401)
-def page_unauthorized(e):
-    '''obsługa erroru 401'''
-    return redirect(url_for('pages.index'))
-
-
 @pages.app_errorhandler(404)
 def page_not_found(e):
-    '''obsługa erroru 404'''
+    """Obsługa erroru 404."""
     return render_template('page_not_found.html')

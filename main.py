@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''plik główny całej aplikacji'''
+"""plik główny całej aplikacji."""
 
-#importy modułów py
+# importy modułów py
 from flask import Flask
 
-#importy nasze
+# importy nasze
 from views import pages, login_manager
 from mail_sending import mail
 from models import db
