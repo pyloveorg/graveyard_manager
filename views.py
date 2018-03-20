@@ -10,7 +10,7 @@ from flask_login import LoginManager, login_user, logout_user, current_user, log
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
 # importy nasze
-from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
+from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm, is_safe_next
 from models import db, User, Grave, Parcel, ParcelType, Family, Payments
 from config import APP
 from data_handling import register_new_user, change_user_data, change_user_pw
@@ -55,12 +55,11 @@ def login():
     form_login = LoginForm(request.form)
     if request.method == 'POST' and form_login.validate():
         user_request = User.query.filter_by(email=form_login.email.data).first()
-        if user_request:
-            if user_request.active_user:
-                if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
-                    login_user(user_request)
-                    flash('Zostałeś poprawnie zalogowany!', 'succes')
-                    return redirect(next) if next else redirect(url_for('pages.index'))
+        if user_request and user_request.active_user:
+            if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
+                login_user(user_request)
+                flash('Zostałeś poprawnie zalogowany!', 'succes')
+                return redirect(next) if is_safe_next(next) else redirect(url_for('pages.index'))
         flash('Niepawidłowy e-mail lub hasło!', 'error')
         return redirect(url_for('pages.login'))
     return render_template('login.html', form_login=form_login)

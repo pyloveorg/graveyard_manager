@@ -5,6 +5,13 @@
 import re
 from wtforms import Form, StringField, PasswordField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to
+from urllib.parse import urlparse
+from flask import request
+
+
+def is_safe_next(next):
+    """Funkcja do weryfikacji parametru next."""
+    return not urlparse(next).netloc
 
 
 class PwForm(Form):
