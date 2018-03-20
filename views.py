@@ -9,6 +9,7 @@ from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from sqlalchemy import func
+import pandas as pd
 
 #importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
@@ -226,8 +227,9 @@ def admin():
     return redirect(url_for('pages.index'))
 
 
-@pages.route('/add_grave', methods=['POST', 'GET'])
-def add_grave():
+@pages.route('/add_grave/ide', methods=['POST', 'GET'])
+def add_grave(ide):
+    p_id = Parcel.query.filter_by(id=ide)
     if request.method == 'POST':
         name = request.form['name']
         last_name = request.form['last_name']
@@ -235,7 +237,7 @@ def add_grave():
         day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
         death_input = request.form['day_of_death']
         day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
-        parcel_id = 1
+        parcel_id = p_id
         new_grave = Grave(user_id=current_user.id,
                           parcel_id=parcel_id,
                           name=name,
