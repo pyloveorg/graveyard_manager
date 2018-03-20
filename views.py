@@ -9,7 +9,6 @@ from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from sqlalchemy import func
-import pandas as pd
 
 #importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm
@@ -227,9 +226,9 @@ def admin():
     return redirect(url_for('pages.index'))
 
 
-@pages.route('/add_grave/ide', methods=['POST', 'GET'])
+@pages.route('/add_grave/<ide>', methods=['POST', 'GET'])
 def add_grave(ide):
-    p_id = Parcel.query.filter_by(id=ide)
+    p_id = Parcel.query.filter_by(id=ide).scalar()
     if request.method == 'POST':
         name = request.form['name']
         last_name = request.form['last_name']
@@ -237,9 +236,8 @@ def add_grave(ide):
         day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
         death_input = request.form['day_of_death']
         day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
-        parcel_id = p_id
         new_grave = Grave(user_id=current_user.id,
-                          parcel_id=parcel_id,
+                          parcel_id=p_id,
                           name=name,
                           last_name=last_name,
                           day_of_birth=day_of_birth,
@@ -247,7 +245,7 @@ def add_grave(ide):
         db.session.add(new_grave)
         db.session.commit()
         return redirect(url_for('pages.user_page'))
-    return render_template('add_grave.html')
+    return render_template('add_grave.html', p_id=p_id)
 
 
 @pages.route('/edit/<grave_id>', methods=['POST', 'GET'])

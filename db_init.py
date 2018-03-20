@@ -21,8 +21,8 @@ def insert_initial_coordinates(max_p):
     '''
     Funkcja generująca koordynaty dla cmentarza o wymiarach min_p * max_p
     '''
-    xvalues = np.arange(1, max_p, 1)
-    yvalues = np.arange(1, max_p, 1)
+    xvalues = np.arange(1, max_p + 1, 1)
+    yvalues = np.arange(1, max_p + 1, 1)
     coordinates = list(itertools.product(xvalues, yvalues))
 
     for pair in coordinates:
@@ -46,6 +46,6 @@ def insert_initial_types():
     db.session.commit()
 
 
-insert_initial_coordinates(11)
+insert_initial_coordinates(20)
 insert_initial_types()
 

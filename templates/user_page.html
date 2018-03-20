@@ -26,35 +26,20 @@
 {% endif %}
 <h3>Wybierz grób do rezerwacji </h3>
 
-<table width="600" bgcolor="white" border="1px">
-
-     <thead>
-      <tr>
-        <th></th>
-          {% for i in range(1, max_p+1) %}
-          <th class="col" width="20" height="20"> {{ i }}</th>
-          {% endfor %}
-      </tr>
-    </thead>
-
-    <tbody>
+<table width="800" bgcolor="white" border="1px">
     {% for j in range(1, max_p+1) %}
       <tr>
-        <th class="row" width="20" height="20"> {{ j }} </th>
           {% for z in range(1, max_p+1) %}
             {% for parcel in parcels %}
                 {% if parcel.position_x == j %}
                     {% if parcel.position_y == z %}
-                        <th> <a href="{{url_for('pages.add_grave', ide=parcel.id)}}">  {{ parcel.id }}  </a> </th>
+                        <th width="40" height="40"> <a href="{{url_for('pages.add_grave', ide=parcel.id)}}">  {{ parcel.id }}  </a> </th>
                     {% endif %}
                 {% endif %}
             {% endfor %}
           {% endfor %}
       </tr>
     {% endfor %}
-    <tbody>
-
-
-  </table>
+</table>
 
 {% endblock %}
