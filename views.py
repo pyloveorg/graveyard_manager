@@ -51,7 +51,7 @@ def login():
     """Strona logowania."""
     if current_user.is_authenticated:
         return redirect(url_for('pages.index'))
-    next = request.args.get('next')
+    next_page = request.args.get('next')
     form_login = LoginForm(request.form)
     if request.method == 'POST' and form_login.validate():
         user_request = User.query.filter_by(email=form_login.email.data).first()
@@ -59,7 +59,8 @@ def login():
             if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
                 login_user(user_request)
                 flash('Zostałeś poprawnie zalogowany!', 'succes')
-                return redirect(next) if is_safe_next(next) else redirect(url_for('pages.index'))
+                return (redirect(next_page) if next_page and is_safe_next(next_page) else
+                        redirect(url_for('pages.index')))
         flash('Niepawidłowy e-mail lub hasło!', 'error')
         return redirect(url_for('pages.login'))
     return render_template('login.html', form_login=form_login)
@@ -199,9 +200,8 @@ def user_set_pw():
             login_user(user)
             flash('Hasło zostało prawidłowo zmienione!', 'succes')
             return redirect(url_for('pages.user_page'))
-        else:
-            flash('Podane hasło jest nieprawidłowe!', 'error')
-            return redirect(url_for('pages.user_set_pw'))
+        flash('Podane hasło jest nieprawidłowe!', 'error')
+        return redirect(url_for('pages.user_set_pw'))
     return render_template('user_settings.html', form_pw=form_pw, form_oldpw=form_oldpw)
 
 

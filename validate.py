@@ -3,15 +3,14 @@
 """Plik do walidacji danych."""
 # importy modułów py
 import re
+from urllib.parse import urlparse
 from wtforms import Form, StringField, PasswordField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to
-from urllib.parse import urlparse
-from flask import request
 
 
-def is_safe_next(next):
+def is_safe_next(next_page):
     """Funkcja do weryfikacji parametru next."""
-    return not urlparse(next).netloc
+    return not urlparse(next_page).netloc
 
 
 class PwForm(Form):
