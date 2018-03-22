@@ -4,9 +4,11 @@
 {% endblock %}
 {% block body %}
 
-<h3>Podaj informacje dotyczące pochowanej osoby: </h3>
+<h3>Podaj informacje dotyczące grobu: </h3>
 
-<form method="post" action="/add_grave">
+Wybrana parcela: {{ p_id }}
+
+<form method="post" action="{{url_for('pages.add_grave', ide=parcel.id)}}">
     Imię:
     <input type="text" name="name">
     Nazwisko:
@@ -17,6 +19,5 @@
     <input type="date" name="day_of_death">
     <button type="submit">Submit</button>
 </form>
-
 
 {% endblock %}

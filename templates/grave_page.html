@@ -1,0 +1,35 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Cmentarz - panel użytkownika</title>
+{% endblock %}
+{% block body %}
+
+<h4>Dane grobu:</h4>
+
+Imię: {{ grave.name }}
+<br>Nazwisko: {{ grave.last_name }}
+<br>Parcela: {{ grave.parcel_id }}
+<br>Data urodzenia: {{ grave.day_of_birth }}
+<br>Data śmierci: {{ grave.day_of_death }}
+<br>Typ parceli:
+<br>Opłacony do:
+
+<br>
+<h4>Edycja danych</h4>
+
+<form method="post" action="{{url_for('pages.grave', grave_id=grave.id)}}">
+    <input type="text" name="edited_name" placeholder="Imię">
+    <input type="text" name="edited_last_name" placeholder="Nazwisko">
+    Data urodzenia: <input type="text" name="edited_birth">
+    Data śmierci: <input type="text" name="edited_death">
+    <button type="submit">Submit</button>
+</form>
+
+<br>
+
+<form method="post" action="{{url_for('pages.delete_grave', grave_id=grave.id)}}">
+    <button type="submit">Usuń grób</button>
+</form>
+
+
+{% endblock %}

@@ -8,6 +8,7 @@ import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from sqlalchemy import func
 
 # importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm, is_safe_next
@@ -182,7 +183,9 @@ def confirm_email(register_token):
 def user_page():
     """Ogólny panel ustawień użytkownika."""
     graves = Grave.query.filter_by(user_id=current_user.id)
-    return render_template('user_page.html', graves=graves)
+    parcels = Parcel.query.all()
+    max_p = db.session.query(func.max(Parcel.position_x)).scalar()
+    return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p)
 
 
 @pages.route('/user/password', methods=['POST', 'GET'])
@@ -243,8 +246,10 @@ def admin():
     return redirect(url_for('pages.index'))
 
 
-@pages.route('/add_grave', methods=['POST', 'GET'])
-def add_grave():
+@pages.route('/add_grave/<ide>', methods=['POST', 'GET'])
+def add_grave(ide):
+    parcel = Parcel.query.filter_by(id=ide).scalar()
+    p_id = parcel.id
     if request.method == 'POST':
         name = request.form['name']
         last_name = request.form['last_name']
@@ -252,9 +257,8 @@ def add_grave():
         day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
         death_input = request.form['day_of_death']
         day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
-        parcel_id = 1
         new_grave = Grave(user_id=current_user.id,
-                          parcel_id=parcel_id,
+                          parcel_id=p_id,
                           name=name,
                           last_name=last_name,
                           day_of_birth=day_of_birth,
@@ -262,23 +266,21 @@ def add_grave():
         db.session.add(new_grave)
         db.session.commit()
         return redirect(url_for('pages.user_page'))
-    return render_template('add_grave.html')
+    return render_template('add_grave.html', p_id=p_id, parcel=parcel)
 
 
-@pages.route('/edit/<grave_id>', methods=['POST', 'GET'])
-def edit_grave(grave_id):
+@pages.route('/grave/<grave_id>', methods=['POST', 'GET'])
+def grave(grave_id):
+    grave = Grave.query.filter_by(id=grave_id).first()
     if request.method == 'POST':
-        grave = Grave.query.filter_by(id=grave_id).first()
         grave.name = request.form['edited_name']
         grave.last_name = request.form['edited_last_name']
         grave.day_of_birth = request.form['edited_birth']
         grave.day_of_death = request.form['edited_death']
-        # post.text = edited_content
-        # post.subject = edited_subject
         db.session.commit()
         return redirect(url_for('pages.user_page'))
 
-    return render_template('edit_grave.html', grave_id=grave_id)
+    return render_template('grave_page.html', grave_id=grave_id, grave=grave)
 
 
 @pages.route('/delete/<grave_id>', methods=['POST'])
