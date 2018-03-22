@@ -21,9 +21,7 @@ print('utworzono bazę danych')
 
 @event.listens_for(Parcel.__table__, 'after_create')
 def insert_initial_coordinates(max_p):
-    '''
-    Funkcja generująca koordynaty dla cmentarza o wymiarach min_p * max_p.
-    '''
+    """Funkcja generująca koordynaty dla cmentarza o wymiarach min_p * max_p."""
     xvalues = np.arange(1, max_p + 1, 1)
     yvalues = np.arange(1, max_p + 1, 1)
     coordinates = list(itertools.product(xvalues, yvalues))
@@ -35,11 +33,10 @@ def insert_initial_coordinates(max_p):
         db.session.add(new_parcel)
         db.session.commit()
 
+
 @event.listens_for(ParcelType.__table__, 'after_create')
 def insert_initial_types():
-    '''
-    Funkcja tworząca dwa typy parceli.
-    '''
+    """Funkcja tworząca dwa typy parceli."""
     border_type = ParcelType(price=100,
                              description='Border position')
     inner_type = ParcelType(price=150,
@@ -51,4 +48,3 @@ def insert_initial_types():
 
 insert_initial_coordinates(20)
 insert_initial_types()
-

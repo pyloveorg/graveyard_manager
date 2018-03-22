@@ -3,6 +3,7 @@
 """Plik z tabelami do SQLAlchemy."""
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
+from config import DB
 
 db = SQLAlchemy()
 
@@ -11,7 +12,7 @@ class User(UserMixin, db.Model):
     """Tabela użytkownika."""
 
     id = db.Column(db.Integer, primary_key=True)
-    active_user = db.Column(db.Boolean, default=True)
+    active_user = db.Column(db.Boolean, default=DB.DEFAULT_ACTIVE_USER)
     token_id = db.Column(db.String(100), unique=True)
     email = db.Column(db.String(63), unique=True, nullable=False)
     password = db.Column(db.String(72), nullable=False)
@@ -64,7 +65,7 @@ class Family(db.Model):
 
 class Payments(db.Model):
     """Tabela dotycząca płatności."""
-    
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     parcel_id = db.Column(db.Integer, db.ForeignKey('parcel.id'), nullable=False)
