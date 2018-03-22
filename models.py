@@ -28,11 +28,11 @@ class User(UserMixin, db.Model):
 class Grave(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    parcel_id = db.Column(db.Integer, db.ForeignKey('parcel.id'), nullable=False)
+    parcel_id = db.Column(db.Integer, db.ForeignKey('parcel.id'), nullable=False, unique=True)
     name = db.Column(db.String(80), nullable=False)
     last_name = db.Column(db.String(120), nullable=False)
-    day_of_birth = db.Column(db.DateTime(), nullable=False)
-    day_of_death = db.Column(db.DateTime(), nullable=True)
+    day_of_birth = db.Column(db.Date(), nullable=False)
+    day_of_death = db.Column(db.Date(), nullable=True)
 
 
 class Parcel(db.Model):

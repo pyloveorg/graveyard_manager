@@ -1,32 +1,31 @@
 {% extends 'layout.html' %}
 {% block head %}
+
 <title>Cmentarz - panel użytkownika</title>
+
 {% endblock %}
+
 {% block body %}
+
 {% include 'flash_msg.html' %}
+
 <a href="{{ url_for('pages.user_set_pw') }}">zmiana hasła</a>
 <br>
 <a href="{{ url_for('pages.user_set_data') }}">zmiana danych personalnych</a>
 
-<h3><a href="{{ url_for('pages.user_page') }}">Moje groby</a> </h3>
-
+<h3>Moje groby</h3>
 {% if graves %}
-{% for grave in graves %}
-<ol>
-    <ul> {{ grave.name }} {{ grave.last_name }} </ul>
-        <form method="get" action="/edit/{{ grave.id }}">
-                <button type="submit">Zmień dane</button>
-        </form>
-        <form method="post" action="/delete/ {{ grave.id }}">
-            <button type="submit">Usuń</button>
-        </form>
-</ol>
-
-{% endfor %}
+    {% for grave in graves %}
+    <ol>
+        <a href="{{url_for('pages.grave', grave_id=grave.id)}}"> {{ grave.name }} {{ grave.last_name }}</a>
+        (parcela: {{ grave.parcel_id }})
+    </ol>
+    {% endfor %}
 {% endif %}
-<h3>Wybierz grób do rezerwacji </h3>
 
-<table width="800" bgcolor="white" border="1px">
+
+<h3>Zarezerwuj nowy grób</h3>
+<table width="800" bgcolor="white" border="1px" align="center">
     {% for j in range(1, max_p+1) %}
       <tr>
           {% for z in range(1, max_p+1) %}

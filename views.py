@@ -228,7 +228,8 @@ def admin():
 
 @pages.route('/add_grave/<ide>', methods=['POST', 'GET'])
 def add_grave(ide):
-    p_id = Parcel.query.filter_by(id=ide).scalar()
+    parcel = Parcel.query.filter_by(id=ide).scalar()
+    p_id = parcel.id
     if request.method == 'POST':
         name = request.form['name']
         last_name = request.form['last_name']
@@ -245,13 +246,15 @@ def add_grave(ide):
         db.session.add(new_grave)
         db.session.commit()
         return redirect(url_for('pages.user_page'))
-    return render_template('add_grave.html', p_id=p_id)
+    return render_template('add_grave.html', p_id=p_id, parcel=parcel)
 
 
-@pages.route('/edit/<grave_id>', methods=['POST', 'GET'])
-def edit_grave(grave_id):
+
+
+@pages.route('/grave/<grave_id>', methods=['POST', 'GET'])
+def grave(grave_id):
+    grave = Grave.query.filter_by(id=grave_id).first()
     if request.method == 'POST':
-        grave = Grave.query.filter_by(id=grave_id).first()
         grave.name = request.form['edited_name']
         grave.last_name = request.form['edited_last_name']
         grave.day_of_birth = request.form['edited_birth']
@@ -259,7 +262,7 @@ def edit_grave(grave_id):
         db.session.commit()
         return redirect(url_for('pages.user_page'))
 
-    return render_template('edit_grave.html', grave_id=grave_id)
+    return render_template('grave_page.html', grave_id=grave_id, grave=grave)
 
 
 @pages.route('/delete/<grave_id>', methods=['POST'])
@@ -268,6 +271,7 @@ def delete_grave(grave_id):
     db.session.delete(grave)
     db.session.commit()
     return redirect(url_for('pages.user_page'))
+
 
 
 @pages.app_errorhandler(401)
