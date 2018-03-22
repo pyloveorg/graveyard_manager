@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-'''utworzenie pliku bazy danych - tylko do jednokrotnego użycia gdy baza danych nie istnieje!!!'''
+"""Utworzenie pliku bazy danych.
 
-#importy nasze
+Uwaga - tylko do jednokrotnego użycia gdy baza danych nie istnieje!!!
+"""
+
+# importy nasze
 from main import app, db
 from models import Parcel, ParcelType
 
-#importy modułów py
+# importy modułów py
 from sqlalchemy import event
 import numpy as np
 import itertools
@@ -19,7 +22,7 @@ print('utworzono bazę danych')
 @event.listens_for(Parcel.__table__, 'after_create')
 def insert_initial_coordinates(max_p):
     '''
-    Funkcja generująca koordynaty dla cmentarza o wymiarach min_p * max_p
+    Funkcja generująca koordynaty dla cmentarza o wymiarach min_p * max_p.
     '''
     xvalues = np.arange(1, max_p + 1, 1)
     yvalues = np.arange(1, max_p + 1, 1)
@@ -35,7 +38,7 @@ def insert_initial_coordinates(max_p):
 @event.listens_for(ParcelType.__table__, 'after_create')
 def insert_initial_types():
     '''
-    Funkcja tworząca dwa typy parceli
+    Funkcja tworząca dwa typy parceli.
     '''
     border_type = ParcelType(price=100,
                              description='Border position')

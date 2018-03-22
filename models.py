@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
+"""Plik z tabelami do SQLAlchemy."""
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 
@@ -7,6 +8,8 @@ db = SQLAlchemy()
 
 
 class User(UserMixin, db.Model):
+    """Tabela użytkownika."""
+
     id = db.Column(db.Integer, primary_key=True)
     active_user = db.Column(db.Boolean, default=True)
     token_id = db.Column(db.String(100), unique=True)
@@ -22,10 +25,13 @@ class User(UserMixin, db.Model):
     admin = db.Column(db.Boolean, default=False)
 
     def get_id(self):
+        """Zmiana domyślnego pobierania id podczas logowania na token."""
         return self.token_id
 
 
 class Grave(db.Model):
+    """Tabela właściwości grobów."""
+
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     parcel_id = db.Column(db.Integer, db.ForeignKey('parcel.id'), nullable=False, unique=True)
@@ -36,6 +42,8 @@ class Grave(db.Model):
 
 
 class Parcel(db.Model):
+    """Tabela odnoszona do Grave - współrzędne grobów."""
+
     id = db.Column(db.Integer, primary_key=True)
     parcel_type_id = db.Column(db.Integer, db.ForeignKey('parcel_type.id'), nullable=False)
     position_x = db.Column(db.Integer, nullable=False)
@@ -55,6 +63,8 @@ class Family(db.Model):
 
 
 class Payments(db.Model):
+    """Tabela dotycząca płatności."""
+    
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     parcel_id = db.Column(db.Integer, db.ForeignKey('parcel.id'), nullable=False)

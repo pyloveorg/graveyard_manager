@@ -1,14 +1,21 @@
 #!/usr/bin/env python3
 # -*- coding: UTF-8 -*-
-'''plik do walidacji danych'''
-#importy modułów py
+"""Plik do walidacji danych."""
+# importy modułów py
 import re
+from urllib.parse import urlparse
 from wtforms import Form, StringField, PasswordField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to
 
 
+def is_safe_next(next_page):
+    """Funkcja do weryfikacji parametru next."""
+    return not urlparse(next_page).netloc
+
+
 class PwForm(Form):
-    '''klasa wtforms do ustalania hasła użytkownika'''
+    """Klasa wtforms do ustalania hasła użytkownika."""
+
     password = PasswordField('Hasło:',
                              [input_required(message='Pole wymagane!'),
                               length(max=72, message='Hasło nie może być dłuższe niż 72 znaki!'),
@@ -17,20 +24,22 @@ class PwForm(Form):
 
 
 class OldPwForm(Form):
-    '''klasa wtforms do weryfikacji aktualnego hasła'''
+    """Klasa wtforms do weryfikacji aktualnego hasła."""
+
     old_password = PasswordField('Aktualne hasło:', [input_required(message='Pole wymagane!')])
 
 
 class DataForm(Form):
-    '''klasa wtforms do ustawiania danych personalnych użytkownika'''
+    """Klasa wtforms do ustawiania danych personalnych użytkownika."""
+
     def digit_or_none(self, field):
-        '''pole musi pozostac puste lub być liczbą'''
+        """Pole musi pozostac puste lub być liczbą."""
         if field.data != '':
             if not field.data.isdigit():
                 raise ValidationError('Niepoprawny numer!')
 
     def zip_code_validator(self, field):
-        '''walidacja kodu pocztowego zgodnie ze standarem polskim "dd-ddd" '''
+        """Walidacja kodu pocztowego zgodnie ze standarem polskim "dd-ddd"."""
         if field.data != '':
             if not re.match(r'^\d\d-\d\d\d$', field.data):
                 raise ValidationError('Niepoprawny kod pocztowy!')
@@ -45,7 +54,8 @@ class DataForm(Form):
 
 
 class EmailForm(Form):
-    '''klasa wtforms do rejestracji użytkownika - ustawianie adresu e-mail'''
+    """Klasa wtforms do rejestracji użytkownika - ustawianie adresu e-mail."""
+
     email = StringField('Adres e-mail:',
                         [input_required(message='Pole wymagane!'),
                          email(message='Niepoprawny adres e-mail!'),
@@ -53,6 +63,7 @@ class EmailForm(Form):
 
 
 class LoginForm(Form):
-    '''klasa wtforms do logowania'''
+    """Klasa wtforms do logowania."""
+
     email = StringField('Adres e-mail', [input_required(message='Pole wymagane!')])
     password = PasswordField('Hasło', [input_required(message='Pole wymagane!')])

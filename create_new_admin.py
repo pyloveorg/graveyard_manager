@@ -1,6 +1,6 @@
 #!usr/bin/env python3
 # -*- coding: utf-8 -*-
-'''plik do tworzenia nowego konta administratora'''
+"""Plik do tworzenia nowego konta administratora."""
 import uuid
 import bcrypt
 from itsdangerous import URLSafeSerializer
