@@ -8,7 +8,7 @@
 
 Wybrana parcela: {{ p_id }}
 
-<form method="post" action="{{url_for('pages.add_grave', ide=parcel.id)}}">
+<form method="post" action="{{url_for('pages.add_grave', p_id=parcel.id)}}">
     Imię:
     <input type="text" name="name">
     Nazwisko:

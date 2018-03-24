@@ -246,27 +246,33 @@ def admin():
     return redirect(url_for('pages.index'))
 
 
-@pages.route('/add_grave/<ide>', methods=['POST', 'GET'])
-def add_grave(ide):
-    parcel = Parcel.query.filter_by(id=ide).scalar()
+@pages.route('/add_grave/<p_id>', methods=['POST', 'GET'])
+def add_grave(p_id):
+    parcel = Parcel.query.filter_by(id=p_id).scalar()
     p_id = parcel.id
-    if request.method == 'POST':
-        name = request.form['name']
-        last_name = request.form['last_name']
-        birth_input = request.form['day_of_birth']
-        day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
-        death_input = request.form['day_of_death']
-        day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
-        new_grave = Grave(user_id=current_user.id,
-                          parcel_id=p_id,
-                          name=name,
-                          last_name=last_name,
-                          day_of_birth=day_of_birth,
-                          day_of_death=day_of_death)
-        db.session.add(new_grave)
-        db.session.commit()
-        return redirect(url_for('pages.user_page'))
-    return render_template('add_grave.html', p_id=p_id, parcel=parcel)
+    parcels_taken = db.session.query(Grave.parcel_id)
+    for pt in parcels_taken:
+        if p_id == pt.parcel_id:
+            flash('Ten parcela jest już zajęta!', 'error')
+            return redirect(url_for('pages.user_page'))
+        else:
+            if request.method == 'POST':
+                name = request.form['name']
+                last_name = request.form['last_name']
+                birth_input = request.form['day_of_birth']
+                day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
+                death_input = request.form['day_of_death']
+                day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
+                new_grave = Grave(user_id=current_user.id,
+                                  parcel_id=p_id,
+                                  name=name,
+                                  last_name=last_name,
+                                  day_of_birth=day_of_birth,
+                                  day_of_death=day_of_death)
+                db.session.add(new_grave)
+                db.session.commit()
+                return redirect(url_for('pages.user_page'))
+            return render_template('add_grave.html', p_id=p_id, parcel=parcel)
 
 
 @pages.route('/grave/<grave_id>', methods=['POST', 'GET'])
@@ -275,10 +281,11 @@ def grave(grave_id):
     if request.method == 'POST':
         grave.name = request.form['edited_name']
         grave.last_name = request.form['edited_last_name']
-        grave.day_of_birth = request.form['edited_birth']
-        grave.day_of_death = request.form['edited_death']
+        edited_birth = request.form['edited_birth']
+        grave.day_of_birth = datetime.datetime.strptime(edited_birth, '%Y-%m-%d')
+        edited_death = request.form['edited_death']
+        grave.day_of_death = datetime.datetime.strptime(edited_death, '%Y-%m-%d')
         db.session.commit()
-        return redirect(url_for('pages.user_page'))
 
     return render_template('grave_page.html', grave_id=grave_id, grave=grave)
 

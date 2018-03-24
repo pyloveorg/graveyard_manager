@@ -18,10 +18,10 @@ Imię: {{ grave.name }}
 <h4>Edycja danych</h4>
 
 <form method="post" action="{{url_for('pages.grave', grave_id=grave.id)}}">
-    <input type="text" name="edited_name" placeholder="Imię">
-    <input type="text" name="edited_last_name" placeholder="Nazwisko">
-    Data urodzenia: <input type="text" name="edited_birth">
-    Data śmierci: <input type="text" name="edited_death">
+    <input type="text" name="edited_name" placeholder="{{ grave.name }}">
+    <input type="text" name="edited_last_name" placeholder="{{ grave.last_name }}">
+    Data urodzenia: <input type="date" name="{{ grave.day_of_birth }}">
+    Data śmierci: <input type="date" name="{{ grave.day_of_death }}">
     <button type="submit">Submit</button>
 </form>
 
