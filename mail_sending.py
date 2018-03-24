@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 """Moduł do obsługi wysyłania e-maili."""
 from flask_mail import Mail, Message
+from config import EMAIL
 
 mail = Mail()
 
@@ -15,7 +16,7 @@ def common_msg(title, send_to, filename, *args):
     *args - parametry dodawane do formatki
     """
     msg = Message(title, recipients=[send_to])
-    with open('static/emails/{}'.format(filename), 'r') as file:
+    with open('{}{}'.format(EMAIL.FILES_PATH, filename), 'r') as file:
         message = file.read().format(*args)
     msg.body = message
     mail.send(msg)
