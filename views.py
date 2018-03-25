@@ -250,30 +250,27 @@ def admin():
 def add_grave(p_id):
     parcel = Parcel.query.filter_by(id=p_id).scalar()
     p_id = parcel.id
-    parcels_taken = db.session.query(Grave.parcel_id)
-    for pt in parcels_taken:
-        if p_id == pt.parcel_id:
-            flash('Ten parcela jest już zajęta!', 'error')
+    if Grave.query.filter_by(parcel_id=p_id).first() is None:
+        if request.method == 'POST':
+            name = request.form['name']
+            last_name = request.form['last_name']
+            birth_input = request.form['day_of_birth']
+            day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
+            death_input = request.form['day_of_death']
+            day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
+            new_grave = Grave(user_id=current_user.id,
+                              parcel_id=p_id,
+                              name=name,
+                              last_name=last_name,
+                              day_of_birth=day_of_birth,
+                              day_of_death=day_of_death)
+            db.session.add(new_grave)
+            db.session.commit()
             return redirect(url_for('pages.user_page'))
-        else:
-            if request.method == 'POST':
-                name = request.form['name']
-                last_name = request.form['last_name']
-                birth_input = request.form['day_of_birth']
-                day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
-                death_input = request.form['day_of_death']
-                day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
-                new_grave = Grave(user_id=current_user.id,
-                                  parcel_id=p_id,
-                                  name=name,
-                                  last_name=last_name,
-                                  day_of_birth=day_of_birth,
-                                  day_of_death=day_of_death)
-                db.session.add(new_grave)
-                db.session.commit()
-                return redirect(url_for('pages.user_page'))
-            return render_template('add_grave.html', p_id=p_id, parcel=parcel)
-
+        return render_template('add_grave.html', p_id=p_id, parcel=parcel)
+    else:
+        flash('Ta parcela jest już zajęta', 'error')
+        return redirect(url_for('pages.user_page'))
 
 @pages.route('/grave/<grave_id>', methods=['POST', 'GET'])
 def grave(grave_id):
