@@ -274,6 +274,9 @@ def add_grave(p_id):
 @pages.route('/grave/<grave_id>', methods=['POST', 'GET'])
 def grave(grave_id):
     grave = Grave.query.filter_by(id=grave_id).first()
+    parcel_grave = Parcel.query.filter_by(id=grave.parcel_id).first()
+    parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
+
     if request.method == 'POST':
         grave.name = request.form['edited_name']
         grave.last_name = request.form['edited_last_name']
@@ -281,7 +284,7 @@ def grave(grave_id):
         grave.day_of_death = datetime.datetime.strptime(request.form['edited_death'], '%Y-%m-%d')
         db.session.commit()
 
-    return render_template('grave_page.html', grave_id=grave_id, grave=grave)
+    return render_template('grave_page.html', grave_id=grave_id, grave=grave, parcel_type=parcel_type)
 
 
 @pages.route('/delete/<grave_id>', methods=['POST'])
