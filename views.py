@@ -254,10 +254,8 @@ def add_grave(p_id):
         if request.method == 'POST':
             name = request.form['name']
             last_name = request.form['last_name']
-            birth_input = request.form['day_of_birth']
-            day_of_birth = datetime.datetime.strptime(birth_input, '%Y-%m-%d')
-            death_input = request.form['day_of_death']
-            day_of_death = datetime.datetime.strptime(death_input, '%Y-%m-%d')
+            day_of_birth = datetime.datetime.strptime(request.form['day_of_birth'], '%Y-%m-%d')
+            day_of_death = datetime.datetime.strptime(request.form['day_of_death'], '%Y-%m-%d')
             new_grave = Grave(user_id=current_user.id,
                               parcel_id=p_id,
                               name=name,
@@ -272,16 +270,15 @@ def add_grave(p_id):
         flash('Ta parcela jest już zajęta', 'error')
         return redirect(url_for('pages.user_page'))
 
+
 @pages.route('/grave/<grave_id>', methods=['POST', 'GET'])
 def grave(grave_id):
     grave = Grave.query.filter_by(id=grave_id).first()
     if request.method == 'POST':
         grave.name = request.form['edited_name']
         grave.last_name = request.form['edited_last_name']
-        edited_birth = request.form['edited_birth']
-        grave.day_of_birth = datetime.datetime.strptime(edited_birth, '%Y-%m-%d')
-        edited_death = request.form['edited_death']
-        grave.day_of_death = datetime.datetime.strptime(edited_death, '%Y-%m-%d')
+        grave.day_of_birth = datetime.datetime.strptime(request.form['edited_birth'], '%Y-%m-%d')
+        grave.day_of_death = datetime.datetime.strptime(request.form['edited_death'], '%Y-%m-%d')
         db.session.commit()
 
     return render_template('grave_page.html', grave_id=grave_id, grave=grave)
