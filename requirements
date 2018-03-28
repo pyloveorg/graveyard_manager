@@ -1,9 +1,0 @@
-Flask
-Flask-Login
-Flask-Mail
-SQLAlchemy
-Flask-SQLAlchemy
-bcrypt
-itsdangerous
-WTForms
-Jinja2
