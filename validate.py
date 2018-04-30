@@ -19,14 +19,16 @@ class PwForm(Form):
     password = PasswordField('Hasło:',
                              [input_required(message='Pole wymagane!'),
                               length(max=72, message='Hasło nie może być dłuższe niż 72 znaki!'),
-                              equal_to('repeat_password', message='Hasła nie są identyczne!')])
-    repeat_password = PasswordField('Powtórz hasło:')
+                              equal_to('repeat_password', message='Hasła nie są identyczne!')],
+                             render_kw={'placeholder': 'hasło'})
+    repeat_password = PasswordField('Powtórz hasło:', render_kw={'placeholder': 'powtórz hasło'})
 
 
 class OldPwForm(Form):
     """Klasa wtforms do weryfikacji aktualnego hasła."""
 
-    old_password = PasswordField('Aktualne hasło:', [input_required(message='Pole wymagane!')])
+    old_password = PasswordField('Aktualne hasło:', [input_required(message='Pole wymagane!')],
+                                 render_kw={'placeholder': 'aktualne hasło'})
 
 
 class DataForm(Form):
@@ -44,13 +46,16 @@ class DataForm(Form):
             if not re.match(r'^\d\d-\d\d\d$', field.data):
                 raise ValidationError('Niepoprawny kod pocztowy!')
 
-    name = StringField('Imię:', [length(max=80)])
-    last_name = StringField('Nazwisko:', [length(max=120)])
-    city = StringField('Miasto:', [length(max=80)])
-    zip_code = StringField('Kod pocztowy:', [zip_code_validator])
-    street = StringField('Ulica:', [length(max=150)])
-    house_number = StringField('Numer domu:', [digit_or_none])
-    flat_number = StringField('Numer mieszkania:', [digit_or_none])
+    name = StringField('Imię:', [length(max=80)], render_kw={'placeholder': 'imię'})
+    last_name = StringField('Nazwisko:', [length(max=120)], render_kw={'placeholder': 'nazwisko'})
+    city = StringField('Miasto:', [length(max=80)], render_kw={'placeholder': 'miasto'})
+    zip_code = StringField('Kod pocztowy:', [zip_code_validator],
+                           render_kw={'placeholder': 'kod pocztowy'})
+    street = StringField('Ulica:', [length(max=150)], render_kw={'placeholder': 'ulica'})
+    house_number = StringField('Numer domu:', [digit_or_none],
+                               render_kw={'placeholder': 'nr domu'})
+    flat_number = StringField('Numer mieszkania:', [digit_or_none],
+                              render_kw={'placeholder': 'nr mieszkania'})
 
 
 class EmailForm(Form):
@@ -59,11 +64,14 @@ class EmailForm(Form):
     email = StringField('Adres e-mail:',
                         [input_required(message='Pole wymagane!'),
                          email(message='Niepoprawny adres e-mail!'),
-                         length(max=63, message='Adres e-mail przekracza 63 znaki!')])
+                         length(max=63, message='Adres e-mail przekracza 63 znaki!')],
+                        render_kw={'placeholder': 'adres e-mail'})
 
 
 class LoginForm(Form):
     """Klasa wtforms do logowania."""
 
-    email = StringField('Adres e-mail', [input_required(message='Pole wymagane!')])
-    password = PasswordField('Hasło', [input_required(message='Pole wymagane!')])
+    email = StringField('Adres e-mail', [input_required(message='Pole wymagane!')],
+                        render_kw={'placeholder': 'adres e-mail'})
+    password = PasswordField('Hasło', [input_required(message='Pole wymagane!')],
+                             render_kw={'placeholder': 'hasło'})
