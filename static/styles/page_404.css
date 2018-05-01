@@ -19,15 +19,15 @@ body {
     font-size: 20px;
 }
 
-/* animacja */
-@keyframes death_move {
-    from {margin-left: 0px;}
-    to {margin-left: 1200px;}
-}
-
 /* wygląd i rozmiar ducha */
 #death {
     width: 70px;
     height: 70px;
-    animation: death_move 6s normal forwards;
+    animation: death_move 5s 1 linear forwards;
+}
+
+/* animacja */
+@keyframes death_move {
+    from {margin-left: 0px;opacity:0;}
+    to {margin-left: 1200px;opacity:1;}
 }
