@@ -60,6 +60,7 @@ def login():
             if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
                 login_user(user_request)
                 flash('Zostałeś poprawnie zalogowany!', 'succes')
+                # sprawdza czy adres url + query string nie były zmodyfikowane
                 return (redirect(next_page) if next_page and is_safe_next(next_page) else
                         redirect(url_for('pages.index')))
         flash('Niepawidłowy e-mail lub hasło!', 'error')
@@ -107,6 +108,7 @@ def recovery_password(pw_token):
         common_msg('Nowe hasło', user.email, 'new_password', new_pw)
         flash('Nowe hasło zostało wysłane na twój e-mail.', 'succes')
         return redirect(url_for('pages.login'))
+    # wyjątek gdy link jest zmodyfikowany, wykorzystany lub przestarzały
     except (SignatureExpired, BadSignature, AttributeError):
         flash('Podany link jest nieaktywny!', 'error')
         return redirect(url_for('pages.index'))
@@ -225,7 +227,7 @@ def user_set_data():
     if request.method == 'POST' and all([x.validate() for x in [form_oldpw, form_data]]):
         if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'),
                           User.query.get(current_user.id).password):
-            # zmiana danych użytkownika
+            # zmiana danych użytkownika - funkcja importowana z data_handling.py
             change_user_data(user, form_data)
             db.session.commit()
             flash('Dane zostały prawidłowo zmodyfikowane!', 'succes')
