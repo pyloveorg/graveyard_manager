@@ -1,0 +1,26 @@
+.flash_message {
+    margin: 150px 250px 0px 250px;
+    position: fixed;
+    z-index: 100;
+    min-width: 500px;
+    height: 70px;
+    text-align: center;
+    line-height: 70px;
+    font-size: 20px;
+    color: white;
+    border-radius: 35px;
+    padding: 5px;
+    animation: hide_message 3s 3s 1 linear forwards;
+
+}
+.flash_message--error {
+    background-color: #f1000b;
+}
+
+.flash_message--succes {
+    background-color: #44ff24;
+}
+
+@keyframes hide_message {
+    100% {opacity: 0; z-index: -1;}
+}

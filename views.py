@@ -298,4 +298,4 @@ def delete_grave(grave_id):
 @pages.app_errorhandler(404)
 def page_not_found(e):
     """Obsługa erroru 404."""
-    return render_template('page_not_found.html')
+    return render_template('page_404.html')
