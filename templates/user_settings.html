@@ -13,11 +13,12 @@
 {% block body %}
 {% include 'flash_msg.html' %}
     {% from "_formhelpers.html" import render_field %}
-    <form method=post>
+    <form method=post onsubmit="return validate1()">
         <div id="register_box">
             {% if request.url_rule.endpoint == 'pages.register' %}
                 <div class="input_category">Dane wymagane do rejestracji:</div>
                 <div>{{ render_field(form_email.email, class="input_field") }}</div>
+                <div class="error_msg" id="email_field_error"></div>
             {% endif %}
 
             {% if request.url_rule.endpoint == 'pages.user_set_pw' %}
