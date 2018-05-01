@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="description" content="Strona prywatna cmentarza xyz" />
     <meta name="keywords" content="śmierć, zgon, trumna, cmentarz, pogrzeb, grób, groby" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}"/>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/flash_messages.css') }}"/>
-    <script type="text/javascript" src="{{ url_for('static', filename='scripts/temp_messages.js') }} "></script>
+    {% include 'styles_to_include.html' %}
     {% block head %}{% endblock %}
 </head>
 <body>

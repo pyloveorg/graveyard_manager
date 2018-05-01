@@ -1,7 +1,6 @@
 {% for msg_type, div_id in [('succes', 'flash_message--succes'), ('error', 'flash_message--error')] %}
     {% with message = get_flashed_messages(category_filter = [msg_type])[0] %}
         {% if message %}
-            <!-- <script type="text/javascript">start_counting("{{ div_id }}");</script> -->
             <div class="flash_message {{ div_id }}">
                 {{ message }}
             </div>
