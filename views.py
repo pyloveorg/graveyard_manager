@@ -158,6 +158,17 @@ def register():
                            form_data=form_data)
 
 
+@pages.route('/process', methods=['POST'])
+def ajax_process():
+    """Adres do komunikacji frontendu (ajax) z backendem (i bazą danych)."""
+    email = request.form.get('email')
+    email_in_db = User.query.filter_by(email=email).first()
+    print(email_in_db)
+    if email_in_db:
+        return 'reserved'
+    return 'none'
+
+
 @pages.route('/confirm_email/<register_token>')
 def confirm_email(register_token):
     """Strona do potwierdzania adresu e-mail.
