@@ -25,8 +25,8 @@ if (emailField) {
         else {
             var emailPattern = /\b[a-z0-9-_.]*@[a-z0-9-_.]*\.[a-z0-9-_.]*\b/
             if (emailPattern.test(emailField.value)){
-                // tutaj komunikacja z bazą danych
-                document.getElementById('email_field_error').innerHTML = ""
+                // do sprawdzenia preventDefault() podobno zatrzyma zwracanie undefined ;)
+                // checkEmailInDB('email', 'email', '/process');
                 return true;
             }
             else {

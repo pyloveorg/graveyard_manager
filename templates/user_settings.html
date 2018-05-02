@@ -21,6 +21,7 @@
 <!-- input do podania emaila -->
 <div>{{ render_field(form_email.email, class="input_field") }}</div>
 <div class="error_msg" id="email_field_error"></div>
+<div class="succes_msg" id="email_field_succes"></div>
 {% endif %}
 
 {% if request.url_rule.endpoint == 'pages.user_set_pw' %}
