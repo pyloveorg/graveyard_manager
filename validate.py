@@ -53,9 +53,10 @@ class DataForm(Form):
                            render_kw={'placeholder': 'kod pocztowy'})
     street = StringField('Ulica:', [length(max=150)], render_kw={'placeholder': 'ulica'})
     house_number = StringField('Numer domu:', [digit_or_none],
-                               render_kw={'placeholder': 'nr domu'})
+                               render_kw={'placeholder': 'nr domu', 'type': 'number', 'min': 1})
     flat_number = StringField('Numer mieszkania:', [digit_or_none],
-                              render_kw={'placeholder': 'nr mieszkania'})
+                              render_kw={'placeholder': 'nr mieszkania', 'type': 'number', 'min': 1}
+                              )
 
 
 class EmailForm(Form):

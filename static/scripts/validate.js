@@ -1,7 +1,7 @@
 function validate(){
     var fields = {email: validateEmail,
                   repeat_password: validatePassword,
-                  test: testowa
+                  zip_code: validateZipCode
               }
                   // 'name', 'last_name', 'city', 'zip_code', 'street', 'house_number', 'flat_number'}
     var func_return = true;
@@ -42,7 +42,9 @@ var passwordField = document.getElementById('password');
 var passwordRepeatField = document.getElementById('repeat_password');
 if (passwordField && passwordRepeatField){
     function validatePassword(){
-        passwordField.addEventListener('blur', validatePassword);
+        if (this.id == 'repeat_password'){
+            passwordField.addEventListener('blur', validatePassword);
+        }
         if (passwordField.value == "" || passwordRepeatField == ""){
             document.getElementById('pw_field_error').innerHTML = "Oba pola wymagane!"
             return false;
@@ -57,49 +59,24 @@ if (passwordField && passwordRepeatField){
     passwordRepeatField.addEventListener('blur', validatePassword);
 }
 
-// walidacja imienia
-var nameField = document.getElementById('name');
-if (nameField){
-    // dokonczyc walidacje
-}
-
-// walidacja nazwiska
-var lastNameField = document.getElementById('last_name');
-if (lastNameField){
-    // dokonczyc walidacje
-}
-
-// walidacja miasta
-var cityField = document.getElementById('city');
-if (cityField){
-    // dokonczyc walidacje
-}
 
 // walidacja kodu pocztowego
 var zipCodeField = document.getElementById('zip_code');
 if (zipCodeField){
-    // dokonczyc walidacje
-}
-
-// walidacja ulicy
-var streetField = document.getElementById('street');
-if (streetField){
-    // dokonczyc walidacje
-}
-
-// walidacja numeru domu
-var houseNumberField = document.getElementById('house_number');
-if (houseNumberField){
-    // dokonczyc walidacje
-}
-
-// walidacja numeru mieszkania
-var flatNumberField = document.getElementById('flat_number');
-if (flatNumberField){
-    // dokonczyc walidacje
-}
-
-var test = document.getElementById('testowohej')
-function testowa(){
-    alert('funkcja testowa');
+    function validateZipCode(){
+        if (zipCodeField.value == ""){
+            document.getElementById('zip_code_field_error').innerHTML = ""
+            return true;
+        }
+        var zipCodePattern = /\b\d\d-\d\d\d\b/;
+        var func_return = zipCodePattern.test(zipCodeField.value);
+        if (func_return) {
+            document.getElementById('zip_code_field_error').innerHTML = ""
+        }
+        else {
+            document.getElementById('zip_code_field_error').innerHTML = "Niepoprawny kod pocztowy!"
+        }
+        return func_return;
+    }
+    zipCodeField.addEventListener('change', validateZipCode);
 }
