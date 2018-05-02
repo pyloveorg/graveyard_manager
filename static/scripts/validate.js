@@ -3,7 +3,6 @@ function validate(){
                   repeat_password: validatePassword,
                   zip_code: validateZipCode
               }
-                  // 'name', 'last_name', 'city', 'zip_code', 'street', 'house_number', 'flat_number'}
     var func_return = true;
     for (i in Object.keys(fields)){
         if (document.getElementById(Object.keys(fields)[i])){
@@ -22,14 +21,17 @@ if (emailField) {
     function validateEmail(){
         if (emailField.value == ""){
             document.getElementById('email_field_error').innerHTML = "Pole wymagane!"
-
-        }
-        else if (emailField.value == "xyz"){
-            document.getElementById('email_field_error').innerHTML = "Nieprawidłowy adres e-mail!"
         }
         else {
-            document.getElementById('email_field_error').innerHTML = ""
-            return true;
+            var emailPattern = /\b[a-z0-9-_.]*@[a-z0-9-_.]*\.[a-z0-9-_.]*\b/
+            if (emailPattern.test(emailField.value)){
+                // tutaj komunikacja z bazą danych
+                document.getElementById('email_field_error').innerHTML = ""
+                return true;
+            }
+            else {
+                document.getElementById('email_field_error').innerHTML = "Niepoprawny adres e-mail!"
+            }
         }
         return false;
     }
