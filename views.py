@@ -163,7 +163,6 @@ def ajax_process():
     """Adres do komunikacji frontendu (ajax) z backendem (i bazą danych)."""
     email = request.form.get('email')
     email_in_db = User.query.filter_by(email=email).first()
-    print(email_in_db)
     if email_in_db:
         return 'reserved'
     return 'none'
