@@ -248,16 +248,6 @@ def user_set_data():
     return render_template('user_settings.html', form_oldpw=form_oldpw, form_data=form_data)
 
 
-@pages.route('/admin', methods=['POST', 'GET'])
-@login_required
-def admin():
-    """Panel administratora - wymaga statusu w bazie "admin=True"."""
-    if current_user.admin:
-        txt = 'cześć adminie'
-        return txt
-    return redirect(url_for('pages.index'))
-
-
 @pages.route('/add_grave/<p_id>', methods=['POST', 'GET'])
 def add_grave(p_id):
     parcel = Parcel.query.filter_by(id=p_id).scalar()
