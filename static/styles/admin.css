@@ -8,17 +8,12 @@
     background-color: #555655;
 }
 
-span.show_or_hide {
-    display: block;
-    float: right;
-    margin-right: 20px;
-}
-
 .admin_option_box {
     width: 696px;
     min-height: 400px;
     margin: 0px 150px 10px 150px;
     border: 2px solid #555655;
+    display: none;
 }
 
 .general_text_inputs {

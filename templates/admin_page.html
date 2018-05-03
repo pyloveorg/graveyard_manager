@@ -5,7 +5,7 @@
 {% endblock %}
 {% block body %}
 {% include 'flash_msg.html' %}
-<div id="new_post" class="select_action_button"><span>Dodaj nowy komunikat na stronę główną</span><span class="show_or_hide">&darr;</span></div>
+<div id="new_post" class="select_action_button"><span>Dodaj nowy komunikat na stronę główną</span></div>
 <div id="new_post_box" class="admin_option_box">
     <form action="">
         <input class="general_text_inputs post_header" name="post_header" type="text">
@@ -16,10 +16,23 @@
 </div>
 
 <div id="new_email" class="select_action_button">
-    <span>Wysyłanie wiadomości e-mail do wszystkich użytkowników</span><span class="show_or_hide">&darr;</span></div>
+    <span>Wysyłanie wiadomości e-mail do wszystkich użytkowników</span></div>
+    <div id="new_email_box" class="admin_option_box">
+        <form action="">
+            <input class="general_text_inputs post_header" name="post_header" type="text">
+            <textarea class="general_text_inputs post_content" name="post_content"></textarea>
+            <input class="send_data"type="button" value="Wyślij">
+        </form>
+    </div>
 
+<div id="new_necrology" class="select_action_button"><span>Dodaj nowy nekrolog</span></div>
+<div id="new_necrology_box" class="admin_option_box">
+    <form action="">
+        <input class="general_text_inputs post_header" name="post_header" type="text">
+        <textarea class="general_text_inputs post_content" name="post_content"></textarea>
+        <input class="send_data"type="button" value="Wyślij">
+    </form>
+</div>
 
-<div id="new_necrology" class="select_action_button"><span>Dodaj nowy nekrolog</span><span class="show_or_hide">&darr;</span></div>
-
-<div id="" class="select_action_button"><span>???</span><span class="show_or_hide">&darr;</span></div>
+<div id="" class="select_action_button"><span>???</span></div>
 {% endblock %}
