@@ -1,8 +1,7 @@
-.select_action_button {
+.admin_option_button {
     width: 700px;
     height: 30px;
     margin: 20px 150px 0px 150px;
-    clear: both;
     text-align: center;
     line-height: 30px;
     background-color: #555655;
@@ -16,25 +15,22 @@
     display: none;
 }
 
-.general_text_inputs {
+.admin_option_box > form > .text_input {
     border: 1px solid #555655;
     border-radius: 5px;
+    width: 600px;
+    margin: 5px 48px 5px 48px;
     color: black;
+    display: block;
 }
 
-textarea.post_content {
-    display: block;
-    width: 600px;
-    margin: 0px 48px 5px 48px;
+.admin_option_box > form > textarea {
     height: 300px;
     resize: none;
 }
 
-input.post_header {
-    display: block;
-    width: 600px;
+.admin_option_box > form > .post_header {
     height: 20px;
-    margin: 5px 48px 5px 48px;
 }
 
 .check_option {
