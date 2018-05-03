@@ -9,7 +9,7 @@
     <div id="login_box">
         <form method="post">
             <div class="input_category">Aby zalogować, podaj adres e-mail i hasło:</div>
-            <div>{{ render_field(form_login.email, class="input_field") }}</div>
+            <div>{{ render_field(form_login.email_login, class="input_field") }}</div>
             <div>{{ render_field(form_login.password, class="input_field") }}</div>
             <input class ="log_reg_button" type=submit value="Zaloguj">
             <a class="small_redirect_text" href="{{url_for('pages.register')}}">Nie masz konta? Zarejestruj się!</a>

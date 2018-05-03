@@ -55,7 +55,7 @@ def login():
     next_page = request.args.get('next')
     form_login = LoginForm(request.form)
     if request.method == 'POST' and form_login.validate():
-        user_request = User.query.filter_by(email=form_login.email.data).first()
+        user_request = User.query.filter_by(email=form_login.email_login.data).first()
         if user_request and user_request.active_user:
             if bcrypt.checkpw(form_login.password.data.encode('UTF_8'), user_request.password):
                 login_user(user_request)

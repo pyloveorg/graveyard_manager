@@ -72,7 +72,7 @@ class EmailForm(Form):
 class LoginForm(Form):
     """Klasa wtforms do logowania."""
 
-    email = StringField('Adres e-mail', [input_required(message='Pole wymagane!')],
-                        render_kw={'placeholder': 'adres e-mail'})
+    email_login = StringField('Adres e-mail', [input_required(message='Pole wymagane!')],
+                              render_kw={'placeholder': 'adres e-mail'})
     password = PasswordField('Hasło', [input_required(message='Pole wymagane!')],
                              render_kw={'placeholder': 'hasło'})
