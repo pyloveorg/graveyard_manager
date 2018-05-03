@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Plik zawierający funkcje renderowanych stron dla administratora."""
 
-from flask import Blueprint, redirect, url_for
+from flask import Blueprint, redirect, url_for, render_template
 from flask_login import current_user, login_required
 
 pages_admin = Blueprint('pages_admin', __name__)
@@ -24,5 +24,4 @@ def admin_required(func):
 @admin_required
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
-    txt = 'cześć adminie'
-    return txt
+    return render_template('admin_page.html')
