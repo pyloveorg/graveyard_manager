@@ -24,6 +24,7 @@ class User(UserMixin, db.Model):
     house_number = db.Column(db.Integer)
     flat_number = db.Column(db.Integer)
     admin = db.Column(db.Boolean, default=False)
+    comments = db.relationship('Comments', cascade='all, delete-orphan', lazy='dynamic')
 
     def get_id(self):
         """Zmiana domyślnego pobierania id podczas logowania na token."""
@@ -74,3 +75,23 @@ class Payments(db.Model):
     payment_amount = db.Column(db.Float, nullable=False)
     amount_paid = db.Column(db.Float, nullable=False)
     payment_date = db.Column(db.DateTime(), nullable=False)
+
+
+class Messages(db.Model):
+    """Tabela przechowująca posty administratora na stronę główną."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+    comments = db.relationship('Comments', cascade='all, delete-orphan', lazy='dynamic')
+
+
+class Comments(db.Model):
+    """Tabela do przechowywania komentarzy dla postów na głównej stronie."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.Text, nullable=False)
+    comment_date = db.Column(db.DateTime(), nullable=False)
+    message = db.Column(db.Integer, db.ForeignKey('messages.id'))
+    user = db.Column(db.Integer, db.ForeignKey('user.id'))

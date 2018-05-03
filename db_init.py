@@ -18,7 +18,7 @@ app.app_context().push()
 db.create_all()
 print('utworzono bazę danych')
 
-
+print('tworzenie danych dodatkowych')
 @event.listens_for(Parcel.__table__, 'after_create')
 def insert_initial_coordinates(max_p):
     """Funkcja generująca koordynaty dla cmentarza o wymiarach 1 x max_p."""
@@ -56,3 +56,4 @@ def insert_initial_types():
 
 insert_initial_coordinates(20)
 insert_initial_types()
+print('zakonczono cały proces :)')
