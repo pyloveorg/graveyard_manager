@@ -44,9 +44,20 @@ def admin():
     return render_template('admin_page.html')
 
 
-@pages_admin.route('/message/<message_id>/edit')
+@pages_admin.route('/message/<message_id>/edit', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def message_edit(message_id):
-    post = Messages.query.get_or_404(message_id)
-    return 'post do edycji nr: {}'.format(message_id)
+    message = Messages.query.get_or_404(message_id)
+    if request.method == 'POST':
+        post_title = request.form.get('post_header', False)
+        post_content = request.form.get('post_content', False)
+        if post_title and post_content:
+            message.title = post_title
+            message.content = post_content
+            db.session.commit()
+            flash('Wiadomość zmodyfikowano pomyślnie!', 'succes')
+        else:
+            flash('Nieprawidłowe dane', 'error')
+        return redirect(url_for('pages.index'))
+    return render_template('message_edit.html', message=message)
