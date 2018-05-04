@@ -44,9 +44,9 @@ def admin():
     return render_template('admin_page.html')
 
 
-@pages_admin.route('/admin/postedit/<post_id>')
-# @login_required
-# @admin_required
-def edit_post(post_id):
-    post = Messages.query.get_or_404(post_id)
-    return 'post do edycji nr: {}'.format(post_id)
+@pages_admin.route('/message/<message_id>/edit')
+@login_required
+@admin_required
+def message_edit(message_id):
+    post = Messages.query.get_or_404(message_id)
+    return 'post do edycji nr: {}'.format(message_id)

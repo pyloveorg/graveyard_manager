@@ -38,7 +38,8 @@ def handle_needs_login():
     po zalogowaniu powrót na stronę żądaną.
     """
     flash('Musisz się najpierw zalogować!', 'error')
-    return redirect(url_for('pages.login', next=url_for(request.endpoint)))
+    return redirect(url_for('pages.login', next=request.path))
+
 
 
 @pages.route('/')

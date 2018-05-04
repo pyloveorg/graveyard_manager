@@ -24,7 +24,7 @@
     {% for info in infos %}
 <div class="info_on_main_page">
     {% if current_user.admin %}
-    <a href="{{url_for('pages_admin.edit_post', post_id=info.id)}}">
+    <a href="{{url_for('pages_admin.message_edit', message_id=info.id)}}">
         <img id="postedit{{ info.id }}" class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
     </a>
     {% endif %}
