@@ -41,3 +41,9 @@
     margin-left: 48px;
     display: block;
 }
+
+.warning {
+    font-weight: bold;
+    color: #cc2233;
+    padding-left: 50px;
+}

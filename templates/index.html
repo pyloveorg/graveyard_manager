@@ -24,8 +24,11 @@
     {% for info in infos %}
 <div class="info_on_main_page">
     {% if current_user.admin %}
+    <a href="{{url_for('pages_admin.message_delete', message_id=info.id)}}">
+        <img class="delete_icon" src="{{ url_for('static', filename='pictures/delete_icon.png') }}" alt="usuwanie">
+    </a>
     <a href="{{url_for('pages_admin.message_edit', message_id=info.id)}}">
-        <img id="postedit{{ info.id }}" class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
+        <img class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
     </a>
     {% endif %}
     <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>

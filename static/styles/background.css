@@ -59,3 +59,10 @@ body {
     width: 30px;
     height: 30px;
 }
+
+.delete_icon {
+    display: block;
+    float: right;
+    width: 30px;
+    height: 30px;
+}
