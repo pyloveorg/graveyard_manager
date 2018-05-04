@@ -23,57 +23,16 @@
 {% if infos %}
     {% for info in infos %}
 <div class="info_on_main_page">
+    {% if current_user.admin %}
+    <a href="#"><img id="postedit{{ info.id }}" class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja"></a>
+    {% endif %}
     <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>
     <p class="admin_msg">{{ info.content }}</p>
-    <div class="comments_section">komentarze</div>
+    <!-- <div id="comment_button_{{info.id}}" class="comments_section_button">komentarze</div> -->
     <div class="small_txt_info">Data utworzenia: {{info.create_date.strftime('%Y-%m-%d %H:%M:%S')}}</div>
-
 </div>
+<!-- <div class="comments_section_box"></div> -->
     {% endfor %}
 {% endif %}
 <div id="test"></div>
-<div class="info_on_main_page">
-    <h2>Aktualność testowa</h2>
-    <p>
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in pharetra elit. Ut viverra
-        nisi fermentum metus facilisis laoreet. Ut sit amet lacus eget risus accumsan dapibus
-        fringilla a justo. Ut ornare magna non mauris tristique, eu consequat magna tincidunt.
-        Vestibulum molestie diam nulla, vel dignissim orci varius convallis. Donec eleifend varius
-        massa vitae ornare. Nulla a felis mattis, dapibus arcu vitae, congue tellus. Donec
-        consectetur lacus orci, a euismod nisl molestie eget. Praesent a semper sapien. Suspendisse
-        eu sem eu purus mollis fermentum quis sed enim. Nam ac orci tellus.
-    </p>
-    <p>
-        Nam a augue scelerisque, auctor dolor quis, hendrerit metus. In ornare facilisis lacus, in
-        varius elit. Nullam leo neque, placerat quis orci sed, porttitor sollicitudin neque. Aenean
-        hendrerit, lectus vel imperdiet egestas, orci lorem facilisis dolor, ac convallis turpis
-        nibh sit amet tellus. Duis a consequat odio, quis iaculis dui. Aliquam vulputate leo ac
-        odio mollis, sed hendrerit velit volutpat. Integer eget nulla orci. Proin sit amet finibus
-        purus. Praesent varius neque non ante pretium pharetra. Donec facilisis ipsum et mi iaculis,
-        ac pretium odio tempor. Donec augue ex, malesuada sit amet faucibus eu, lacinia et libero.
-        Vestibulum porta pharetra varius. Orci varius natoque penatibus et magnis dis parturient
-        montes, nascetur ridiculus mus.
-    </p>
-</div>
-<div class="info_on_main_page">
-    <h2>Aktualność testowa</h2>
-    <p>
-        Sed fringilla ligula eu velit fermentum pretium. Sed efficitur facilisis sem a congue.
-        Nullam consectetur, tellus eget fringilla maximus, libero felis porttitor augue, sed
-        placerat sapien lectus eget est. In congue convallis leo in laoreet. Nullam est magna,
-        lacinia sed cursus sed, elementum quis ipsum. Nulla sagittis purus risus, sit amet lacinia
-        ipsum gravida at. Aenean ex purus, condimentum posuere rhoncus gravida, consectetur eget
-        sem. Aenean blandit posuere justo, quis mattis arcu cursus eu. Donec vel ultrices dui.
-        Quisque tincidunt a lorem ornare porttitor. Quisque volutpat, ipsum sit amet imperdiet
-        malesuada, sem libero tristique urna, eget venenatis dui odio vel tellus. Mauris dignissim
-        elit nibh, nec eleifend libero iaculis at.
-    </p>
-    <p>
-        Donec fringilla sit amet eros eu pellentesque. In hendrerit auctor nisi, eu egestas magna
-        aliquet et. Aenean id ligula felis. Orci varius natoque penatibus et magnis dis parturient
-        montes, nascetur ridiculus mus. Sed augue elit, ullamcorper a neque ut, congue sagittis ex.
-        Nulla libero dui, finibus id metus eget, ullamcorper hendrerit massa. Fusce mattis eleifend
-        ornare. Fusce auctor neque viverra est rutrum pretium.
-    </p>
-</div>
 {% endblock %}
