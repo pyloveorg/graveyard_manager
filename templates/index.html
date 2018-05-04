@@ -20,6 +20,16 @@
 <div class="info_on_main_page">
     <h2>Aktualności:</h2>
 </div>
+{% if infos %}
+    {% for info in infos %}
+<div class="info_on_main_page">
+    <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>
+    <p class="admin_msg">{{ info.content }}</p>
+    <div class="small_txt_info">Data utworzenia: {{info.create_date.strftime('%Y-%m-%d %H:%M:%S')}}</div>
+</div>
+    {% endfor %}
+{% endif %}
+<div id="test"></div>
 <div class="info_on_main_page">
     <h2>Aktualność testowa</h2>
     <p>

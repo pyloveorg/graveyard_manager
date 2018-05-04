@@ -25,3 +25,13 @@ body {
     width: 35px;
     height: 35px;
 }
+
+.info_on_main_page > p.admin_msg {
+    white-space: pre-wrap;
+}
+
+.small_txt_info {
+    font-size: 11px;
+    text-align: left;
+    padding: 0px 0px 4px 4px;
+}
