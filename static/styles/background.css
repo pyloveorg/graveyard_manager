@@ -12,6 +12,7 @@ body {
     margin-right: auto;
 }
 
+/* messages on index page with comment section */
 .info_on_main_page {
     width: 95%;
     min-height: 50px;
@@ -19,6 +20,7 @@ body {
     margin-top: 15px;
     border: 3px solid #666666;
     text-align: center;
+    clear: both;
 }
 
 .candle {
@@ -33,5 +35,12 @@ body {
 .small_txt_info {
     font-size: 11px;
     text-align: left;
-    padding: 0px 0px 4px 4px;
+    padding: 4px;
+    width: 230px;
+}
+
+.comments_section {
+    padding: 2px 4px 2px 2px;
+    float: right;
+    cursor: pointer;
 }

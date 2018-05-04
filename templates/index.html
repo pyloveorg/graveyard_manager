@@ -25,7 +25,9 @@
 <div class="info_on_main_page">
     <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>
     <p class="admin_msg">{{ info.content }}</p>
+    <div class="comments_section">komentarze</div>
     <div class="small_txt_info">Data utworzenia: {{info.create_date.strftime('%Y-%m-%d %H:%M:%S')}}</div>
+
 </div>
     {% endfor %}
 {% endif %}
