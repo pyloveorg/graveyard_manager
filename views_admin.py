@@ -2,8 +2,12 @@
 # -*- coding: utf-8 -*-
 """Plik zawierający funkcje renderowanych stron dla administratora."""
 
-from flask import Blueprint, redirect, url_for, render_template, request
+from flask import Blueprint, redirect, url_for, render_template, request, flash
 from flask_login import current_user, login_required
+import datetime
+
+from models import db, Messages, Comments
+from data_handling import add_new_post
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -25,6 +29,16 @@ def admin_required(func):
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
     if request.method == 'POST':
-        # obsługa eventów powodowanych przez admina w panelu
-        pass
+        # parametry dodania nowego posta
+        post_title = request.form.get('post_header', False)
+        post_content = request.form.get('post_content', False)
+        if post_title and post_content:
+            # funkcja w data_handling
+            new_message = add_new_post(post_title, post_content, datetime.datetime.now())
+            db.session.add(new_message)
+            db.session.commit()
+            flash('Dodawanie wiadomości zakończone powodzeniem!', 'succes')
+        else:
+            flash('Nieprawidłowe dane', 'error')
+        return redirect(url_for('pages_admin.admin'))
     return render_template('admin_page.html')

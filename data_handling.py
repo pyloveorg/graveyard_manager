@@ -9,7 +9,7 @@ from itsdangerous import URLSafeSerializer
 
 # importy nasze
 from config import APP
-from models import User
+from models import User, Messages, Comments
 
 serializer = URLSafeSerializer(APP.APP_KEY)
 
@@ -50,3 +50,11 @@ def change_user_data(user, form_data):
     user.street = form_data.street.data
     user.house_number = form_data.house_number.data
     user.flat_number = form_data.flat_number.data
+
+
+def add_new_post(title, content, current_date):
+    """Funkcja dodająca nowy post administratora."""
+    new_message = Messages(title=title,
+                           content=content,
+                           create_date=current_date)
+    return new_message

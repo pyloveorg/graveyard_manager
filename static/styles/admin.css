@@ -5,6 +5,7 @@
     text-align: center;
     line-height: 30px;
     background-color: #555655;
+    cursor: pointer;
 }
 
 .admin_option_box {
