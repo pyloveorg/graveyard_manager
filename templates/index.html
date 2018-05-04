@@ -24,7 +24,9 @@
     {% for info in infos %}
 <div class="info_on_main_page">
     {% if current_user.admin %}
-    <a href="#"><img id="postedit{{ info.id }}" class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja"></a>
+    <a href="{{url_for('pages_admin.edit_post', post_id=info.id)}}">
+        <img id="postedit{{ info.id }}" class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
+    </a>
     {% endif %}
     <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>
     <p class="admin_msg">{{ info.content }}</p>

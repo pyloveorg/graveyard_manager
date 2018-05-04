@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """Plik zawierający funkcje renderowanych stron dla administratora."""
 
-from flask import Blueprint, redirect, url_for, render_template, request, flash
+from flask import Blueprint, redirect, url_for, render_template, request, flash, abort
 from flask_login import current_user, login_required
 import datetime
 
@@ -17,7 +17,7 @@ def admin_required(func):
     def wrapper(*args, **kwargs):
         if current_user.admin:
             return func(*args, **kwargs)
-        return redirect(url_for('pages.index'))
+        return abort(404)
     # musi być zmieniona nazwa - wynika to z samego flaska a nie konstrukcji dekoratora
     wrapper.__name__ = func.__name__
     return wrapper
@@ -42,3 +42,11 @@ def admin():
             flash('Nieprawidłowe dane', 'error')
         return redirect(url_for('pages_admin.admin'))
     return render_template('admin_page.html')
+
+
+@pages_admin.route('/admin/postedit/<post_id>')
+# @login_required
+# @admin_required
+def edit_post(post_id):
+    post = Messages.query.get_or_404(post_id)
+    return 'post do edycji nr: {}'.format(post_id)
