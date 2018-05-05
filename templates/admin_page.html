@@ -10,7 +10,7 @@
 <div id="new_post_box" class="admin_option_box">
     <form method="POST">
         <input class="text_input post_header" name="post_header" placeholder="Nagłówek" type="text" required>
-        <textarea class="text_input" name="post_content" placeholder="Tekst wiadomości" required></textarea>
+        <textarea class="text_input" name="post_content" placeholder="Treść wiadomości" required></textarea>
         <input class="send_data" type="submit" value="Utwórz">
     </form>
 </div>
@@ -19,8 +19,8 @@
     <span>Wysyłanie wiadomości e-mail do wszystkich użytkowników</span></div>
     <div id="new_email_box" class="admin_option_box">
         <form method="POST">
-            <input class="text_input post_header" name="email_title" type="text">
-            <textarea class="text_input" name="email_content"></textarea>
+            <input class="text_input post_header" name="email_title" type="text" placeholder="Tytuł wiadomości e-mail">
+            <textarea class="text_input" name="email_content" placeholder="Treść wiadomości"></textarea>
             <input class="send_data" type="submit" value="Wyślij">
         </form>
     </div>
@@ -28,8 +28,17 @@
 <div id="new_obituary" class="admin_option_button"><span>Dodaj nowy nekrolog</span></div>
 <div id="new_obituary_box" class="admin_option_box">
     <form method="POST">
-        <input class="text_input post_header" name="post_header" type="text">
-        <textarea class="text_input" name="post_content"></textarea>
+        <input class="text_input post_header" name="name" type="text" placeholder="Imię" required>
+        <input class="text_input post_header" name="surnamename" type="text" placeholder="Nazwisko" required>
+        <input class="text_input post_header" name="death_year" type="text" placeholder="Zmarł w roku" required>
+        <input class="text_input post_header" name="death_month" type="text" placeholder="Zmarł w miesiącu" required>
+        <input class="text_input post_header" name="death_day" type="text" placeholder="Zmarł w dniu miesiąca" required>
+        <input class="text_input post_header" name="year_old" type="text" placeholder="Zmarł w wieku" required>
+        <input class="text_input post_header" name="funeral_year" type="text" placeholder="Pogrzeb - rok ceremonii" required>
+        <input class="text_input post_header" name="funeral_month" type="text" placeholder="Pogrzeb - miesiąc ceremonii" required>
+        <input class="text_input post_header" name="funeral_day" type="text" placeholder="Pogrzeb - dzień miesiąca ceremonii" required>
+        <input class="text_input post_header" name="funeral_hour" type="text" placeholder="Pogrzeb - godzina ceremonii" required>
+        <input class="text_input post_header" name="funeral_minute" type="text" placeholder="Pogrzeb - minuta ceremonii" required>
         <input class="send_data" type="submit" value="Wyślij">
     </form>
 </div>
