@@ -95,3 +95,14 @@ class Comments(db.Model):
     comment_date = db.Column(db.DateTime(), nullable=False)
     message = db.Column(db.Integer, db.ForeignKey('messages.id'))
     user = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+
+class Obituaries(db.Model):
+    """Tabela do przechowywania nekrologów."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    surname = db.Column(db.String(120), nullable=False)
+    years_old = db.Column(db.Integer)
+    death_date = db.Column(db.DateTime(), nullable=False)
+    funeral_date = db.Column(db.DateTime(), nullable=False)

@@ -6,7 +6,7 @@ from flask import Blueprint, redirect, url_for, render_template, request, flash,
 from flask_login import current_user, login_required
 import datetime
 
-from models import db, User, Messages, Comments
+from models import db, User, Messages, Comments, Obituaries
 from mail_sending import msg_to_all_users
 
 pages_admin = Blueprint('pages_admin', __name__)
@@ -29,11 +29,24 @@ def admin_required(func):
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
     if request.method == 'POST':
-        # parametry z formularzy na stronie administratora
+        # parametry z formularza nowej wiadomości
         post_title = request.form.get('post_header', False)
         post_content = request.form.get('post_content', False)
+        # parametry z formularza wiadomości email
         email_title = request.form.get('email_title', False)
         email_content = request.form.get('email_content', False)
+        # parametry z formularza dla nowego nekrologu
+        name = request.form.get('name', False)
+        surname = request.form.get('surname', False)
+        death_year = request.form.get('death_year', False)
+        death_month = request.form.get('death_month', False)
+        death_day = request.form.get('death_day', False)
+        years_old = request.form.get('years_old', False)
+        funeral_year = request.form.get('funeral_year', False)
+        funeral_month = request.form.get('funeral_month', False)
+        funeral_day = request.form.get('funeral_day', False)
+        funeral_hour = request.form.get('funeral_hour', False)
+        funeral_minute = request.form.get('funeral_minute', False)
         if post_title and post_content:
             # dodawanie nowej wiadomości na stronę główną
             new_message = Messages(title=post_title,
@@ -47,6 +60,25 @@ def admin():
             users = User.query.filter_by(active_user=True)
             msg_to_all_users(email_title, email_content, users)
             flash('Wysyłanie wiadomości zakończone!', 'succes')
+        elif all([name, surname, death_year, death_month, death_day, years_old, funeral_year,
+                  funeral_month, funeral_day, funeral_hour, funeral_minute]):
+            # dodawanie nowego nekrologu
+            try:
+                new_obituary = Obituaries(name=name,
+                                          surname=surname,
+                                          years_old=int(years_old),
+                                          death_date=datetime.datetime(year=int(death_year),
+                                                                       month=int(death_month),
+                                                                       day=int(death_day)),
+                                          funeral_date=datetime.datetime(year=int(funeral_year),
+                                                                         month=int(funeral_month),
+                                                                         day=int(funeral_day),
+                                                                         hour=int(funeral_hour),
+                                                                         minute=int(funeral_hour)))
+                db.session.add(new_obituary)
+                db.session.commit()
+            except TypeError:
+                flash('Nieprawidłowe dane', 'error')
         else:
             flash('Nieprawidłowe dane', 'error')
         return redirect(url_for('pages_admin.admin'))
