@@ -1,0 +1,17 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Panel Administratora</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin.css') }}"/>
+{% endblock %}
+{% block body %}
+{% include 'flash_msg.html' %}
+{% for obit in obits %}
+<div style="border: 1px solid black;">
+    <p>Imię: {{obit.name}}</p>
+    <p>Nazwisko: {{obit.surname}}</p>
+    <p>Wiek: {{obit.years_old}}</p>
+    <p>Zmarł: {{obit.death_date}}</p>
+    <p>Pogrzeb: {{obit.funeral_date}}</p>
+</div>
+{% endfor %}
+{% endblock %}

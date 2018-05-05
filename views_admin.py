@@ -74,7 +74,7 @@ def admin():
                                                                          month=int(funeral_month),
                                                                          day=int(funeral_day),
                                                                          hour=int(funeral_hour),
-                                                                         minute=int(funeral_hour)))
+                                                                         minute=int(funeral_minute)))
                 db.session.add(new_obituary)
                 db.session.commit()
             except TypeError:
