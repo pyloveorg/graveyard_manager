@@ -20,3 +20,14 @@ def common_msg(title, send_to, filename, *args):
         message = file.read().format(*args)
     msg.body = message
     mail.send(msg)
+
+
+def msg_to_all_users(subject, message, users):
+    with mail.connect() as conn:
+        for user in users:
+            message = message
+            subject = subject
+            msg = Message(recipients=[user.email],
+                          body=message,
+                          subject=subject)
+            conn.send(msg)

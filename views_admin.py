@@ -6,7 +6,8 @@ from flask import Blueprint, redirect, url_for, render_template, request, flash,
 from flask_login import current_user, login_required
 import datetime
 
-from models import db, Messages, Comments
+from models import db, User, Messages, Comments
+from mail_sending import msg_to_all_users
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -28,17 +29,24 @@ def admin_required(func):
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
     if request.method == 'POST':
-        # parametry dodania nowego posta
+        # parametry z formularzy na stronie administratora
         post_title = request.form.get('post_header', False)
         post_content = request.form.get('post_content', False)
-        print(request.form)
+        email_title = request.form.get('email_title', False)
+        email_content = request.form.get('email_content', False)
         if post_title and post_content:
+            # dodawanie nowej wiadomości na stronę główną
             new_message = Messages(title=post_title,
                                    content=post_content,
                                    create_date=datetime.datetime.now())
             db.session.add(new_message)
             db.session.commit()
             flash('Dodawanie wiadomości zakończone powodzeniem!', 'succes')
+        elif email_title and email_content:
+            # wysyłanie wiadomości do wszystkich aktywowanych użytkowników
+            users = User.query.filter_by(active_user=True)
+            msg_to_all_users(email_title, email_content, users)
+            flash('Wysyłanie wiadomości zakończone!', 'succes')
         else:
             flash('Nieprawidłowe dane', 'error')
         return redirect(url_for('pages_admin.admin'))
@@ -49,6 +57,7 @@ def admin():
 @login_required
 @admin_required
 def message_edit(message_id):
+    """Edycja zamieszczonych wiadomości na stronie głównej."""
     message = Messages.query.get_or_404(message_id)
     if request.method == 'POST':
         post_title = request.form.get('post_header', False)
@@ -68,6 +77,7 @@ def message_edit(message_id):
 @login_required
 @admin_required
 def message_delete(message_id):
+    """Usuwanie wiadomości wyświetlanej na stronie głównej."""
     message = Messages.query.get_or_404(message_id)
     if request.method == 'POST':
         db.session.delete(message)
