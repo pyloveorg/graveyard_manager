@@ -1,0 +1,49 @@
+.admin_option_button {
+    width: 700px;
+    height: 30px;
+    margin: 20px 150px 0px 150px;
+    text-align: center;
+    line-height: 30px;
+    background-color: #555655;
+    cursor: pointer;
+}
+
+.admin_option_box {
+    width: 696px;
+    min-height: 400px;
+    margin: 0px 150px 10px 150px;
+    border: 2px solid #555655;
+    display: none;
+}
+
+.admin_option_box > form > .text_input {
+    border: 1px solid #555655;
+    border-radius: 5px;
+    width: 600px;
+    margin: 5px 48px 5px 48px;
+    color: black;
+    display: block;
+}
+
+.admin_option_box > form > textarea {
+    height: 300px;
+    resize: none;
+}
+
+.admin_option_box > form > .post_header {
+    height: 20px;
+}
+
+.check_option {
+    margin-left: 48px;
+}
+.send_data {
+    margin-left: 48px;
+    display: block;
+}
+
+.warning {
+    font-weight: bold;
+    color: #cc2233;
+    padding-left: 50px;
+}

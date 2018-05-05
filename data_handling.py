@@ -9,7 +9,7 @@ from itsdangerous import URLSafeSerializer
 
 # importy nasze
 from config import APP
-from models import User
+from models import User, Messages, Comments
 
 serializer = URLSafeSerializer(APP.APP_KEY)
 

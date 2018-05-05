@@ -36,6 +36,7 @@ if (emailField) {
                 document.getElementById('email_field_error').innerHTML = "Niepoprawny adres e-mail!"
             }
         }
+        document.getElementById('email_field_succes').innerHTML = ""
         return false;
     }
     emailField.addEventListener('blur', validateEmail);

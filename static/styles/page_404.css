@@ -16,6 +16,7 @@
 
 /* wygląd i rozmiar ducha */
 #death {
+    display: block;
     width: 70px;
     height: 70px;
     animation: death_move 5s 1 linear forwards;
@@ -24,5 +25,5 @@
 /* animacja */
 @keyframes death_move {
     from {margin-left: 0px;opacity:0;}
-    to {margin-left: 1200px;opacity:1;}
+    to {margin-left: 900px;opacity:1;}
 }

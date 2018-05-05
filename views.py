@@ -12,7 +12,7 @@ from sqlalchemy import func
 
 # importy nasze
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm, is_safe_next
-from models import db, User, Grave, Parcel, ParcelType, Family, Payments
+from models import db, User, Grave, Parcel, ParcelType, Family, Payments, Messages
 from config import APP
 from data_handling import register_new_user, change_user_data, change_user_pw
 from mail_sending import common_msg
@@ -38,13 +38,15 @@ def handle_needs_login():
     po zalogowaniu powrót na stronę żądaną.
     """
     flash('Musisz się najpierw zalogować!', 'error')
-    return redirect(url_for('pages.login', next=url_for(request.endpoint)))
+    return redirect(url_for('pages.login', next=request.path))
+
 
 
 @pages.route('/')
 def index():
     """Renderowanie strony głównej."""
-    return render_template('index.html')
+    messages_to_display = Messages.query.order_by(Messages.create_date.desc())
+    return render_template('index.html', infos=messages_to_display)
 
 
 @pages.route('/login', methods=['GET', 'POST'])

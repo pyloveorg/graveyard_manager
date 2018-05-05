@@ -4,49 +4,40 @@
 {% endblock %}
 {% block body %}
 {% include 'flash_msg.html' %}
-<p>
-    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc bibendum arcu nec orci vestibulum,
-    pharetra tempus nibh eleifend. Interdum et malesuada fames ac ante ipsum primis in faucibus. Ut
-    eget leo elit. Donec placerat purus gravida, dapibus justo at, consequat sapien. Suspendisse
-    maximus, erat sit amet imperdiet scelerisque, orci dui consectetur quam, vitae rhoncus ex sem
-    vitae ante. Quisque pretium magna vitae quam volutpat posuere. Nullam in lectus et tellus
-    pretium dictum cursus in urna. Curabitur est neque, euismod non quam eu, eleifend vulputate ex.
-    Nam facilisis, lectus non bibendum egestas, lacus urna tincidunt mauris, ac luctus risus libero
-    quis dui. Aliquam venenatis auctor velit, in elementum lacus elementum sit amet. Vestibulum id
-    rutrum nunc. Morbi id vehicula mi, id porta odio. Nulla eu elit nec massa hendrerit gravida eget
-    eu ipsum. Nunc mi massa, blandit vitae risus non, interdum convallis nisl. Pellentesque vel
-    nisl est.
-</p>
-<p>
-    Sed at efficitur odio. Quisque gravida nisl diam, vel auctor metus elementum quis.
-    Curabitur ac ex et risus euismod tempus. Cras ullamcorper elit nec sagittis molestie.
-    Ut pretium bibendum tellus vestibulum convallis. Proin malesuada lorem ut mi iaculis, at
-    imperdiet dolor hendrerit. Vivamus sed leo sed eros suscipit mattis. Aliquam eget sagittis
-    lectus. Nulla facilisi. In ultrices metus ut nunc accumsan, a vestibulum leo hendrerit. Nunc
-    condimentum malesuada justo mollis lacinia.
-</p>
-<p>
-    Nunc luctus, magna at pulvinar tristique, lectus ipsum rhoncus ligula, vitae lobortis augue
-    dolor sed leo. Vivamus molestie, dolor ut molestie molestie, sem purus maximus augue, sit amet
-    feugiat est erat ut velit. Curabitur rhoncus non sem id facilisis. Suspendisse ut mauris arcu.
-    Cras pulvinar enim eu felis interdum semper. Ut sagittis nulla in tincidunt ultricies. Cras
-    rhoncus lacus vitae dapibus feugiat. Nunc ornare nisi eleifend finibus tempus. Pellentesque vel
-    eros at magna ornare egestas. Sed malesuada lacinia orci, nec laoreet eros tincidunt a. Duis
-    pellentesque odio est, condimentum posuere libero vulputate efficitur. Etiam lobortis diam dui,
-    id facilisis sapien commodo id.
-</p>
-<p>
-    Pellentesque posuere purus nec dui pulvinar, sit amet blandit turpis posuere. Fusce aliquam
-    magna quis mollis congue. Pellentesque porta rhoncus lectus id commodo. Donec pretium blandit
-    dictum. Pellentesque fringilla commodo finibus. Suspendisse ut enim ut mauris consequat pretium.
-    Duis tincidunt urna lectus, non accumsan mi pulvinar vitae. Nunc ut porttitor augue. Fusce
-    fringilla malesuada felis sed pulvinar. Donec tincidunt justo et laoreet vestibulum.
-</p>
-<p>
-   Phasellus rhoncus, ante sit amet tincidunt ullamcorper, ligula urna mollis erat, vel consectetur
-    lorem quam et ex. Nullam ut mattis justo. Vivamus laoreet eget velit eget consequat. Nam sed
-    velit vel ex ultrices maximus. In eu hendrerit eros. Morbi molestie a augue ac sollicitudin.
-    Morbi iaculis magna quis bibendum rutrum. Vestibulum iaculis dignissim lobortis. Donec sodales
-    dapibus enim eu bibendum.
-</p>
+<div class="info_on_main_page">
+    <p>
+        <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> Witamy na stronie cmentarza XYZ!</h2>
+    </p>
+    <p>
+        W naszym serwisie znajdą Państwo wszystkie informacje dotyczące naszego cmentarza.
+        W celu wykorzystania wszystkich możliwości naszej strony proponujemy bardzo prostą
+        rejestrację.
+    </p>
+    <p>
+        W razie pytań lub jakichkolwiek wątpliwości prosimy o kontakt.
+    </p>
+</div>
+<div class="info_on_main_page">
+    <h2>Aktualności:</h2>
+</div>
+{% if infos %}
+    {% for info in infos %}
+<div class="info_on_main_page">
+    {% if current_user.admin %}
+    <a href="{{url_for('pages_admin.message_delete', message_id=info.id)}}">
+        <img class="delete_icon" src="{{ url_for('static', filename='pictures/delete_icon.png') }}" alt="usuwanie">
+    </a>
+    <a href="{{url_for('pages_admin.message_edit', message_id=info.id)}}">
+        <img class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
+    </a>
+    {% endif %}
+    <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>
+    <p class="admin_msg">{{ info.content }}</p>
+    <!-- <div id="comment_button_{{info.id}}" class="comments_section_button">komentarze</div> -->
+    <div class="small_txt_info">Data utworzenia: {{info.create_date.strftime('%Y-%m-%d %H:%M:%S')}}</div>
+</div>
+<!-- <div class="comments_section_box"></div> -->
+    {% endfor %}
+{% endif %}
+<div id="test"></div>
 {% endblock %}
