@@ -41,17 +41,22 @@ def handle_needs_login():
     return redirect(url_for('pages.login', next=request.path))
 
 
-
 @pages.route('/')
 def index():
     """Renderowanie strony głównej."""
     messages_to_display = Messages.query.order_by(Messages.create_date.desc())
     return render_template('index.html', infos=messages_to_display)
 
+
 @pages.route('/obituaries')
 def obituaries():
-    obits = Obituaries.query.all()
+    """Wyświatlanie nekrologów uporządkowane datami i tylko aktualne."""
+    today_date = datetime.datetime.now() - datetime.timedelta(hours=4)
+    print(today_date)
+    obits = Obituaries.query.order_by(Obituaries.funeral_date.asc()).filter(
+        Obituaries.funeral_date >= today_date)
     return render_template('obituaries.html', obits=obits)
+
 
 @pages.route('/login', methods=['GET', 'POST'])
 def login():
