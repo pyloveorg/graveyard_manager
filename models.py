@@ -103,6 +103,8 @@ class Obituaries(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
+    # gender: True = man, False = woman
+    gender = db.Column(db.Boolean, default=True)
     years_old = db.Column(db.Integer)
     death_date = db.Column(db.DateTime(), nullable=False)
     funeral_date = db.Column(db.DateTime(), nullable=False)

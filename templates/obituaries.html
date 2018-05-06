@@ -7,11 +7,10 @@
 {% include 'flash_msg.html' %}
 {% for obit in obits %}
 <div style="border: 1px solid black;">
-    <p>Imię: {{obit.name}}</p>
-    <p>Nazwisko: {{obit.surname}}</p>
-    <p>Wiek: {{obit.years_old}}</p>
-    <p>Zmarł: {{obit.death_date}}</p>
-    <p>Pogrzeb: {{obit.funeral_date}}</p>
+    <p>Ś.P. {{obit.name}} {{obit.surname}}</p>
+    <p>{% if obit.gender %}Zmarł{% else %}Zmarła{% endif %} w wieku {{obit.years_old}}</p>
+    <p>dnia {{obit.death_date.strftime('%Y-%m-%d')}}</p>
+    <p>Pogrzeb odbędzie się dnia {{obit.funeral_date.strftime('%Y-%m-%d')}} o godzinie {{obit.funeral_date.strftime('%H:%M')}}</p>
 </div>
 {% endfor %}
 {% endblock %}

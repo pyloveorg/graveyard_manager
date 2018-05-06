@@ -42,6 +42,7 @@ def admin():
         death_month = request.form.get('death_month', False)
         death_day = request.form.get('death_day', False)
         years_old = request.form.get('years_old', False)
+        gender = request.form.get('gender', True)
         funeral_year = request.form.get('funeral_year', False)
         funeral_month = request.form.get('funeral_month', False)
         funeral_day = request.form.get('funeral_day', False)
@@ -63,6 +64,7 @@ def admin():
         elif all([name, surname, death_year, death_month, death_day, years_old, funeral_year,
                   funeral_month, funeral_day, funeral_hour, funeral_minute]):
             # dodawanie nowego nekrologu
+            gender = True if gender == 'man' else False
             try:
                 new_obituary = Obituaries(name=name,
                                           surname=surname,
@@ -70,6 +72,7 @@ def admin():
                                           death_date=datetime.datetime(year=int(death_year),
                                                                        month=int(death_month),
                                                                        day=int(death_day)),
+                                          gender=gender,
                                           funeral_date=datetime.datetime(year=int(funeral_year),
                                                                          month=int(funeral_month),
                                                                          day=int(funeral_day),
