@@ -77,7 +77,8 @@ def admin():
                                                                          month=int(funeral_month),
                                                                          day=int(funeral_day),
                                                                          hour=int(funeral_hour),
-                                                                         minute=int(funeral_minute)))
+                                                                         minute=int(funeral_minute))
+                                          )
                 db.session.add(new_obituary)
                 db.session.commit()
             except TypeError:
@@ -120,3 +121,37 @@ def message_delete(message_id):
         flash('Wiadomość została usunięta pomyślnie!', 'succes')
         return redirect(url_for('pages.index'))
     return render_template('message_delete.html', message=message)
+
+
+# @pages_admin.route('/obituary/<obituary_id>/edit', methods=['GET', 'POST'])
+# @login_required
+# @admin_required
+# def message_edit(obituary_id):
+#     """Edycja zamieszczonych nekrologów na stronie głównej."""
+#     obituary = Obituaries.query.get_or_404(obituary_id)
+#     if request.method == 'POST':
+#         post_title = request.form.get('post_header', False)
+#         post_content = request.form.get('post_content', False)
+#         if post_title and post_content:
+#             message.title = post_title
+#             message.content = post_content
+#             db.session.commit()
+#             flash('Wiadomość zmodyfikowano pomyślnie!', 'succes')
+#         else:
+#             flash('Nieprawidłowe dane', 'error')
+#         return redirect(url_for('pages.index'))
+#     return render_template('message_edit.html', obituary=obituary)
+
+
+@pages_admin.route('/obituary/<obituary_id>/delete', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def obituary_delete(obituary_id):
+    """Usuwanie nekrologu wyświetlanej na stronie."""
+    obituary = Obituaries.query.get_or_404(obituary_id)
+    if request.method == 'POST':
+        db.session.delete(obituary)
+        db.session.commit()
+        flash('Nekrolog został usunięty pomyślnie!', 'succes')
+        return redirect(url_for('pages.index'))
+    return render_template('obituary_delete.html', obituary=obituary)

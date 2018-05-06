@@ -52,7 +52,6 @@ def index():
 def obituaries():
     """Wyświatlanie nekrologów uporządkowane datami i tylko aktualne."""
     today_date = datetime.datetime.now() - datetime.timedelta(hours=4)
-    print(today_date)
     obits = Obituaries.query.order_by(Obituaries.funeral_date.asc()).filter(
         Obituaries.funeral_date >= today_date)
     return render_template('obituaries.html', obits=obits)

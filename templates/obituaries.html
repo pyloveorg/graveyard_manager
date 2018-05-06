@@ -6,11 +6,23 @@
 {% block body %}
 {% include 'flash_msg.html' %}
 {% for obit in obits %}
-<div style="border: 1px solid black;">
-    <p>Ś.P. {{obit.name}} {{obit.surname}}</p>
-    <p>{% if obit.gender %}Zmarł{% else %}Zmarła{% endif %} w wieku {{obit.years_old}}</p>
-    <p>dnia {{obit.death_date.strftime('%Y-%m-%d')}}</p>
-    <p>Pogrzeb odbędzie się dnia {{obit.funeral_date.strftime('%Y-%m-%d')}} o godzinie {{obit.funeral_date.strftime('%H:%M')}}</p>
+<div class="outside_border">
+    <div class="inside_border">
+        {% if current_user.admin %}
+        <a href="{{url_for('pages_admin.obituary_delete', obituary_id=obit.id)}}">
+            <img class="delete_icon" src="{{ url_for('static', filename='pictures/delete_icon.png') }}" alt="usuwanie">
+        </a>
+        <a href="#">
+            <img class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
+        </a>
+        {% endif %}
+        <div><img class="cross_icon" src="{{ url_for('static', filename='pictures/cross.png') }}" alt="krzyz"></div>
+        <p>Z przykrością zawiadamiamy, że dnia {{obit.death_date.strftime('%Y-%m-%d')}}<br />
+            {% if obit.gender %}Zmarł{% else %}Zmarła{% endif %} w wieku {{obit.years_old}} lat:</p>
+        <p class="obituary_name">Ś.P. {{obit.name}} {{obit.surname}}</p>
+        <p>Pogrzeb odbędzie się dnia {{obit.funeral_date.strftime('%Y-%m-%d')}} o godzinie {{obit.funeral_date.strftime('%H:%M')}}
+            <br />w kościele przy cmentarzu XYZ</p>
+    </div>
 </div>
 {% endfor %}
 {% endblock %}
