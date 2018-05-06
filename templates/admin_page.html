@@ -30,15 +30,13 @@
     <form method="POST">
         <input class="text_input post_header" name="name" type="text" placeholder="Imię" required>
         <input class="text_input post_header" name="surname" type="text" placeholder="Nazwisko" required>
-        <input class="text_input post_header" name="death_year" type="number" min="2000" max="2100" placeholder="Zmarł w roku" required>
-        <input class="text_input post_header" name="death_month" type="number" min="1" max="12" placeholder="Zmarł w miesiącu" required>
-        <input class="text_input post_header" name="death_day" type="number" min="1" max="31" placeholder="Zmarł w dniu miesiąca" required>
+        <div class="check_option">Data śmierci:</div>
+        <input class="text_input post_header" name="death_date" type="date" required>
         <input class="text_input post_header" name="years_old" type="number" min="0" max="150" placeholder="Zmarł w wieku" required>
-        <input class="text_input post_header" name="funeral_year" type="number" min="2000" max="2100" placeholder="Pogrzeb - rok ceremonii" required>
-        <input class="text_input post_header" name="funeral_month" type="number" min="1" max="12" placeholder="Pogrzeb - miesiąc ceremonii" required>
-        <input class="text_input post_header" name="funeral_day" type="number" min="1" max="31" placeholder="Pogrzeb - dzień miesiąca ceremonii" required>
-        <input class="text_input post_header" name="funeral_hour" type="number" min="0" max="23" placeholder="Pogrzeb - godzina ceremonii" required>
-        <input class="text_input post_header" name="funeral_minute" type="number" min="0" max="59" placeholder="Pogrzeb - minuta ceremonii" required>
+        <div class="check_option">Data pogrzebu:</div>
+        <input class="text_input post_header" name="funeral_date" type="date" required>
+        <div class="check_option">Godzina pogrzebu:</div>
+        <input class="text_input post_header" name="funeral_time" type="time" required>
         <input class="check_option" type="radio" name="gender" value="man" checked> Mężczyzna
         <input type="radio" name="gender" value="woman"> Kobieta
         <input class="send_data" type="submit" value="Wyślij">
