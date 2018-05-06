@@ -72,6 +72,7 @@ def admin():
                                       funeral_date=funeral_date)
             db.session.add(new_obituary)
             db.session.commit()
+            flash('Dodano nowy nekrolog!', 'succes')
         else:
             flash('Nieprawidłowe dane', 'error')
         return redirect(url_for('pages_admin.admin'))
