@@ -113,24 +113,38 @@ def message_delete(message_id):
     return render_template('message_delete.html', message=message)
 
 
-# @pages_admin.route('/obituary/<obituary_id>/edit', methods=['GET', 'POST'])
-# @login_required
-# @admin_required
-# def obituary_edit(obituary_id):
-#     """Edycja zamieszczonych nekrologów na stronie głównej."""
-#     obituary = Obituaries.query.get_or_404(obituary_id)
-#     if request.method == 'POST':
-#         post_title = request.form.get('post_header', False)
-#         post_content = request.form.get('post_content', False)
-#         if post_title and post_content:
-#             message.title = post_title
-#             message.content = post_content
-#             db.session.commit()
-#             flash('Wiadomość zmodyfikowano pomyślnie!', 'succes')
-#         else:
-#             flash('Nieprawidłowe dane', 'error')
-#         return redirect(url_for('pages.index'))
-#     return render_template('message_edit.html', obituary=obituary)
+@pages_admin.route('/obituary/<obituary_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def obituary_edit(obituary_id):
+    """Edycja zamieszczonych nekrologów na stronie głównej."""
+    obituary = Obituaries.query.get_or_404(obituary_id)
+    if request.method == 'POST':
+        name = request.form.get('name', False)
+        surname = request.form.get('surname', False)
+        death_date = request.form.get('death_date', False)
+        years_old = request.form.get('years_old', False)
+        gender = request.form.get('gender', True)
+        funeral_date = request.form.get('funeral_date', False)
+        funeral_time = request.form.get('funeral_time', False)
+        if all([name, surname, death_date, years_old, funeral_date, funeral_time]):
+            funeral_date = (datetime.datetime.strptime(funeral_date, '%Y-%m-%d') +
+                            datetime.timedelta(hours=datetime.datetime.strptime(funeral_time,
+                                                                                '%H:%M').hour,
+                                               minutes=datetime.datetime.strptime(funeral_time,
+                                                                                  '%H:%M').minute))
+            obituary.name = name
+            obituary.surname = surname
+            obituary.death_date = datetime.datetime.strptime(death_date, '%Y-%m-%d')
+            obituary.years_old = years_old
+            obituary.gender = True if gender == 'man' else False
+            obituary.funeral_date = funeral_date
+            db.session.commit()
+            flash('Wiadomość zmodyfikowano pomyślnie!', 'succes')
+        else:
+            flash('Nieprawidłowe dane', 'error')
+        return redirect(url_for('pages.index'))
+    return render_template('obituary_edit.html', obituary=obituary)
 
 
 @pages_admin.route('/obituary/<obituary_id>/delete', methods=['GET', 'POST'])

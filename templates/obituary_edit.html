@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Panel Administratora</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin.css') }}"/>
+{% endblock %}
+{% block body %}
+{% include 'flash_msg.html' %}
+<div id="new_obituary" class="admin_option_button"><span>Edytuj nekrolog</span></div>
+<div id="new_obituary_box" class="admin_option_box" style="display: block;">
+    <form method="POST">
+        <input class="text_input post_header" name="name" type="text" placeholder="Imię" value={{ obituary.name }} required>
+        <input class="text_input post_header" name="surname" type="text" placeholder="Nazwisko" value={{ obituary.surname }} required>
+        <div class="check_option">Data śmierci:</div>
+        <input class="text_input post_header" name="death_date" type="date" value={{ obituary.death_date }} required>
+        <input class="text_input post_header" name="years_old" type="number" min="0" max="150" placeholder="Zmarł w wieku"
+        value={{ obituary.years_old }} required>
+        <div class="check_option">Data pogrzebu:</div>
+        <input class="text_input post_header" name="funeral_date" type="date" value={{ obituary.funeral_date }} required>
+        <div class="check_option">Godzina pogrzebu:</div>
+        <input class="text_input post_header" name="funeral_time" type="time" value={{ obituary.funeral_date.strftime('%H:%M') }} required>
+        <input class="check_option" type="radio" name="gender" value="man" {% if obituary.gender %} checked {% endif %}> Mężczyzna
+        <input type="radio" name="gender" value="woman" {% if not obituary.gender %} checked {% endif %}> Kobieta
+        <input class="send_data" type="submit" value="Wyślij">
+    </form>
+</div>
+{% endblock %}
