@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Moduł do generowania wszelkich potrzebnych danych."""
+"""Moduł do generowania lub edytowania potrzebnych danych."""
+import datetime
 import random
 
 
@@ -17,5 +18,12 @@ def generate_password():
     return ''.join(gen_pw)
 
 
-if __name__ == '__main__':
-    print(generate_password())
+def convert_date(calendar_date, clock_time='0:0'):
+    """Konwerter daty między html a py.
+
+    Przyjmuje datę HTML w domyślnym formacie YYYY-MM-DD oraz opcjonalnie godzinę HH:MM i konwertuje
+    na format czasu pythona
+    """
+    return (datetime.datetime.strptime(calendar_date, '%Y-%m-%d') +
+            datetime.timedelta(hours=datetime.datetime.strptime(clock_time, '%H:%M').hour,
+                               minutes=datetime.datetime.strptime(clock_time, '%H:%M').minute))

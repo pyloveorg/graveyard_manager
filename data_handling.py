@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Obsługa powtarzalnych czynności z bazą danych."""
+"""Obsługa powtarzalnych czynności z bazą danych i procesów z tym związanych."""
 
 # importy modułów py
 import uuid

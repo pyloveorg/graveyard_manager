@@ -8,6 +8,7 @@ import datetime
 
 from models import db, User, Messages, Comments, Obituaries
 from mail_sending import msg_to_all_users
+from generate_data import convert_date
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -59,15 +60,13 @@ def admin():
         elif all([name, surname, death_date, years_old, funeral_date, funeral_time]):
             # dodawanie nowego nekrologu
             gender = True if gender == 'man' else False
-            funeral_date = (datetime.datetime.strptime(funeral_date, '%Y-%m-%d') +
-                            datetime.timedelta(hours=datetime.datetime.strptime(funeral_time,
-                                                                                '%H:%M').hour,
-                                               minutes=datetime.datetime.strptime(funeral_time,
-                                                                                  '%H:%M').minute))
+            # funkcja convert_date z pliku generate_data
+            funeral_date = convert_date(funeral_date, funeral_time)
+            death_date = convert_date(death_date)
             new_obituary = Obituaries(name=name,
                                       surname=surname,
                                       years_old=int(years_old),
-                                      death_date=datetime.datetime.strptime(death_date, '%Y-%m-%d'),
+                                      death_date=death_date,
                                       gender=gender,
                                       funeral_date=funeral_date)
             db.session.add(new_obituary)
@@ -128,15 +127,13 @@ def obituary_edit(obituary_id):
         funeral_date = request.form.get('funeral_date', False)
         funeral_time = request.form.get('funeral_time', False)
         if all([name, surname, death_date, years_old, funeral_date, funeral_time]):
-            funeral_date = (datetime.datetime.strptime(funeral_date, '%Y-%m-%d') +
-                            datetime.timedelta(hours=datetime.datetime.strptime(funeral_time,
-                                                                                '%H:%M').hour,
-                                               minutes=datetime.datetime.strptime(funeral_time,
-                                                                                  '%H:%M').minute))
+            # funkcja convert_date z pliku generate_data
+            funeral_date = convert_date(funeral_date, funeral_time)
+            death_date = convert_date(death_date)
             obituary.name = name
             obituary.surname = surname
-            obituary.death_date = datetime.datetime.strptime(death_date, '%Y-%m-%d')
-            obituary.years_old = years_old
+            obituary.death_date = death_date
+            obituary.years_old = int(years_old)
             obituary.gender = True if gender == 'man' else False
             obituary.funeral_date = funeral_date
             db.session.commit()
