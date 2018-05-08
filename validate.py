@@ -4,7 +4,8 @@
 # importy modułów py
 import re
 from urllib.parse import urlparse
-from wtforms import Form, StringField, PasswordField
+from wtforms import Form, StringField, PasswordField, IntegerField, RadioField
+from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to
 
 
@@ -13,6 +14,7 @@ def is_safe_next(next_page):
     return not urlparse(next_page).netloc
 
 
+# walidacja danych użytkownika
 class PwForm(Form):
     """Klasa wtforms do ustalania hasła użytkownika."""
 
@@ -76,3 +78,15 @@ class LoginForm(Form):
                               render_kw={'placeholder': 'adres e-mail'})
     password = PasswordField('Hasło', [input_required(message='Pole wymagane!')],
                              render_kw={'placeholder': 'hasło'})
+
+
+# walidacja danych podawanych przez administratora
+class ObituaryForm(Form):
+    """Klasa wtforms do walidacji tworzonych nekrologów."""
+
+    name = StringField('Imię', [input_required(message='Pole wymagane!')])
+    surname = StringField('Nazwisko', [input_required(message='Pole wymagane!')])
+    years_old = IntegerField('Wiek', [input_required(message='Pole wymagane!')])
+    death_date = DateField('Data śmierci', format='%Y-%m-%d')
+    gender = RadioField('Płeć', choices=[('man', 'Mężczyzna'), ('woman', 'Kobieta')])
+    funeral_date = DateField('Data pogrzebu', format='%Y-%m-%d')

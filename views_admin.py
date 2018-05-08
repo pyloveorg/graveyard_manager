@@ -9,6 +9,7 @@ import datetime
 from models import db, User, Messages, Comments, Obituaries
 from mail_sending import msg_to_all_users
 from generate_data import convert_date
+from validate import ObituaryForm
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -29,7 +30,8 @@ def admin_required(func):
 @admin_required
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
-    if request.method == 'POST':
+    form = ObituaryForm(request.form)
+    if request.method == 'POST' and form.validate():
         # parametry z formularza nowej wiadomości
         post_title = request.form.get('post_header', False)
         post_content = request.form.get('post_content', False)
@@ -75,7 +77,7 @@ def admin():
         else:
             flash('Nieprawidłowe dane', 'error')
         return redirect(url_for('pages_admin.admin'))
-    return render_template('admin_page.html')
+    return render_template('admin_page.html', form=form)
 
 
 @pages_admin.route('/message/<message_id>/edit', methods=['GET', 'POST'])

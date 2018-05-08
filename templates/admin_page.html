@@ -5,6 +5,7 @@
 {% endblock %}
 {% block body %}
 {% include 'flash_msg.html' %}
+{% from "_formhelpers.html" import render_field %}
 <!-- nowy komunikat na stronę główną -->
 <div id="new_post" class="admin_option_button"><span>Dodaj nowy komunikat na stronę główną</span></div>
 <div id="new_post_box" class="admin_option_box">
@@ -28,7 +29,18 @@
 <div id="new_obituary" class="admin_option_button"><span>Dodaj nowy nekrolog</span></div>
 <div id="new_obituary_box" class="admin_option_box">
     <form method="POST">
-        <input class="text_input post_header" name="name" type="text" placeholder="Imię" required>
+        {{ render_field(form.name) }}
+        {{ render_field(form.surname) }}
+        {{ render_field(form.years_old) }}
+        {{ render_field(form.death_date) }}
+        {{ render_field(form.funeral_date) }}
+        {% for subfield in form.gender %}
+        <div>
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+        </div>
+        {% endfor %}
+        <!-- <input class="text_input post_header" name="name" type="text" placeholder="Imię" required>
         <input class="text_input post_header" name="surname" type="text" placeholder="Nazwisko" required>
         <div class="check_option">Data śmierci:</div>
         <input class="text_input post_header" name="death_date" type="date" required>
@@ -38,7 +50,7 @@
         <div class="check_option">Godzina pogrzebu:</div>
         <input class="text_input post_header" name="funeral_time" type="time" required>
         <input class="check_option" type="radio" name="gender" value="man" checked> Mężczyzna
-        <input type="radio" name="gender" value="woman"> Kobieta
+        <input type="radio" name="gender" value="woman"> Kobieta -->
         <input class="send_data" type="submit" value="Wyślij">
     </form>
 </div>
