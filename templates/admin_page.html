@@ -29,12 +29,13 @@
 <div id="new_obituary" class="admin_option_button"><span>Dodaj nowy nekrolog</span></div>
 <div id="new_obituary_box" class="admin_option_box">
     <form method="POST">
-        {{ render_field(form.name) }}
-        {{ render_field(form.surname) }}
-        {{ render_field(form.years_old) }}
-        {{ render_field(form.death_date) }}
-        {{ render_field(form.funeral_date) }}
-        {% for subfield in form.gender %}
+        {{ render_field(form_obituary.name) }}
+        {{ render_field(form_obituary.surname) }}
+        {{ render_field(form_obituary.years_old) }}
+        {{ render_field(form_obituary.death_date) }}
+        {{ render_field(form_obituary.funeral_date) }}
+        <input class="text_input post_header" name="funeral_time" type="time" required>
+        {% for subfield in form_obituary.gender %}
         <div>
             <td>{{ subfield }}</td>
             <td>{{ subfield.label }}</td>

@@ -9,7 +9,9 @@ from itsdangerous import URLSafeSerializer
 
 # importy nasze
 from config import APP
-from models import User, Messages, Comments
+from generate_data import convert_date
+from models import User
+
 
 serializer = URLSafeSerializer(APP.APP_KEY)
 
@@ -50,3 +52,12 @@ def change_user_data(user, form_data):
     user.street = form_data.street.data
     user.house_number = form_data.house_number.data
     user.flat_number = form_data.flat_number.data
+
+
+def obituary_add_data(obituary_form, funeral_time):
+    name = obituary_form.name.data
+    surname = obituary_form.surname.data
+    years_old = obituary_form.years_old.data
+    death_date = convert_date(obituary_form.death_date.data)
+    funeral_date = convert_date(obituary_form.funeral_date.data, funeral_time)
+    gender = obituary_form.gender.data

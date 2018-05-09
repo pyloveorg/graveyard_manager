@@ -6,7 +6,7 @@ from flask import Blueprint, redirect, url_for, render_template, request, flash,
 from flask_login import current_user, login_required
 import datetime
 
-from models import db, User, Messages, Comments, Obituaries
+from models import db, User, Messages, Obituaries
 from mail_sending import msg_to_all_users
 from generate_data import convert_date
 from validate import ObituaryForm
@@ -30,8 +30,9 @@ def admin_required(func):
 @admin_required
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
-    form = ObituaryForm(request.form)
-    if request.method == 'POST' and form.validate():
+    # form_obituary = ObituaryForm(request.form)
+    form_obituary = ObituaryForm(request.form)
+    if request.method == 'POST':
         # parametry z formularza nowej wiadomości
         post_title = request.form.get('post_header', False)
         post_content = request.form.get('post_content', False)
@@ -39,13 +40,7 @@ def admin():
         email_title = request.form.get('email_title', False)
         email_content = request.form.get('email_content', False)
         # parametry z formularza dla nowego nekrologu
-        name = request.form.get('name', False)
-        surname = request.form.get('surname', False)
-        death_date = request.form.get('death_date', False)
-        years_old = request.form.get('years_old', False)
-        gender = request.form.get('gender', True)
-        funeral_date = request.form.get('funeral_date', False)
-        funeral_time = request.form.get('funeral_time', False)
+
         if post_title and post_content:
             # dodawanie nowej wiadomości na stronę główną
             new_message = Messages(title=post_title,
@@ -59,7 +54,14 @@ def admin():
             users = User.query.filter_by(active_user=True)
             msg_to_all_users(email_title, email_content, users)
             flash('Wysyłanie wiadomości zakończone!', 'succes')
-        elif all([name, surname, death_date, years_old, funeral_date, funeral_time]):
+        elif form_obituary.validate():
+            name = ObituaryForm(request.form)
+            surname = request.form.get('surname', False)
+            death_date = request.form.get('death_date', False)
+            years_old = request.form.get('years_old', False)
+            gender = request.form.get('gender', True)
+            funeral_date = request.form.get('funeral_date', False)
+            funeral_time = request.form.get('funeral_time', False)
             # dodawanie nowego nekrologu
             gender = True if gender == 'man' else False
             # funkcja convert_date z pliku generate_data
@@ -77,7 +79,7 @@ def admin():
         else:
             flash('Nieprawidłowe dane', 'error')
         return redirect(url_for('pages_admin.admin'))
-    return render_template('admin_page.html', form=form)
+    return render_template('admin_page.html', form_obituary=form_obituary)
 
 
 @pages_admin.route('/message/<message_id>/edit', methods=['GET', 'POST'])
