@@ -24,7 +24,6 @@ class User(UserMixin, db.Model):
     house_number = db.Column(db.Integer)
     flat_number = db.Column(db.Integer)
     admin = db.Column(db.Boolean, default=False)
-    comments = db.relationship('Comments', cascade='all, delete-orphan', lazy='dynamic')
 
     def get_id(self):
         """Zmiana domyślnego pobierania id podczas logowania na token."""
@@ -84,7 +83,6 @@ class Messages(db.Model):
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.Text, nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
-    comments = db.relationship('Comments', cascade='all, delete-orphan', lazy='dynamic')
 
 
 class Obituaries(db.Model):

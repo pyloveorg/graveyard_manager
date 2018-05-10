@@ -14,7 +14,7 @@ body {
     border-right: 1px solid #111111;
 }
 
-/* messages on index page with comment section */
+/* messages on index page */
 .info_on_main_page {
     width: 95%;
     min-height: 50px;
@@ -39,18 +39,6 @@ body {
     text-align: left;
     padding: 4px;
     width: 230px;
-}
-
-.comments_section_button {
-    padding: 2px 4px 2px 2px;
-    float: right;
-    cursor: pointer;
-}
-
-.comments_section_box {
-    display: none;
-    width: 95%;
-    min-height: 50px;
 }
 
 .edit_icon {

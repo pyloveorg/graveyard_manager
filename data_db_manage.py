@@ -10,7 +10,7 @@ from itsdangerous import URLSafeSerializer
 # importy nasze
 from config import APP
 from data_func_manage import convert_date
-from models import User
+from db_models import User
 
 
 serializer = URLSafeSerializer(APP.APP_KEY)

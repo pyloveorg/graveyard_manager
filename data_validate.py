@@ -14,6 +14,11 @@ def is_safe_next(next_page):
     return not urlparse(next_page).netloc
 
 
+def is_time_format(time_to_check):
+    """Funkcja sprawdza czy czas ma prawidłowy format: HH:MM:SS w zakresie 00:00:00 do 23:59:59."""
+    return True if re.search(r'(^[0-1][0-9]|2[0-3])(:[0-5][0-9]){2}$', time_to_check) else False
+
+
 # walidacja danych użytkownika
 class PwForm(Form):
     """Klasa wtforms do ustalania hasła użytkownika."""

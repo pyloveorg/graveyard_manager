@@ -3,6 +3,7 @@
 """Moduł do generowania lub edytowania potrzebnych danych."""
 import datetime
 import random
+import re
 
 
 def generate_password():

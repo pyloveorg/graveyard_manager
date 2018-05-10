@@ -33,10 +33,8 @@
     {% endif %}
     <h2><img class="candle" src="{{ url_for('static', filename='pictures/candle.png') }}"> {{ info.title }}</h2>
     <p class="admin_msg">{{ info.content }}</p>
-    <!-- <div id="comment_button_{{info.id}}" class="comments_section_button">komentarze</div> -->
     <div class="small_txt_info">Data utworzenia: {{info.create_date.strftime('%Y-%m-%d %H:%M:%S')}}</div>
 </div>
-<!-- <div class="comments_section_box"></div> -->
     {% endfor %}
 {% endif %}
 <div id="test"></div>

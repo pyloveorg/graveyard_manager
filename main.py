@@ -9,7 +9,7 @@ from flask import Flask
 from views import pages, login_manager
 from views_admin import pages_admin
 from mail_sending import mail
-from models import db
+from db_models import db
 from config import DB, APP, EMAIL
 
 app = Flask(__name__)

@@ -11,8 +11,8 @@ from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 from sqlalchemy import func
 
 # importy nasze
-from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm, is_safe_next
-from models import db, User, Grave, Parcel, ParcelType, Family, Payments, Messages, Obituaries
+from data_validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm, is_safe_next
+from db_models import db, User, Grave, Parcel, ParcelType, Family, Payments, Messages, Obituaries
 from config import APP
 from data_db_manage import register_new_user, change_user_data, change_user_pw
 from mail_sending import common_msg

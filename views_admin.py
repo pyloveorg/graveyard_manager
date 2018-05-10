@@ -8,9 +8,9 @@ import datetime
 
 from data_db_manage import obituary_add_data
 from data_func_manage import convert_date
-from models import db, User, Messages, Obituaries
+from db_models import db, User, Messages, Obituaries
 from mail_sending import msg_to_all_users
-from validate import ObituaryForm
+from data_validate import ObituaryForm
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -56,6 +56,7 @@ def admin():
             msg_to_all_users(email_title, email_content, users)
             flash('Wysyłanie wiadomości zakończone!', 'succes')
         elif form_obituary.validate():
+            # funkcja importowana z modułu data_db_manage
             obituary_add_data(form_obituary, funeral_time)
             # dodawanie nowego nekrologu
             gender = True if gender == 'man' else False
