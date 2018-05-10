@@ -6,9 +6,10 @@ from flask import Blueprint, redirect, url_for, render_template, request, flash,
 from flask_login import current_user, login_required
 import datetime
 
+from data_db_manage import obituary_add_data
+from data_func_manage import convert_date
 from models import db, User, Messages, Obituaries
 from mail_sending import msg_to_all_users
-from generate_data import convert_date
 from validate import ObituaryForm
 
 pages_admin = Blueprint('pages_admin', __name__)
@@ -55,16 +56,10 @@ def admin():
             msg_to_all_users(email_title, email_content, users)
             flash('Wysyłanie wiadomości zakończone!', 'succes')
         elif form_obituary.validate():
-            name = ObituaryForm(request.form)
-            surname = request.form.get('surname', False)
-            death_date = request.form.get('death_date', False)
-            years_old = request.form.get('years_old', False)
-            gender = request.form.get('gender', True)
-            funeral_date = request.form.get('funeral_date', False)
-            funeral_time = request.form.get('funeral_time', False)
+            obituary_add_data(form_obituary, funeral_time)
             # dodawanie nowego nekrologu
             gender = True if gender == 'man' else False
-            # funkcja convert_date z pliku generate_data
+            # funkcja convert_date z pliku data_func_manage
             funeral_date = convert_date(funeral_date, funeral_time)
             death_date = convert_date(death_date)
             new_obituary = Obituaries(name=name,
@@ -131,7 +126,7 @@ def obituary_edit(obituary_id):
         funeral_date = request.form.get('funeral_date', False)
         funeral_time = request.form.get('funeral_time', False)
         if all([name, surname, death_date, years_old, funeral_date, funeral_time]):
-            # funkcja convert_date z pliku generate_data
+            # funkcja convert_date z pliku data_func_manage
             funeral_date = convert_date(funeral_date, funeral_time)
             death_date = convert_date(death_date)
             obituary.name = name

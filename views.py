@@ -14,9 +14,9 @@ from sqlalchemy import func
 from validate import EmailForm, LoginForm, DataForm, PwForm, OldPwForm, is_safe_next
 from models import db, User, Grave, Parcel, ParcelType, Family, Payments, Messages, Obituaries
 from config import APP
-from data_handling import register_new_user, change_user_data, change_user_pw
+from data_db_manage import register_new_user, change_user_data, change_user_pw
 from mail_sending import common_msg
-from generate_data import generate_password
+from data_func_manage import generate_password
 
 pages = Blueprint('pages', __name__)
 login_manager = LoginManager()
@@ -112,6 +112,7 @@ def recovery_password(pw_token):
     try:
         token_id = temp_serializer.loads(pw_token, salt='pw-recovery', max_age=3600)
         user = User.query.filter_by(token_id=token_id).first()
+        # funkcja generująca hasło z modułu data_func_manage
         new_pw = generate_password()
         change_user_pw(user, new_pw, form=False)
         db.session.commit()
@@ -247,7 +248,7 @@ def user_set_data():
     if request.method == 'POST' and all([x.validate() for x in [form_oldpw, form_data]]):
         if bcrypt.checkpw(form_oldpw.old_password.data.encode('UTF_8'),
                           User.query.get(current_user.id).password):
-            # zmiana danych użytkownika - funkcja importowana z data_handling.py
+            # zmiana danych użytkownika - funkcja importowana z data_db_manage
             change_user_data(user, form_data)
             db.session.commit()
             flash('Dane zostały prawidłowo zmodyfikowane!', 'succes')

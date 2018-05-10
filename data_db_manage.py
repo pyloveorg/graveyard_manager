@@ -9,7 +9,7 @@ from itsdangerous import URLSafeSerializer
 
 # importy nasze
 from config import APP
-from generate_data import convert_date
+from data_func_manage import convert_date
 from models import User
 
 
