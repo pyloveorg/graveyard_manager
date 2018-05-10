@@ -2,6 +2,7 @@
 # -*- coding: UTF-8 -*-
 """Plik do walidacji danych."""
 # importy modułów py
+import datetime
 import re
 from urllib.parse import urlparse
 from wtforms import Form, StringField, PasswordField, IntegerField, RadioField
@@ -17,6 +18,15 @@ def is_safe_next(next_page):
 def is_time_format(time_to_check):
     """Funkcja sprawdza czy czas ma prawidłowy format: HH:MM:SS w zakresie 00:00:00 do 23:59:59."""
     return True if re.search(r'(^[0-1][0-9]|2[0-3])(:[0-5][0-9]){1,2}$', time_to_check) else False
+
+
+def is_date_format(date_to_check):
+    """Funkcja sprawdza czy data w formacie str jest prawidłowa."""
+    try:
+        datetime.datetime.strptime(date_to_check, '%Y-%m-%d')
+        return True
+    except Exception as exc:
+        return False
 
 
 # walidacja danych użytkownika
@@ -89,9 +99,11 @@ class LoginForm(Form):
 class ObituaryForm(Form):
     """Klasa wtforms do walidacji tworzonych nekrologów."""
 
-    name = StringField('Imię', [input_required(message='Pole wymagane!')])
-    surname = StringField('Nazwisko', [input_required(message='Pole wymagane!')])
-    years_old = IntegerField('Wiek', [input_required(message='Pole wymagane!')])
-    death_date = DateField('Data śmierci', format='%Y-%m-%d')
-    gender = RadioField('Płeć', choices=[('man', 'Mężczyzna'), ('woman', 'Kobieta')])
-    # funeral_date = DateField('Data pogrzebu', format='%Y-%m-%d')
+    name = StringField('Imię', [input_required(message='Pole wymagane!')],
+                       render_kw={'required': True})
+    surname = StringField('Nazwisko', [input_required(message='Pole wymagane!')],
+                          render_kw={'required': True})
+    years_old = IntegerField('Wiek', [input_required(message='Pole wymagane!')],
+                             render_kw={'required': True, 'type': 'number', 'min': 0, 'max': 150})
+    death_date = DateField('Data śmierci', format='%Y-%m-%d', render_kw={'required': True})
+    gender = RadioField('Płeć', choices=[('man', 'Mężczyzna'), ('woman', 'Kobieta')], default='man')

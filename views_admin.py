@@ -10,7 +10,7 @@ from data_db_manage import obituary_add_data
 from data_func_manage import convert_date
 from db_models import db, User, Messages, Obituaries
 from mail_sending import msg_to_all_users
-from data_validate import ObituaryForm, is_time_format
+from data_validate import ObituaryForm, is_time_format, is_date_format
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -56,7 +56,9 @@ def admin():
             users = User.query.filter_by(active_user=True)
             msg_to_all_users(email_title, email_content, users)
             flash('Wysyłanie wiadomości zakończone!', 'succes')
-        elif form_obituary.validate() and is_time_format(funeral_time):
+        elif all([form_obituary.validate(),
+                  is_time_format(funeral_time),
+                  is_date_format(funeral_date)]):
             # funkcja importowana z modułu data_db_manage
             new_obituary = obituary_add_data(form_obituary,
                                              funeral_date,

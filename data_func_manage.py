@@ -23,7 +23,8 @@ def convert_date(calendar_date, clock_time='0:0', calendar_is_html=True, clock_i
     """Konwerter daty między html a py.
 
     Przyjmuje datę HTML w domyślnym formacie YYYY-MM-DD oraz opcjonalnie godzinę HH:MM i konwertuje
-    na format czasu pythona
+    na format czasu pythona.
+    Dopuszcza się zamiast daty i godziny w formie str podać w formacie pythonowej daty.
     """
     if calendar_is_html:
         calendar_date = datetime.datetime.strptime(calendar_date, '%Y-%m-%d')
