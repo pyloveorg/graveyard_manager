@@ -24,7 +24,6 @@ class User(UserMixin, db.Model):
     house_number = db.Column(db.Integer)
     flat_number = db.Column(db.Integer)
     admin = db.Column(db.Boolean, default=False)
-    comments = db.relationship('Comments', cascade='all, delete-orphan', lazy='dynamic')
 
     def get_id(self):
         """Zmiana domyślnego pobierania id podczas logowania na token."""
@@ -84,17 +83,6 @@ class Messages(db.Model):
     title = db.Column(db.String(50), nullable=False)
     content = db.Column(db.Text, nullable=False)
     create_date = db.Column(db.DateTime(), nullable=False)
-    comments = db.relationship('Comments', cascade='all, delete-orphan', lazy='dynamic')
-
-
-class Comments(db.Model):
-    """Tabela do przechowywania komentarzy dla postów na głównej stronie."""
-
-    id = db.Column(db.Integer, primary_key=True)
-    comment = db.Column(db.Text, nullable=False)
-    comment_date = db.Column(db.DateTime(), nullable=False)
-    message = db.Column(db.Integer, db.ForeignKey('messages.id'))
-    user = db.Column(db.Integer, db.ForeignKey('user.id'))
 
 
 class Obituaries(db.Model):
@@ -103,8 +91,8 @@ class Obituaries(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     surname = db.Column(db.String(120), nullable=False)
-    # gender: True = man, False = woman
-    gender = db.Column(db.Boolean, default=True)
+    # man // woman
+    gender = db.Column(db.String(5))
     years_old = db.Column(db.Integer)
     death_date = db.Column(db.DateTime(), nullable=False)
     funeral_date = db.Column(db.DateTime(), nullable=False)

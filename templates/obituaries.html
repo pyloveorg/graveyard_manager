@@ -12,7 +12,7 @@ Wisława Szymborska - "Rehabilitacja"
 </p>
 {% for obit in obits %}
 <div class="outside_border">
-    <div class="inside_border" style="display: block;">
+    <div class="inside_border">
         {% if current_user.admin %}
         <a href="{{url_for('pages_admin.obituary_delete', obituary_id=obit.id)}}">
             <img class="delete_icon" src="{{ url_for('static', filename='pictures/delete_icon.png') }}" alt="usuwanie">

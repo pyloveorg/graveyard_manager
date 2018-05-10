@@ -7,7 +7,7 @@ Uwaga - tylko do jednokrotnego użycia gdy baza danych nie istnieje!!!
 
 # importy nasze
 from main import app, db
-from models import Parcel, ParcelType
+from db_models import Parcel, ParcelType
 
 # importy modułów py
 from sqlalchemy import event

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Obsługa powtarzalnych czynności z bazą danych."""
+"""Obsługa powtarzalnych czynności z bazą danych i procesów z tym związanych."""
 
 # importy modułów py
 import uuid
@@ -9,7 +9,9 @@ from itsdangerous import URLSafeSerializer
 
 # importy nasze
 from config import APP
-from models import User, Messages, Comments
+from data_func_manage import convert_date
+from db_models import User, Obituaries
+
 
 serializer = URLSafeSerializer(APP.APP_KEY)
 
@@ -50,3 +52,17 @@ def change_user_data(user, form_data):
     user.street = form_data.street.data
     user.house_number = form_data.house_number.data
     user.flat_number = form_data.flat_number.data
+
+
+def obituary_add_data(form_obituary, funeral_date, funeral_time, calendar_is_html=True,
+                      clock_is_str=True):
+    """Dodanie nowego nekrologu."""
+    return Obituaries(name=form_obituary.name.data,
+                      surname=form_obituary.surname.data,
+                      years_old=form_obituary.years_old.data,
+                      death_date=form_obituary.death_date.data,
+                      funeral_date=convert_date(funeral_date,
+                                                funeral_time,
+                                                calendar_is_html=calendar_is_html,
+                                                clock_is_str=clock_is_str),
+                      gender=form_obituary.gender.data)
