@@ -10,7 +10,7 @@ from itsdangerous import URLSafeSerializer
 # importy nasze
 from config import APP
 from data_func_manage import convert_date
-from db_models import User
+from db_models import User, Obituaries
 
 
 serializer = URLSafeSerializer(APP.APP_KEY)
@@ -54,10 +54,15 @@ def change_user_data(user, form_data):
     user.flat_number = form_data.flat_number.data
 
 
-def obituary_add_data(obituary_form, funeral_time):
-    name = obituary_form.name.data
-    surname = obituary_form.surname.data
-    years_old = obituary_form.years_old.data
-    death_date = convert_date(obituary_form.death_date.data)
-    funeral_date = convert_date(obituary_form.funeral_date.data, funeral_time)
-    gender = obituary_form.gender.data
+def obituary_add_data(form_obituary, funeral_date, funeral_time, calendar_is_html=True,
+                      clock_is_str=True):
+    """Dodanie nowego nekrologu."""
+    return Obituaries(name=form_obituary.name.data,
+                      surname=form_obituary.surname.data,
+                      years_old=form_obituary.years_old.data,
+                      death_date=form_obituary.death_date.data,
+                      funeral_date=convert_date(funeral_date,
+                                                funeral_time,
+                                                calendar_is_html=calendar_is_html,
+                                                clock_is_str=clock_is_str),
+                      gender=form_obituary.gender.data)

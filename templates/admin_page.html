@@ -33,7 +33,7 @@
         {{ render_field(form_obituary.surname) }}
         {{ render_field(form_obituary.years_old) }}
         {{ render_field(form_obituary.death_date) }}
-        {{ render_field(form_obituary.funeral_date) }}
+        <input class="text_input post_header" name="funeral_date" type="date" required>
         <input class="text_input post_header" name="funeral_time" type="time" required>
         {% for subfield in form_obituary.gender %}
         <div>

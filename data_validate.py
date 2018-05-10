@@ -16,7 +16,7 @@ def is_safe_next(next_page):
 
 def is_time_format(time_to_check):
     """Funkcja sprawdza czy czas ma prawidłowy format: HH:MM:SS w zakresie 00:00:00 do 23:59:59."""
-    return True if re.search(r'(^[0-1][0-9]|2[0-3])(:[0-5][0-9]){2}$', time_to_check) else False
+    return True if re.search(r'(^[0-1][0-9]|2[0-3])(:[0-5][0-9]){1,2}$', time_to_check) else False
 
 
 # walidacja danych użytkownika
@@ -94,4 +94,4 @@ class ObituaryForm(Form):
     years_old = IntegerField('Wiek', [input_required(message='Pole wymagane!')])
     death_date = DateField('Data śmierci', format='%Y-%m-%d')
     gender = RadioField('Płeć', choices=[('man', 'Mężczyzna'), ('woman', 'Kobieta')])
-    funeral_date = DateField('Data pogrzebu', format='%Y-%m-%d')
+    # funeral_date = DateField('Data pogrzebu', format='%Y-%m-%d')

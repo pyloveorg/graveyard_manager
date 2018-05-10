@@ -10,7 +10,7 @@ from data_db_manage import obituary_add_data
 from data_func_manage import convert_date
 from db_models import db, User, Messages, Obituaries
 from mail_sending import msg_to_all_users
-from data_validate import ObituaryForm
+from data_validate import ObituaryForm, is_time_format
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -41,7 +41,8 @@ def admin():
         email_title = request.form.get('email_title', False)
         email_content = request.form.get('email_content', False)
         # parametry z formularza dla nowego nekrologu
-
+        funeral_date = request.form.get('funeral_date', False)
+        funeral_time = request.form.get('funeral_time', False)
         if post_title and post_content:
             # dodawanie nowej wiadomości na stronę główną
             new_message = Messages(title=post_title,
@@ -55,20 +56,13 @@ def admin():
             users = User.query.filter_by(active_user=True)
             msg_to_all_users(email_title, email_content, users)
             flash('Wysyłanie wiadomości zakończone!', 'succes')
-        elif form_obituary.validate():
+        elif form_obituary.validate() and is_time_format(funeral_time):
             # funkcja importowana z modułu data_db_manage
-            obituary_add_data(form_obituary, funeral_time)
-            # dodawanie nowego nekrologu
-            gender = True if gender == 'man' else False
-            # funkcja convert_date z pliku data_func_manage
-            funeral_date = convert_date(funeral_date, funeral_time)
-            death_date = convert_date(death_date)
-            new_obituary = Obituaries(name=name,
-                                      surname=surname,
-                                      years_old=int(years_old),
-                                      death_date=death_date,
-                                      gender=gender,
-                                      funeral_date=funeral_date)
+            new_obituary = obituary_add_data(form_obituary,
+                                             funeral_date,
+                                             funeral_time,
+                                             calendar_is_html=True,
+                                             clock_is_str=True)
             db.session.add(new_obituary)
             db.session.commit()
             flash('Dodano nowy nekrolog!', 'succes')
