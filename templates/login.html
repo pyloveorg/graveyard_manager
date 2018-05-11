@@ -12,8 +12,8 @@
             <div>{{ render_field(form_login.email_login, class="input_field") }}</div>
             <div>{{ render_field(form_login.password, class="input_field") }}</div>
             <input class ="log_reg_button" type=submit value="Zaloguj">
-            <a class="small_redirect_text" href="{{url_for('pages.register')}}">Nie masz konta? Zarejestruj się!</a>
+            <a class="small_redirect_text" href="{{url_for('pages_log_sys.register')}}">Nie masz konta? Zarejestruj się!</a>
         </form>
-        <a class="small_redirect_text" href="{{url_for('pages.password_recovery')}}">Nie pamiętam hasła!</a>
+        <a class="small_redirect_text" href="{{url_for('pages_log_sys.password_recovery')}}">Nie pamiętam hasła!</a>
     </div>
 {% endblock %}
