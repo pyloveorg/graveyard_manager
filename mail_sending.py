@@ -23,6 +23,7 @@ def common_msg(title, send_to, filename, *args):
 
 
 def msg_to_all_users(subject, message, users):
+    """Wiadomość wysyłana do wszystkich aktywnych użytkowników."""
     with mail.connect() as conn:
         for user in users:
             message = message

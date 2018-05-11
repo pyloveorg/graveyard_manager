@@ -4,15 +4,15 @@
 
 Uwaga - tylko do jednokrotnego użycia gdy baza danych nie istnieje!!!
 """
+# importy modułów py
+import itertools
+from sqlalchemy import event
+import numpy as np
 
 # importy nasze
 from main import app, db
 from db_models import Parcel, ParcelType
 
-# importy modułów py
-from sqlalchemy import event
-import numpy as np
-import itertools
 
 app.app_context().push()
 db.create_all()

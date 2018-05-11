@@ -138,7 +138,8 @@ def grave(grave_id):
         grave.day_of_birth = datetime.datetime.strptime(request.form['edited_birth'], '%Y-%m-%d')
         grave.day_of_death = datetime.datetime.strptime(request.form['edited_death'], '%Y-%m-%d')
         db.session.commit()
-    return render_template('grave_page.html', grave_id=grave_id, grave=grave, parcel_type=parcel_type)
+    return render_template('grave_page.html', grave_id=grave_id, grave=grave,
+                           parcel_type=parcel_type)
 
 
 @pages.route('/delete/<grave_id>', methods=['POST'])

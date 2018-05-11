@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Plik zawierający funkcje dla systemu logowania/rejestracji."""
+"""Plik zawierający funkcje stron dla systemu logowania/rejestracji."""
 
 # importy modułów py
 import bcrypt
