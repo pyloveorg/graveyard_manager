@@ -18,7 +18,7 @@ Imię: {{ grave.name }}
 <br>
 <h4>Edycja danych</h4>
 
-<form method="post" action="{{url_for('pages.grave', grave_id=grave.id)}}">
+<form method="post" action="{{url_for('pages_user.grave', grave_id=grave.id)}}">
     <input type="text" name="edited_name" value="{{ grave.name }}">
     <input type="text" name="edited_last_name" value="{{ grave.last_name }}">
     Data urodzenia: <input type="date" name="edited_birth" value="{{ grave.day_of_birth }}">
@@ -28,7 +28,7 @@ Imię: {{ grave.name }}
 
 <br>
 
-<form method="post" action="{{url_for('pages.delete_grave', grave_id=grave.id)}}">
+<form method="post" action="{{url_for('pages_user.delete_grave', grave_id=grave.id)}}">
     <button type="submit">Usuń grób</button>
 </form>
 

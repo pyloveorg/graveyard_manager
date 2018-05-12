@@ -9,15 +9,15 @@
 
 {% include 'flash_msg.html' %}
 
-<a href="{{ url_for('pages.user_set_pw') }}">zmiana hasła</a>
+<a href="{{ url_for('pages_user.user_set_pw') }}">zmiana hasła</a>
 <br>
-<a href="{{ url_for('pages.user_set_data') }}">zmiana danych personalnych</a>
+<a href="{{ url_for('pages_user.user_set_data') }}">zmiana danych personalnych</a>
 
 <h3>Moje groby</h3>
 {% if graves %}
     {% for grave in graves %}
     <ol>
-        <a href="{{url_for('pages.grave', grave_id=grave.id)}}"> {{ grave.name }} {{ grave.last_name }}</a>
+        <a href="{{url_for('pages_user.grave', grave_id=grave.id)}}"> {{ grave.name }} {{ grave.last_name }}</a>
         (parcela: {{ grave.parcel_id }})
     </ol>
     {% endfor %}
@@ -34,7 +34,7 @@
                 {% if parcel.position_x == j %}
                     {% if parcel.position_y == z %}
                         <th width="40" height="40">
-                            <a href="{{url_for('pages.add_grave', p_id=parcel.id)}}"> {{ parcel.id }}  </a>
+                            <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }}  </a>
                         </th>
                     {% endif %}
                 {% endif %}

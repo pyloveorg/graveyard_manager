@@ -3,9 +3,9 @@
 {% block head %}
 {% if request.url_rule.endpoint == 'pages.register' %}
     <title>Cmentarz - rejestracja</title>
-{% elif request.url_rule.endpoint == 'pages.user_set_pw' %}
+{% elif request.url_rule.endpoint == 'pages_user.user_set_pw' %}
     <title>Cmentarz - zmiana hasła</title>
-{% elif request.url_rule.endpoint == 'pages.user_set_data' %}
+{% elif request.url_rule.endpoint == 'pages_user.user_set_data' %}
     <title>Cmentarz - zmiana danych</title>
 {% endif %}
 {% endblock %}
@@ -24,19 +24,19 @@
 <div class="succes_msg" id="email_field_succes"></div>
 {% endif %}
 
-{% if request.url_rule.endpoint == 'pages.user_set_pw' %}
+{% if request.url_rule.endpoint == 'pages_user.user_set_pw' %}
 <div class="input_category">Zmiana hasła:</div>
-{% elif request.url_rule.endpoint == 'pages.user_set_data' %}
+{% elif request.url_rule.endpoint == 'pages_user.user_set_data' %}
 <div class="input_category">Zmiana danych osobowych:</div>
 {% endif %}
 
-{% if request.url_rule.endpoint in ['pages.user_set_data', 'pages.user_set_pw']  %}
+{% if request.url_rule.endpoint in ['pages_user.user_set_data', 'pages_user.user_set_pw']  %}
 <!-- stare hasło (aktualne) -->
 <div>{{ render_field(form_oldpw.old_password, class="input_field") }}</div>
 <div class="error_msg" id="old_pw_field_error"></div>
 {% endif %}
 
-{% if request.url_rule.endpoint in ['pages_log_sys.register', 'pages.user_set_pw']  %}
+{% if request.url_rule.endpoint in ['pages_log_sys.register', 'pages_user.user_set_pw']  %}
 <!-- rejestracja uzytkownika/zmiana hasła, podanie hasła -->
 <div>{{ render_field(form_pw.password, class="input_field") }}</div>
 <!-- rejestracja uzytkownika/zmiana hasła, powtórz hasło -->
@@ -48,7 +48,7 @@
 <div class="input_category">Dane dodatkowe:</div>
 {% endif %}
 
-{% if request.url_rule.endpoint in ['pages_log_sys.register', 'pages.user_set_data']  %}
+{% if request.url_rule.endpoint in ['pages_log_sys.register', 'pages_user.user_set_data']  %}
 <div style="float: left">{{ render_field(form_data.name, class="input_field_1_2") }}</div>
 <div style="float: left">{{ render_field(form_data.last_name, class="input_field_1_2") }}</div>
 <div style="float: left">{{ render_field(form_data.city, class="input_field_3_4") }}</div>
@@ -64,9 +64,9 @@
 <a class="small_redirect_text" href="{{url_for('pages_log_sys.login')}}">Masz już konto? Zaloguj się!</a>
 {% endif %}
 
-{% if request.url_rule.endpoint in ['pages.user_set_pw', 'pages.user_set_data'] %}
+{% if request.url_rule.endpoint in ['pages_user.user_set_pw', 'pages_user.user_set_data'] %}
 <input class ="log_reg_button" type=submit value="Zmień">
-<a class="small_redirect_text" href="{{url_for('pages.user_page')}}">Powrót bez wprowadzania zmian</a>
+<a class="small_redirect_text" href="{{url_for('pages_user.user_page')}}">Powrót bez wprowadzania zmian</a>
 {% endif %}
 </div>
 </form>
