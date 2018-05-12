@@ -31,7 +31,6 @@ def admin_required(func):
 @admin_required
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
-    # form_obituary = ObituaryForm(request.form)
     form_obituary = ObituaryForm(request.form)
     if request.method == 'POST':
         # parametry z formularza nowej wiadomości
@@ -114,30 +113,33 @@ def message_delete(message_id):
 def obituary_edit(obituary_id):
     """Edycja zamieszczonych nekrologów na stronie głównej."""
     obituary = Obituaries.query.get_or_404(obituary_id)
+    form_obituary = ObituaryForm(request.form,
+                                 name=obituary.name,
+                                 surname=obituary.surname,
+                                 years_old=obituary.years_old,
+                                 death_date=obituary.death_date,
+                                 gender=obituary.gender)
+    funeral_calendar = obituary.funeral_date.strftime('%Y-%m-%d')
+    funeral_clock = obituary.funeral_date.strftime('%H:%M')
     if request.method == 'POST':
-        name = request.form.get('name', False)
-        surname = request.form.get('surname', False)
-        death_date = request.form.get('death_date', False)
-        years_old = request.form.get('years_old', False)
-        gender = request.form.get('gender', True)
         funeral_date = request.form.get('funeral_date', False)
         funeral_time = request.form.get('funeral_time', False)
-        if all([name, surname, death_date, years_old, funeral_date, funeral_time]):
-            # funkcja convert_date z pliku data_func_manage
-            funeral_date = convert_date(funeral_date, funeral_time)
-            death_date = convert_date(death_date)
-            obituary.name = name
-            obituary.surname = surname
-            obituary.death_date = death_date
-            obituary.years_old = int(years_old)
-            obituary.gender = True if gender == 'man' else False
-            obituary.funeral_date = funeral_date
+        if form_obituary.validate() and funeral_date and funeral_time:
+            obituary.name = form_obituary.name.data
+            obituary.surname = form_obituary.surname.data
+            obituary.years_old = form_obituary.years_old.data
+            obituary.death_date = form_obituary.death_date.data
+            obituary.funeral_date = convert_date(funeral_date, funeral_time)
+            obituary.gender = form_obituary.gender.data
             db.session.commit()
             flash('Wiadomość zmodyfikowano pomyślnie!', 'succes')
         else:
-            flash('Nieprawidłowe dane', 'error')
+            flash('Nieprawidłowe dane!', 'error')
         return redirect(url_for('pages.index'))
-    return render_template('obituary_edit.html', obituary=obituary)
+    return render_template('obituary_edit.html',
+                           form_obituary=form_obituary,
+                           funeral_calendar=funeral_calendar,
+                           funeral_clock=funeral_clock)
 
 
 @pages_admin.route('/obituary/<obituary_id>/delete', methods=['GET', 'POST'])
