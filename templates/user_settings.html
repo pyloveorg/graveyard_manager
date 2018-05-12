@@ -36,7 +36,7 @@
 <div class="error_msg" id="old_pw_field_error"></div>
 {% endif %}
 
-{% if request.url_rule.endpoint in ['pages_log_sys.register', 'pages_user.user_set_pw']  %}
+{% if request.url_rule.endpoint in ['pages_log_sys.register', 'pages_user.user_set_pw', 'pages_log_sys.recovery_password']  %}
 <!-- rejestracja uzytkownika/zmiana hasła, podanie hasła -->
 <div>{{ render_field(form_pw.password, class="input_field") }}</div>
 <!-- rejestracja uzytkownika/zmiana hasła, powtórz hasło -->
@@ -64,8 +64,10 @@
 <a class="small_redirect_text" href="{{url_for('pages_log_sys.login')}}">Masz już konto? Zaloguj się!</a>
 {% endif %}
 
-{% if request.url_rule.endpoint in ['pages_user.user_set_pw', 'pages_user.user_set_data'] %}
+{% if request.url_rule.endpoint in ['pages_user.user_set_pw', 'pages_user.user_set_data', 'pages_log_sys.recovery_password'] %}
 <input class ="log_reg_button" type=submit value="Zmień">
+{% endif %}
+{% if request.url_rule.endpoint in ['pages_user.user_set_pw', 'pages_user.user_set_data'] %}
 <a class="small_redirect_text" href="{{url_for('pages_user.user_page')}}">Powrót bez wprowadzania zmian</a>
 {% endif %}
 </div>

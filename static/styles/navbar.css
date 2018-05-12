@@ -10,39 +10,46 @@
 
 
 .nav_button {
-  background-color: #C3B091;
-  height: 42px;
-  text-align: center;
-  line-height: 42px;
-  border-radius: 10px;
+    /* background-color: #C3B091; */
+    background: -moz-radial-gradient(#C3B091, #676767);
+    background: -webkit-radial-gradient(#C3B091, #676767);
+    background: -o-radial-gradient(#C3B091, #676767);
+    height: 42px;
+    text-align: center;
+    line-height: 42px;
+    border-radius: 10px;
 }
 
 .nav_button--right {
-  float: right;
-  min-width: 100px;
-  margin: 8px 8px 8px 0px;
+    float: right;
+    min-width: 100px;
+    margin: 8px 8px 8px 0px;
 }
 
 .nav_button--left {
-  float: left;
-  width: 140px;
-  margin: 8px 0px 8px 8px;
+    float: left;
+    width: 140px;
+    margin: 8px 0px 8px 8px;
 }
 
 .nav_button:hover {
-  background-color: #799966;
+    /* background-color: #799966; */
+    background: -moz-radial-gradient(#799966, #676767);
+    background: -webkit-radial-gradient(#799966, #676767);
+    background: -o-radial-gradient(#799966, #676767);
 }
 
 
 .nav_button > a {
     display: block;
     text-decoration: none;
+    padding: 0px 5px 0px 5px;
     color: #111111;
     height: 42px;
 }
 
 .nav_button > a:hover {
-  color: #343434;
+    color: #343434;
 }
 
 .nav_button--left > a {
