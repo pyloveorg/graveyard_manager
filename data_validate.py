@@ -25,7 +25,7 @@ def is_date_format(date_to_check):
     try:
         datetime.datetime.strptime(date_to_check, '%Y-%m-%d')
         return True
-    except Exception as exc:
+    except Exception:
         return False
 
 
@@ -73,7 +73,7 @@ class DataForm(Form):
                                render_kw={'placeholder': 'nr domu', 'type': 'number', 'min': 1})
     flat_number = StringField('Numer mieszkania:', [digit_or_none],
                               render_kw={'placeholder': 'nr mieszkania', 'type': 'number', 'min': 1}
-                              )
+                             )
 
 
 class EmailForm(Form):

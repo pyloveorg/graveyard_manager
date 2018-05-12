@@ -27,7 +27,7 @@ if (emailField) {
             if (emailPattern.test(emailField.value)){
                 // do sprawdzenia preventDefault() podobno zatrzyma zwracanie undefined ;)
                 if (this.id == 'email'){
-                    checkEmailInDB('email', 'email', '/process');
+                    checkEmailInDB('email', 'email', '/ajax_email');
                 }
                 document.getElementById('email_field_error').innerHTML = ""
                 return true;

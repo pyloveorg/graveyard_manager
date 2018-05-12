@@ -37,9 +37,9 @@ def change_user_pw(user, form_pw, form=True):
 
     form=True oznacza dane brane z wtforms, w innym przypadku form_pw to nowe hasło.
     """
-    pw = form_pw.password.data if form else form_pw
+    pwd = form_pw.password.data if form else form_pw
     unique_value = str(uuid.uuid4())
-    user.password = bcrypt.hashpw(pw.encode('UTF_8'), bcrypt.gensalt())
+    user.password = bcrypt.hashpw(pwd.encode('UTF_8'), bcrypt.gensalt())
     user.token_id = serializer.dumps([user.email, unique_value])
 
 
