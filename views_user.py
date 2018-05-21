@@ -6,11 +6,11 @@ import datetime
 import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required, login_user
-from sqlalchemy import func
+from sqlalchemy import func, and_, or_
 
 # importy nasze
 from data_validate import DataForm, PwForm, OldPwForm
-from db_models import db, User, Grave, Parcel, ParcelType
+from db_models import db, User, Grave, Parcel, ParcelType, Family
 from data_db_manage import change_user_data, change_user_pw
 
 pages_user = Blueprint('pages_user', __name__)
@@ -23,7 +23,12 @@ def user_page():
     graves = Grave.query.filter_by(user_id=current_user.id)
     parcels = Parcel.query.all()
     max_p = db.session.query(func.max(Parcel.position_x)).scalar()
-    return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p)
+    favourite_graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death)\
+        .join(Family)\
+        .filter(and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id))).all()
+
+    return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p,
+                           favourite_graves_list=favourite_graves_list)
 
 
 @pages_user.route('/user/password', methods=['POST', 'GET'])

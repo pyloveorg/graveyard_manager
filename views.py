@@ -4,16 +4,13 @@
 
 # importy modułów py
 import datetime
-
-import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
-from flask_login import LoginManager, login_user, logout_user, current_user, login_required
-from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from flask_login import current_user, login_required
 from sqlalchemy import func, and_, or_
 
 
 # importy nasze
-from db_models import Messages, Obituaries
+from db_models import db, Grave, Parcel, Family, Messages, Obituaries
 
 pages = Blueprint('pages', __name__)
 
@@ -34,21 +31,6 @@ def obituaries():
     return render_template('obituaries.html', obits=obits)
 
 
-@pages.route('/user', methods=['POST', 'GET'])
-@login_required
-def user_page():
-    """Ogólny panel ustawień użytkownika."""
-    graves = Grave.query.filter_by(user_id=current_user.id)
-    parcels = Parcel.query.all()
-    max_p = db.session.query(func.max(Parcel.position_x)).scalar()
-    favourite_graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death)\
-        .join(Family)\
-        .filter(and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id))).all()
-
-    return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p,
-                           favourite_graves_list=favourite_graves_list)
-
- 
 @pages.route('/graves', methods=['GET'])
 def graves():
     search_name = request.args.get('search_name')
@@ -65,6 +47,7 @@ def graves():
             .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
 
     return render_template('graves.html', graves_list=graves_list)
+
 
 @pages.route('/graves/<grave_id>/add-favourite', methods=['GET'])
 @login_required
@@ -85,6 +68,7 @@ def add_favourite(grave_id):
         flash('Nie jesteś zalogowany', 'error')
 
     return redirect('/graves')
+
 
 @pages.route('/user/delete-favourite/<grave_id>', methods=['GET'])
 @login_required
