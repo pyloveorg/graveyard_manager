@@ -6,8 +6,11 @@ from flask import Blueprint, redirect, url_for, render_template, request, flash,
 from flask_login import current_user, login_required
 import datetime
 
-from models import db, User, Messages, Comments, Obituaries
+from data_db_manage import obituary_add_data
+from data_func_manage import convert_date
+from db_models import db, User, Messages, Obituaries
 from mail_sending import msg_to_all_users
+from data_validate import ObituaryForm, is_time_format, is_date_format
 
 pages_admin = Blueprint('pages_admin', __name__)
 
@@ -28,6 +31,7 @@ def admin_required(func):
 @admin_required
 def admin():
     """Panel administratora - wymaga statusu w bazie "admin=True"."""
+    form_obituary = ObituaryForm(request.form)
     if request.method == 'POST':
         # parametry z formularza nowej wiadomości
         post_title = request.form.get('post_header', False)
@@ -36,11 +40,6 @@ def admin():
         email_title = request.form.get('email_title', False)
         email_content = request.form.get('email_content', False)
         # parametry z formularza dla nowego nekrologu
-        name = request.form.get('name', False)
-        surname = request.form.get('surname', False)
-        death_date = request.form.get('death_date', False)
-        years_old = request.form.get('years_old', False)
-        gender = request.form.get('gender', True)
         funeral_date = request.form.get('funeral_date', False)
         funeral_time = request.form.get('funeral_time', False)
         if post_title and post_content:
@@ -56,27 +55,22 @@ def admin():
             users = User.query.filter_by(active_user=True)
             msg_to_all_users(email_title, email_content, users)
             flash('Wysyłanie wiadomości zakończone!', 'succes')
-        elif all([name, surname, death_date, years_old, funeral_date, funeral_time]):
-            # dodawanie nowego nekrologu
-            gender = True if gender == 'man' else False
-            funeral_date = (datetime.datetime.strptime(funeral_date, '%Y-%m-%d') +
-                            datetime.timedelta(hours=datetime.datetime.strptime(funeral_time,
-                                                                                '%H:%M').hour,
-                                               minutes=datetime.datetime.strptime(funeral_time,
-                                                                                  '%H:%M').minute))
-            new_obituary = Obituaries(name=name,
-                                      surname=surname,
-                                      years_old=int(years_old),
-                                      death_date=datetime.datetime.strptime(death_date, '%Y-%m-%d'),
-                                      gender=gender,
-                                      funeral_date=funeral_date)
+        elif all([form_obituary.validate(),
+                  is_time_format(funeral_time),
+                  is_date_format(funeral_date)]):
+            # funkcja importowana z modułu data_db_manage
+            new_obituary = obituary_add_data(form_obituary,
+                                             funeral_date,
+                                             funeral_time,
+                                             calendar_is_html=True,
+                                             clock_is_str=True)
             db.session.add(new_obituary)
             db.session.commit()
             flash('Dodano nowy nekrolog!', 'succes')
         else:
             flash('Nieprawidłowe dane', 'error')
         return redirect(url_for('pages_admin.admin'))
-    return render_template('admin_page.html')
+    return render_template('admin_page.html', form_obituary=form_obituary)
 
 
 @pages_admin.route('/message/<message_id>/edit', methods=['GET', 'POST'])
@@ -113,24 +107,39 @@ def message_delete(message_id):
     return render_template('message_delete.html', message=message)
 
 
-# @pages_admin.route('/obituary/<obituary_id>/edit', methods=['GET', 'POST'])
-# @login_required
-# @admin_required
-# def obituary_edit(obituary_id):
-#     """Edycja zamieszczonych nekrologów na stronie głównej."""
-#     obituary = Obituaries.query.get_or_404(obituary_id)
-#     if request.method == 'POST':
-#         post_title = request.form.get('post_header', False)
-#         post_content = request.form.get('post_content', False)
-#         if post_title and post_content:
-#             message.title = post_title
-#             message.content = post_content
-#             db.session.commit()
-#             flash('Wiadomość zmodyfikowano pomyślnie!', 'succes')
-#         else:
-#             flash('Nieprawidłowe dane', 'error')
-#         return redirect(url_for('pages.index'))
-#     return render_template('message_edit.html', obituary=obituary)
+@pages_admin.route('/obituary/<obituary_id>/edit', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def obituary_edit(obituary_id):
+    """Edycja zamieszczonych nekrologów na stronie głównej."""
+    obituary = Obituaries.query.get_or_404(obituary_id)
+    form_obituary = ObituaryForm(request.form,
+                                 name=obituary.name,
+                                 surname=obituary.surname,
+                                 years_old=obituary.years_old,
+                                 death_date=obituary.death_date,
+                                 gender=obituary.gender)
+    funeral_calendar = obituary.funeral_date.strftime('%Y-%m-%d')
+    funeral_clock = obituary.funeral_date.strftime('%H:%M')
+    if request.method == 'POST':
+        funeral_date = request.form.get('funeral_date', False)
+        funeral_time = request.form.get('funeral_time', False)
+        if form_obituary.validate() and funeral_date and funeral_time:
+            obituary.name = form_obituary.name.data
+            obituary.surname = form_obituary.surname.data
+            obituary.years_old = form_obituary.years_old.data
+            obituary.death_date = form_obituary.death_date.data
+            obituary.funeral_date = convert_date(funeral_date, funeral_time)
+            obituary.gender = form_obituary.gender.data
+            db.session.commit()
+            flash('Wiadomość zmodyfikowano pomyślnie!', 'succes')
+        else:
+            flash('Nieprawidłowe dane!', 'error')
+        return redirect(url_for('pages.index'))
+    return render_template('obituary_edit.html',
+                           form_obituary=form_obituary,
+                           funeral_calendar=funeral_calendar,
+                           funeral_clock=funeral_clock)
 
 
 @pages_admin.route('/obituary/<obituary_id>/delete', methods=['GET', 'POST'])

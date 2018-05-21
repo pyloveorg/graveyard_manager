@@ -6,11 +6,11 @@
 {% block body %}
 {% include 'flash_msg.html' %}
     {% from "_formhelpers.html" import render_field %}
-    Dalsze instrukcje odzyskania hasła zostaną wysłane na podany adres e-mail.
+    <div>Dalsze instrukcje odzyskania hasła zostaną wysłane na podany adres e-mail.</div>
     <div id="login_box">
         <form method="post">
             <div class="input_category">Podaj adres email:</div>
-            <div>{{ render_field(form_email.email, class="input_field") }}</div>
+            <div>{{ render_field(form_email.email, id="email_recovery", class="input_field") }}</div>
             <input class ="log_reg_button" type=submit value="Wyślij">
         </form>
     </div>

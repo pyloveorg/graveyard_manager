@@ -1,0 +1,28 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Panel Administratora</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin.css') }}"/>
+{% endblock %}
+{% block body %}
+{% include 'flash_msg.html' %}
+{% from "_formhelpers.html" import render_field %}
+<div id="new_obituary" class="admin_option_button"><span>Dodaj nowy nekrolog</span></div>
+<div id="new_obituary_box" class="admin_option_box" style="display: block;">
+    <form method="POST">
+        {{ render_field(form_obituary.name, class="text_input post_header") }}
+        {{ render_field(form_obituary.surname, class="text_input post_header") }}
+        {{ render_field(form_obituary.years_old, class="text_input post_header") }}
+        {{ render_field(form_obituary.death_date, class="text_input post_header") }}
+        <div class="check_option">Data i godzina pogrzebu:</div>
+        <input class="text_input post_header" name="funeral_date" type="date" value="{{ funeral_calendar }}" required>
+        <input class="text_input post_header" name="funeral_time" type="time" value="{{ funeral_clock }}" required>
+        {% for subfield in form_obituary.gender %}
+        <div class="check_option">
+            <td>{{ subfield }}</td>
+            <td>{{ subfield.label }}</td>
+        </div>
+        {% endfor %}
+        <input class="send_data" type="submit" value="Wyślij">
+    </form>
+</div>
+{% endblock %}

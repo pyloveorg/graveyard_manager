@@ -2,9 +2,11 @@
 # -*- coding: UTF-8 -*-
 """Plik do walidacji danych."""
 # importy modułów py
+import datetime
 import re
 from urllib.parse import urlparse
-from wtforms import Form, StringField, PasswordField
+from wtforms import Form, StringField, PasswordField, IntegerField, RadioField
+from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to
 
 
@@ -13,6 +15,21 @@ def is_safe_next(next_page):
     return not urlparse(next_page).netloc
 
 
+def is_time_format(time_to_check):
+    """Funkcja sprawdza czy czas ma prawidłowy format: HH:MM:SS w zakresie 00:00:00 do 23:59:59."""
+    return True if re.search(r'(^[0-1][0-9]|2[0-3])(:[0-5][0-9]){1,2}$', time_to_check) else False
+
+
+def is_date_format(date_to_check):
+    """Funkcja sprawdza czy data w formacie str jest prawidłowa."""
+    try:
+        datetime.datetime.strptime(date_to_check, '%Y-%m-%d')
+        return True
+    except Exception:
+        return False
+
+
+# walidacja danych użytkownika
 class PwForm(Form):
     """Klasa wtforms do ustalania hasła użytkownika."""
 
@@ -56,7 +73,7 @@ class DataForm(Form):
                                render_kw={'placeholder': 'nr domu', 'type': 'number', 'min': 1})
     flat_number = StringField('Numer mieszkania:', [digit_or_none],
                               render_kw={'placeholder': 'nr mieszkania', 'type': 'number', 'min': 1}
-                              )
+                             )
 
 
 class EmailForm(Form):
@@ -76,3 +93,17 @@ class LoginForm(Form):
                               render_kw={'placeholder': 'adres e-mail'})
     password = PasswordField('Hasło', [input_required(message='Pole wymagane!')],
                              render_kw={'placeholder': 'hasło'})
+
+
+# walidacja danych podawanych przez administratora
+class ObituaryForm(Form):
+    """Klasa wtforms do walidacji tworzonych nekrologów."""
+
+    name = StringField('Imię', [input_required(message='Pole wymagane!')],
+                       render_kw={'required': True})
+    surname = StringField('Nazwisko', [input_required(message='Pole wymagane!')],
+                          render_kw={'required': True})
+    years_old = IntegerField('Wiek', [input_required(message='Pole wymagane!')],
+                             render_kw={'required': True, 'type': 'number', 'min': 0, 'max': 150})
+    death_date = DateField('Data śmierci', format='%Y-%m-%d', render_kw={'required': True})
+    gender = RadioField('Płeć', choices=[('man', 'Mężczyzna'), ('woman', 'Kobieta')], default='man')
