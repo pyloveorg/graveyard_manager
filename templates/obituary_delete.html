@@ -1,0 +1,23 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Panel Administratora</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin.css') }}"/>
+{% endblock %}
+{% block body %}
+{% include 'flash_msg.html' %}
+<div id="new_post" class="admin_option_button" style="cursor: default"><span>Usuwanie nekrologu</span></div>
+<div id="new_post_box" class="admin_option_box" style="display: block;">
+    <div class="warning">UWAGA: używasz właśnie opcji usuwania nekrologu, spowoduje to całkowite jego usunięcie, procesu tego nie będzie można cofnąć!</div>
+    <form method="POST">
+        <input class="text_input post_header" type="text" value="Imię: {{ obituary.name }}" disabled>
+        <input class="text_input post_header" type="text" value="Nazwisko: {{ obituary.surname }}" disabled>
+        <input class="text_input post_header" type="text" value="Data śmierci: {{ obituary.death_date.strftime('%Y-%m-%d') }}" disabled>
+        <input class="text_input post_header" type="text" value="Wiek: {{ obituary.years_old }} lat" disabled>
+        <input class="text_input post_header" type="text" value="Data pogrzebu: {{ obituary.funeral_date.strftime('%Y-%m-%d')}} o godzinie:
+ {{ obituary.funeral_date.strftime('%H:%M') }}" disabled>
+        <input class="check_option" type="radio" name="gender" value="man" {% if obituary.gender %} checked {% endif %} disabled> Mężczyzna
+        <input type="radio" name="gender" value="woman" {% if not obituary.gender %} checked {% endif %} disabled> Kobieta
+        <input class="send_data" type="submit" value="Usuń">
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Strona prywatna cmentarza xyz" />
+    <meta name="keywords" content="śmierć, zgon, trumna, cmentarz, pogrzeb, grób, groby" />
+    <meta http-equiv="Refresh" content="5;url={{url_for('pages.index')}}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/background.css') }}"/>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/page_404.css') }}"/>
+</head>
+<body>
+<div id="box">
+    <br /><br /><br /><br /><br />
+    <img src="{{ url_for('static', filename='pictures/tomb.png') }}">
+    <div id="head_error">Błąd 404</div>
+    <div id="msg_error">Nie znaleziono podanego adresu, za chwile zostaniesz przekierowany na stronę główną.</div>
+    <img id="death" src="{{ url_for('static', filename='pictures/death_icon.png') }}">
+</div>
+</body>

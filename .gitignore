@@ -4,3 +4,5 @@ __pycache__
 *.db
 test.py
 config.py
+uwsgi.ini
+venv

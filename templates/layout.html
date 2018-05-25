@@ -4,15 +4,15 @@
     <meta charset="UTF-8">
     <meta name="description" content="Strona prywatna cmentarza xyz" />
     <meta name="keywords" content="śmierć, zgon, trumna, cmentarz, pogrzeb, grób, groby" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/styles.css') }}"/>
-    <script type="text/javascript" src="{{ url_for('static', filename='scripts/temp_messages.js') }} "></script>
+    {% include 'include_styles.html' %}
     {% block head %}{% endblock %}
 </head>
 <body>
 {% include 'navbar.html' %}
 <div id="box">
+    <br /><br /><br />
     {% block body %}{% endblock %}
 </div>
+{% include 'include_scripts.html' %}
 </body>
 </html>

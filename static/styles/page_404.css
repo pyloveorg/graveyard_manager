@@ -1,0 +1,29 @@
+#box {
+    width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+}
+
+#head_error {
+    font-size: 32px;
+    font-weight: bold;
+}
+
+#msg_error {
+    font-size: 20px;
+}
+
+/* wygląd i rozmiar ducha */
+#death {
+    display: block;
+    width: 70px;
+    height: 70px;
+    animation: death_move 5s 1 linear forwards;
+}
+
+/* animacja */
+@keyframes death_move {
+    from {margin-left: 0px;opacity:0;}
+    to {margin-left: 900px;opacity:1;}
+}

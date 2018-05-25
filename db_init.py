@@ -4,21 +4,21 @@
 
 Uwaga - tylko do jednokrotnego użycia gdy baza danych nie istnieje!!!
 """
+# importy modułów py
+import itertools
+from sqlalchemy import event
+import numpy as np
 
 # importy nasze
 from main import app, db
-from models import Parcel, ParcelType
+from db_models import Parcel, ParcelType
 
-# importy modułów py
-from sqlalchemy import event
-import numpy as np
-import itertools
 
 app.app_context().push()
 db.create_all()
 print('utworzono bazę danych')
 
-
+print('tworzenie danych dodatkowych')
 @event.listens_for(Parcel.__table__, 'after_create')
 def insert_initial_coordinates(max_p):
     """Funkcja generująca koordynaty dla cmentarza o wymiarach 1 x max_p."""
@@ -54,5 +54,6 @@ def insert_initial_types():
     db.session.commit()
 
 
-insert_initial_coordinates(20)
+insert_initial_coordinates(10)
 insert_initial_types()
+print('zakonczono cały proces :)')

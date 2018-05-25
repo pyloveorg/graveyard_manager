@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Cmentarz - panel użytkownika</title>
+{% endblock %}
+{% block body %}
+{% include 'flash_msg.html' %}
+
+<h3>Lista grobów</h3>
+
+<p><b>Filtruj</b></p>
+
+<form method="get" action="/graves">
+    Imię <input type="search" name="search_name">
+    Nazwisko <input type="search" name="search_last_name">
+    <button type="submit">Filtruj</button>
+
+</form>
+
+<p></p>
+
+
+
+<table style="width:100%">
+
+    <tr>
+    <th><b>Imię</b></th>
+    <th><b>Nazwisko</b></th>
+    <th><b>Data urodzenia</b></th>
+    <th><b>Data śmierci</b></th>
+        <th><b>Numer parceli</b></th>
+        <th><b>Znany grób</b></th>
+
+    </tr>
+
+
+    {% for grave in graves_list %}
+
+        <tr>
+
+            <td>{{ grave.name }}</td>
+            <td>{{ grave.last_name}}</td>
+            <td>{{ grave.day_of_birth}}</td>
+            <td>{{ grave.day_of_death}}</td>
+            <td>{{ grave.parcel_id}}</td>
+            <td><a href="/graves/{{grave.id}}/add-favourite">Dodaj</a></td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}

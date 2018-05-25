@@ -1,0 +1,33 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Panel Administratora</title>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin.css') }}"/>
+{% endblock %}
+{% block body %}
+{% include 'flash_msg.html' %}
+<p class="simple_txt">
+<b>Umarłych wieczność dotąd trwa, dokąd pamięcią się im płaci.
+Chwiejna waluta. Nie ma dnia, by ktoś wieczności swej nie tracił.</b>
+Wisława Szymborska - "Rehabilitacja"
+</p>
+{% for obit in obits %}
+<div class="outside_border">
+    <div class="inside_border">
+        {% if current_user.admin %}
+        <a href="{{url_for('pages_admin.obituary_delete', obituary_id=obit.id)}}">
+            <img class="delete_icon" src="{{ url_for('static', filename='pictures/delete_icon.png') }}" alt="usuwanie">
+        </a>
+        <a href="{{url_for('pages_admin.obituary_edit', obituary_id=obit.id)}}">
+            <img class="edit_icon" src="{{ url_for('static', filename='pictures/edit-icon.png') }}" alt="edycja">
+        </a>
+        {% endif %}
+        <div><img class="cross_icon" src="{{ url_for('static', filename='pictures/cross.png') }}" alt="krzyz"></div>
+        <p>Z przykrością zawiadamiamy, że dnia {{obit.death_date.strftime('%Y-%m-%d')}}<br />
+            {% if obit.gender %}Zmarł{% else %}Zmarła{% endif %} w wieku {{obit.years_old}} lat:</p>
+        <p class="obituary_name">Ś.P. {{obit.name}} {{obit.surname}}</p>
+        <p>Pogrzeb odbędzie się dnia {{obit.funeral_date.strftime('%Y-%m-%d')}} o godzinie {{obit.funeral_date.strftime('%H:%M')}}
+            <br />w kościele przy cmentarzu XYZ</p>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}

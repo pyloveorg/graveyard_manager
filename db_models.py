@@ -74,3 +74,25 @@ class Payments(db.Model):
     payment_amount = db.Column(db.Float, nullable=False)
     amount_paid = db.Column(db.Float, nullable=False)
     payment_date = db.Column(db.DateTime(), nullable=False)
+
+
+class Messages(db.Model):
+    """Tabela przechowująca posty administratora na stronę główną."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(50), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    create_date = db.Column(db.DateTime(), nullable=False)
+
+
+class Obituaries(db.Model):
+    """Tabela do przechowywania nekrologów."""
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(80), nullable=False)
+    surname = db.Column(db.String(120), nullable=False)
+    # man // woman
+    gender = db.Column(db.String(5))
+    years_old = db.Column(db.Integer)
+    death_date = db.Column(db.DateTime(), nullable=False)
+    funeral_date = db.Column(db.DateTime(), nullable=False)

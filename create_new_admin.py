@@ -4,7 +4,7 @@
 import uuid
 import bcrypt
 from itsdangerous import URLSafeSerializer
-from models import User
+from db_models import User
 from main import db, app
 from config import APP
 
