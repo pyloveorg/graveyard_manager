@@ -1,13 +1,50 @@
 {% extends 'layout.html' %}
 {% block head %}
-
 <title>Cmentarz - panel użytkownika</title>
-
 {% endblock %}
-
 {% block body %}
-
 {% include 'flash_msg.html' %}
+
+<style>
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+.parcel_taken {
+    background:#454545;
+    padding:10px 20px;
+    -webkit-border-radius:5px;
+    box-sizing: border-box;
+}
+
+.parcel_free {
+    background:#d2d2d2;
+    padding:10px 20px;
+    -webkit-border-radius:5px;
+    box-sizing: border-box;
+}
+
+
+</style>
 
 <a href="{{ url_for('pages_user.user_set_pw') }}">zmiana hasła</a>
 <br>
@@ -26,16 +63,30 @@
 
 <h3>Podgląd mapy cmentarza</h3>
 <p>Wybierz wolną parcelę w celu rezerwacji grobu</p>
-<table width="800" bgcolor="white" border="1px" align="center">
+<table width="700"  align="center" class="table">
     {% for j in range(1, max_p+1) %}
       <tr>
           {% for z in range(1, max_p+1) %}
             {% for parcel in parcels %}
                 {% if parcel.position_x == j %}
                     {% if parcel.position_y == z %}
-                        <th width="40" height="40">
-                            <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }}  </a>
+                        {% if parcel.id in taken_parcels %}
+                        <th width="40" height="40" class="parcel_taken">
+                            <div class="tooltip"><a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"
+                               style="color:#FFFFFF;text-decoration:none;"> {{ parcel.id }} </a>
+                                  <span class="tooltiptext"> Parcela zajęta
+                                  </span>
+                            </div>
                         </th>
+                        {% else %}
+                        <th width="40" height="40" class="parcel_free">
+                            <div class="tooltip">
+                            <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"
+                               style="color:#FFFFFF;text-decoration:none;"> {{ parcel.id }} </a>
+                                <span class="tooltiptext"> Wybierz parcelę {{ parcel.id }} </span>
+                            </div>
+                        </th>
+                        {% endif %}
                     {% endif %}
                 {% endif %}
             {% endfor %}

@@ -9,7 +9,7 @@ from flask_login import current_user, login_required, login_user
 from sqlalchemy import func
 
 # importy nasze
-from data_validate import DataForm, PwForm, OldPwForm
+from data_validate import DataForm, PwForm, OldPwForm, GraveForm
 from db_models import db, User, Grave, Parcel, ParcelType
 from data_db_manage import change_user_data, change_user_pw
 
@@ -22,8 +22,13 @@ def user_page():
     """Ogólny panel ustawień użytkownika."""
     graves = Grave.query.filter_by(user_id=current_user.id)
     parcels = Parcel.query.all()
+    # prices = Parcel.query.get(Parcel.parcel_type_id)
+    taken_parcels = []
+    for p, g in db.session.query(Parcel, Grave).filter(Parcel.id == Grave.parcel_id):
+        taken_parcels.append(p.id)
     max_p = db.session.query(func.max(Parcel.position_x)).scalar()
-    return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p)
+    return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p,
+                           taken_parcels=taken_parcels)
 
 
 @pages_user.route('/user/password', methods=['POST', 'GET'])
@@ -76,8 +81,10 @@ def user_set_data():
 
 @pages_user.route('/add_grave/<p_id>', methods=['POST', 'GET'])
 def add_grave(p_id):
-    parcel = Parcel.query.filter_by(id=p_id).scalar()
+    parcel = Parcel.query.filter_by(id=p_id).first()
     p_id = parcel.id
+    parcel_grave = Parcel.query.filter_by(id=p_id).first()
+    parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
     if Grave.query.filter_by(parcel_id=p_id).first() is None:
         if request.method == 'POST':
             name = request.form['name']
@@ -90,13 +97,23 @@ def add_grave(p_id):
                               last_name=last_name,
                               day_of_birth=day_of_birth,
                               day_of_death=day_of_death)
-            db.session.add(new_grave)
-            db.session.commit()
-            return redirect(url_for('pages_user.user_page'))
-        return render_template('add_grave.html', p_id=p_id, parcel=parcel)
+
+            if request.form['day_of_birth'] <= request.form['day_of_death']:
+                db.session.add(new_grave)
+                db.session.commit()
+                return redirect(url_for('pages_user.user_page'))
+
+            else:
+                flash('Nieprawidłowe dane!', 'error')
+                return redirect(url_for('pages_user.add_grave', p_id=p_id, parcel=parcel))
+
+
+        return render_template('add_grave.html', p_id=p_id, parcel=parcel, parcel_type=parcel_type)
+
     else:
         flash('Ta parcela jest już zajęta', 'error')
         return redirect(url_for('pages_user.user_page'))
+
 
 
 @pages_user.route('/grave/<grave_id>', methods=['POST', 'GET'])
@@ -121,3 +138,11 @@ def delete_grave(grave_id):
     db.session.delete(grave)
     db.session.commit()
     return redirect(url_for('pages_user.user_page'))
+
+
+# grave.name = grave_form.name.data
+                # grave.user_id = current_user.id
+                # grave.parcel_id = p_id
+                # grave.last_name = grave_form.last_name.data
+                # grave.day_of_birth = grave_form.day_of_birth.data
+                # grave.day_of_death = grave_form.day_of_death.data
