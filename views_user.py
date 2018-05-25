@@ -6,11 +6,12 @@ import datetime
 import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required, login_user
-from sqlalchemy import func
+from sqlalchemy import func, and_, or_
 
 # importy nasze
-from data_validate import DataForm, PwForm, OldPwForm, GraveForm
-from db_models import db, User, Grave, Parcel, ParcelType
+
+from data_validate import DataForm, PwForm, OldPwForm
+from db_models import db, User, Grave, Parcel, ParcelType, Family
 from data_db_manage import change_user_data, change_user_pw
 
 pages_user = Blueprint('pages_user', __name__)
@@ -27,8 +28,13 @@ def user_page():
     for p, g in db.session.query(Parcel, Grave).filter(Parcel.id == Grave.parcel_id):
         taken_parcels.append(p.id)
     max_p = db.session.query(func.max(Parcel.position_x)).scalar()
+
+    favourite_graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death)\
+        .join(Family)\
+        .filter(and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id))).all()
+
     return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p,
-                           taken_parcels=taken_parcels)
+                           favourite_graves_list=favourite_graves_list, taken_parcels=taken_parcels)
 
 
 @pages_user.route('/user/password', methods=['POST', 'GET'])
@@ -138,11 +144,3 @@ def delete_grave(grave_id):
     db.session.delete(grave)
     db.session.commit()
     return redirect(url_for('pages_user.user_page'))
-
-
-# grave.name = grave_form.name.data
-                # grave.user_id = current_user.id
-                # grave.parcel_id = p_id
-                # grave.last_name = grave_form.last_name.data
-                # grave.day_of_birth = grave_form.day_of_birth.data
-                # grave.day_of_death = grave_form.day_of_death.data

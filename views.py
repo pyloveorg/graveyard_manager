@@ -4,10 +4,13 @@
 
 # importy modułów py
 import datetime
-from flask import render_template, redirect, url_for, Blueprint
+from flask import render_template, request, redirect, url_for, flash, Blueprint
+from flask_login import current_user, login_required
+from sqlalchemy import func, and_, or_
+
 
 # importy nasze
-from db_models import Messages, Obituaries
+from db_models import db, Grave, Parcel, Family, Messages, Obituaries
 
 pages = Blueprint('pages', __name__)
 
@@ -26,6 +29,55 @@ def obituaries():
     obits = Obituaries.query.order_by(Obituaries.funeral_date.asc()).filter(
         Obituaries.funeral_date >= today_date)
     return render_template('obituaries.html', obits=obits)
+
+
+@pages.route('/graves', methods=['GET'])
+def graves():
+    search_name = request.args.get('search_name')
+    search_last_name = request.args.get('search_last_name')
+    if not search_name and not search_last_name:
+        #tworzy listę grobów
+        graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,
+                                       Grave.parcel_id)
+    else:
+        #wyszukiwarka
+        search_like_name = '%'+search_name+'%'
+        search_like_last_name = '%' + search_last_name + '%'
+        graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id)\
+            .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
+
+    return render_template('graves.html', graves_list=graves_list)
+
+
+@pages.route('/graves/<grave_id>/add-favourite', methods=['GET'])
+@login_required
+def add_favourite(grave_id):
+    if current_user.is_authenticated:
+        is_family = db.session.query(Family.user_id, Family.grave_id).\
+            filter(Family.user_id == current_user.id, Family.grave_id == grave_id).first()
+        if not is_family:
+            new_favourite = Family(user_id=current_user.id,
+                                   grave_id=grave_id)
+            db.session.add(new_favourite)
+            db.session.commit()
+            flash('Dodano do znanych grobów', 'succes')
+        else:
+            flash('Ten grób jest już w znanych grobach', 'error')
+
+    else:
+        flash('Nie jesteś zalogowany', 'error')
+
+    return redirect('/graves')
+
+
+@pages.route('/user/delete-favourite/<grave_id>', methods=['GET'])
+@login_required
+def delete_favourite(grave_id):
+    pass
+    # my_favourite = Family.query.filter_by(id=grave_id).first()
+    # db.session.delete(my_favourite)
+    # db.session.commit()
+    # return redirect(url_for('pages.user_page'))
 
 
 @pages.app_errorhandler(404)
