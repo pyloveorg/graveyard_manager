@@ -2,12 +2,23 @@
     position: fixed;
     z-index: 10;
     width: 100%;
-    height: 58px;
+    height: 160px;
     background-color: #676767;
     border-top: 1px solid #222222;
     border-bottom: 1px solid #222222;
 }
 
+#btn_container {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1000px;
+}
+
+#up_bar {
+   height: 100px;
+   background-color: #9a9a9a;
+   width: 100%;
+}
 
 .nav_button {
     /* background-color: #C3B091; */
