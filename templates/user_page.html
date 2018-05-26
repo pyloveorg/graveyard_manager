@@ -26,9 +26,12 @@
         (parcela: {{ grave.parcel_id }})
     </ol>
     {% endfor %}
+
 {% endif %}
 
-<h3>Ulubione groby</h3>
+<h3>Znane groby</h3>
+
+{% if favourite_graves_list %}
 
 <table border>
 <tr>
@@ -55,8 +58,10 @@
 
 </table>
 
-</table>
+{% else %}
+Nie masz znanych grobów
 
+{% endif %}
 
 <h3>Podgląd mapy cmentarza</h3>
 <p>Wybierz wolną parcelę w celu rezerwacji grobu</p>

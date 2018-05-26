@@ -1,7 +1,7 @@
 {% extends 'layout.html' %}
 {% block head %}
 <title>Panel Administratora</title>
-<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin.css') }}"/>
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/admin_2.css') }}"/>
 {% endblock %}
 {% block body %}
 {% include 'flash_msg.html' %}
@@ -46,6 +46,6 @@
     </form>
 </div>
 <!-- inna opcja -->
-<div id="" class="admin_option_button"><span>???</span></div>
+<div id="" class="admin_option_button"><span></span></div>
 <script type="text/javascript" src="{{ url_for('static', filename='scripts/admin.js') }} "></script>
 {% endblock %}

@@ -1,0 +1,122 @@
+body {
+    background-color: #ffffff;
+    margin: auto;
+}
+
+#box {
+    background-color: #ffffff;
+    width: 55%;
+    min-height: 100vh;
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 210px;
+}
+
+h1 {
+    display: block;
+    font-size: 2em;
+    margin-top: 0.67em;
+    margin-bottom: 0.67em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h2 {
+    display: block;
+    font-size: 1.5em;
+    margin-top: 0.83em;
+    margin-bottom: 0.83em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h3 {
+    display: block;
+    font-size: 1.17em;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+h4 {
+    display: block;
+    font-size: 1em;
+    margin-top: 1.33em;
+    margin-bottom: 1.33em;
+    margin-left: 0;
+    margin-right: 0;
+    font-weight: bold;
+}
+
+/* messages on index page */
+.info_on_main_page {
+    width: 95%;
+    min-height: 50px;
+    margin-left: 2.5%;
+    margin-top: 15px;
+    clear: both;
+}
+
+.info_on_main_page_news {
+    width: 95%;
+    min-height: 20px;
+    margin-left: 2.5%;
+}
+
+.info_on_main_page > p.admin_msg {
+    white-space: pre-wrap;
+}
+
+.small_txt_info {
+    font-size: 12px;
+    text-align: left;
+}
+
+.edit_icon {
+    display: block;
+    float: right;
+    width: 30px;
+    height: 30px;
+}
+
+.delete_icon {
+    display: block;
+    float: right;
+    width: 30px;
+    height: 30px;
+}
+
+/* obituaries style */
+.outside_border {
+    background-color: #ffffff;
+    width: 100%;
+    border: 1px solid black;
+}
+
+.inside_border {
+    background-color: #ffffff;
+    width: calc(100%-30px);
+    height: calc(100%-30px);
+    border: 5px solid black;
+    text-align: center;
+    margin: 15px;
+}
+
+.cross_icon {
+    width: 90px;
+    height: 90px;
+}
+
+.obituary_name {
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.simple_txt {
+    text-align: left;
+    white-space: pre;
+}

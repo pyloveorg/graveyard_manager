@@ -52,20 +52,17 @@ def graves():
 @pages.route('/graves/<grave_id>/add-favourite', methods=['GET'])
 @login_required
 def add_favourite(grave_id):
-    if current_user.is_authenticated:
-        is_family = db.session.query(Family.user_id, Family.grave_id).\
-            filter(Family.user_id == current_user.id, Family.grave_id == grave_id).first()
-        if not is_family:
-            new_favourite = Family(user_id=current_user.id,
-                                   grave_id=grave_id)
-            db.session.add(new_favourite)
-            db.session.commit()
-            flash('Dodano do znanych grobów', 'succes')
-        else:
-            flash('Ten grób jest już w znanych grobach', 'error')
 
+    is_family = db.session.query(Family.user_id, Family.grave_id).\
+        filter(Family.user_id == current_user.id, Family.grave_id == grave_id).first()
+    if not is_family:
+        new_favourite = Family(user_id=current_user.id,
+                               grave_id=grave_id)
+        db.session.add(new_favourite)
+        db.session.commit()
+        flash('Dodano do znanych grobów', 'succes')
     else:
-        flash('Nie jesteś zalogowany', 'error')
+        flash('Ten grób jest już w znanych grobach', 'error')
 
     return redirect('/graves')
 
