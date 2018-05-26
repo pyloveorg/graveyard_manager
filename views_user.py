@@ -23,7 +23,6 @@ def user_page():
     """Ogólny panel ustawień użytkownika."""
     graves = Grave.query.filter_by(user_id=current_user.id)
     parcels = Parcel.query.all()
-    # prices = Parcel.query.get(Parcel.parcel_type_id)
     taken_parcels = []
     for p, g in db.session.query(Parcel, Grave).filter(Parcel.id == Grave.parcel_id):
         taken_parcels.append(p.id)
@@ -93,33 +92,40 @@ def add_grave(p_id):
     parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
     if Grave.query.filter_by(parcel_id=p_id).first() is None:
         if request.method == 'POST':
-            name = request.form['name']
-            last_name = request.form['last_name']
+            name = (request.form['name']).title()
+            last_name = request.form['last_name'].title()
             day_of_birth = datetime.datetime.strptime(request.form['day_of_birth'], '%Y-%m-%d')
-            day_of_death = datetime.datetime.strptime(request.form['day_of_death'], '%Y-%m-%d')
-            new_grave = Grave(user_id=current_user.id,
-                              parcel_id=p_id,
-                              name=name,
-                              last_name=last_name,
-                              day_of_birth=day_of_birth,
-                              day_of_death=day_of_death)
+            try:
+                day_of_death = datetime.datetime.strptime(request.form['day_of_death'], '%Y-%m-%d')
+                new_grave = Grave(user_id=current_user.id,
+                                  parcel_id=p_id,
+                                  name=name,
+                                  last_name=last_name,
+                                  day_of_birth=day_of_birth,
+                                  day_of_death=day_of_death)
+            except ValueError:
+                new_grave = Grave(user_id=current_user.id,
+                                  parcel_id=p_id,
+                                  name=name,
+                                  last_name=last_name,
+                                  day_of_birth=day_of_birth)
 
-            if request.form['day_of_birth'] <= request.form['day_of_death']:
+            if (new_grave.day_of_death is not None and (day_of_birth <= new_grave.day_of_death) and
+                    (day_of_birth <= datetime.datetime.today()))\
+                    or (new_grave.day_of_death is None and day_of_birth <= datetime.datetime.today()):
                 db.session.add(new_grave)
                 db.session.commit()
                 return redirect(url_for('pages_user.user_page'))
 
             else:
-                flash('Nieprawidłowe dane!', 'error')
-                return redirect(url_for('pages_user.add_grave', p_id=p_id, parcel=parcel))
-
+                flash('Podane daty są niepoprawne', 'error')
+                return redirect(url_for('pages_user.add_grave', p_id=parcel.id))
 
         return render_template('add_grave.html', p_id=p_id, parcel=parcel, parcel_type=parcel_type)
 
     else:
         flash('Ta parcela jest już zajęta', 'error')
         return redirect(url_for('pages_user.user_page'))
-
 
 
 @pages_user.route('/grave/<grave_id>', methods=['POST', 'GET'])

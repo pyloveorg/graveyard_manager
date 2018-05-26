@@ -3,6 +3,8 @@
 <title>Cmentarz - panel użytkownika</title>
 {% endblock %}
 {% block body %}
+{% from "_formhelpers.html" import render_field %}
+
 
 <h3>Podaj informacje dotyczące grobu: </h3>
 <p>Wybrana parcela: {{ p_id }}</p>
@@ -11,11 +13,11 @@
 
 
 <form method="post" action="{{url_for('pages_user.add_grave', p_id=parcel.id)}}">
-    Imię:
+    Imię*:
     <input type="text" name="name">
-    Nazwisko:
+    Nazwisko*:
     <input type="text" name="last_name">
-    Data urodzenia:
+    Data urodzenia*:
     <input type="date" name="day_of_birth">
     Data śmierci:
     <input type="date" name="day_of_death">
