@@ -6,6 +6,7 @@
 {% include 'flash_msg.html' %}
 
 <style>
+
 .tooltip {
     position: relative;
     display: inline-block;
@@ -19,8 +20,6 @@
     text-align: center;
     border-radius: 6px;
     padding: 5px 0;
-
-    /* Position the tooltip */
     position: absolute;
     z-index: 1;
 }
@@ -31,17 +30,31 @@
 
 .parcel_taken {
     background:#454545;
-    padding:10px 20px;
+    padding:0px;
     -webkit-border-radius:5px;
-    box-sizing: border-box;
+    box-sizing: content-box;
+
 }
 
 .parcel_free {
     background:#d2d2d2;
-    padding:10px 20px;
+    padding:0px;
     -webkit-border-radius:5px;
-    box-sizing: border-box;
+    box-sizing: content-box;
+
 }
+
+.parcel_button > a {
+    color:#FFFFFF;
+    text-decoration:none;
+    display: block;
+    padding: 12px 24px;
+    height: 10px
+    width: 20px
+    text-align:center;
+}
+
+
 
 
 </style>
@@ -105,19 +118,21 @@
                 {% if parcel.position_x == j %}
                     {% if parcel.position_y == z %}
                         {% if parcel.id in taken_parcels %}
-                        <th width="40" height="40" class="parcel_taken">
-                            <div class="tooltip"><a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"
-                               style="color:#FFFFFF;text-decoration:none;"> {{ parcel.id }} </a>
-                                  <span class="tooltiptext"> Parcela zajęta
-                                  </span>
+                        <th class="parcel_taken">
+                            <div class="tooltip">
+                                <div class="parcel_button">
+                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }} </a>
+                                    <span class="tooltiptext"> Parcela zajęta </span>
+                                </div>
                             </div>
                         </th>
                         {% else %}
-                        <th width="40" height="40" class="parcel_free">
+                        <th class="parcel_free">
                             <div class="tooltip">
-                            <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"
-                               style="color:#FFFFFF;text-decoration:none;"> {{ parcel.id }} </a>
-                                <span class="tooltiptext"> Wybierz parcelę {{ parcel.id }} </span>
+                                 <div class="parcel_button">
+                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }}  </a>
+                                    <span class="tooltiptext"> Wybierz parcelę {{ parcel.id }} </span>
+                                </div>
                             </div>
                         </th>
                         {% endif %}
