@@ -3,8 +3,12 @@
 <title>Cmentarz - panel użytkownika</title>
 {% endblock %}
 {% block body %}
-{% from "_formhelpers.html" import render_field %}
 
+<style>
+.error {
+color: #990000;
+}
+</style>
 
 <h3>Podaj informacje dotyczące grobu: </h3>
 <p>Wybrana parcela: {{ p_id }}</p>
@@ -23,5 +27,10 @@
     <input type="date" name="day_of_death">
     <button type="submit">Rezerwuj</button>
 </form>
+
+{% if error %}
+<p class=error>{{ error }} </p>
+{% endif %}
+<br>
 
 {% endblock %}

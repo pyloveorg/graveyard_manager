@@ -90,38 +90,38 @@ def add_grave(p_id):
     p_id = parcel.id
     parcel_grave = Parcel.query.filter_by(id=p_id).first()
     parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
+    error = ''
     if Grave.query.filter_by(parcel_id=p_id).first() is None:
         if request.method == 'POST':
             name = (request.form['name']).title()
-            last_name = request.form['last_name'].title()
+            last_name = (request.form['last_name']).title()
             day_of_birth = datetime.datetime.strptime(request.form['day_of_birth'], '%Y-%m-%d')
+
             try:
                 day_of_death = datetime.datetime.strptime(request.form['day_of_death'], '%Y-%m-%d')
+            except ValueError:
+                day_of_death = None
+
+            if day_of_birth > datetime.datetime.today() or \
+                    (day_of_death is not None and day_of_death > datetime.datetime.today()):
+                error = 'Data urodzenia oraz data śmierci nie mogą przekroczyć dzisiejszej daty!'
+            elif day_of_death is not None and day_of_birth > day_of_death:
+                error = 'Data śmierci nie może przekroczyć daty urodzenia!'
+            elif not name.isalpha() and name.isalpha() != '' \
+                    or not last_name.isalpha() and last_name.isalpha() != '':
+                error = 'Imię i nazwisko to pola obowiązkowe, mogą zawierać tylko litery!'
+            else:
                 new_grave = Grave(user_id=current_user.id,
                                   parcel_id=p_id,
                                   name=name,
                                   last_name=last_name,
                                   day_of_birth=day_of_birth,
                                   day_of_death=day_of_death)
-            except ValueError:
-                new_grave = Grave(user_id=current_user.id,
-                                  parcel_id=p_id,
-                                  name=name,
-                                  last_name=last_name,
-                                  day_of_birth=day_of_birth)
-
-            if (new_grave.day_of_death is not None and (day_of_birth <= new_grave.day_of_death) and
-                    (day_of_birth <= datetime.datetime.today()))\
-                    or (new_grave.day_of_death is None and day_of_birth <= datetime.datetime.today()):
                 db.session.add(new_grave)
                 db.session.commit()
                 return redirect(url_for('pages_user.user_page'))
 
-            else:
-                flash('Podane daty są niepoprawne', 'error')
-                return redirect(url_for('pages_user.add_grave', p_id=parcel.id))
-
-        return render_template('add_grave.html', p_id=p_id, parcel=parcel, parcel_type=parcel_type)
+        return render_template('add_grave.html', p_id=p_id, parcel=parcel, parcel_type=parcel_type, error=error)
 
     else:
         flash('Ta parcela jest już zajęta', 'error')
@@ -133,15 +133,33 @@ def grave(grave_id):
     grave = Grave.query.filter_by(id=grave_id).first()
     parcel_grave = Parcel.query.filter_by(id=grave.parcel_id).first()
     parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
+    error = None
 
     if request.method == 'POST':
-        grave.name = request.form['edited_name']
-        grave.last_name = request.form['edited_last_name']
-        grave.day_of_birth = datetime.datetime.strptime(request.form['edited_birth'], '%Y-%m-%d')
-        grave.day_of_death = datetime.datetime.strptime(request.form['edited_death'], '%Y-%m-%d')
-        db.session.commit()
+        name = (request.form['edited_name']).title()
+        last_name = (request.form['edited_last_name']).title()
+        day_of_birth = datetime.datetime.strptime(request.form['edited_birth'], '%Y-%m-%d')
+        try:
+            day_of_death = datetime.datetime.strptime(request.form['edited_death'], '%Y-%m-%d')
+        except ValueError:
+            day_of_death = None
+        if day_of_birth > datetime.datetime.today() or (day_of_death is not None and day_of_death > datetime.datetime.today()):
+            error = 'Data urodzenia oraz data śmierci nie mogą przekroczyć dzisiejszej daty!'
+        elif day_of_death is not None and day_of_birth > day_of_death:
+            error = 'Data śmierci nie może przekroczyć daty urodzenia!'
+        elif not name.isalpha() and name.isalpha() != '' \
+                or not last_name.isalpha() and last_name.isalpha() != '':
+            error = 'Imię i nazwisko to pola obowiązkowe, mogą zawierać tylko litery!'
+        else:
+            grave.name = name
+            grave.last_name = last_name
+            grave.day_of_birth = day_of_birth
+            grave.day_of_death = day_of_death
+            db.session.commit()
+            return redirect(url_for('pages_user.grave', grave_id=grave.id, grave=grave))
+
     return render_template('grave_page.html', grave_id=grave_id, grave=grave,
-                           parcel_type=parcel_type)
+                           parcel_type=parcel_type, error=error)
 
 
 @pages_user.route('/delete/<grave_id>', methods=['POST'])
