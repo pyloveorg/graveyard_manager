@@ -5,60 +5,6 @@
 {% block body %}
 {% include 'flash_msg.html' %}
 
-<style>
-
-.tooltip {
-    position: relative;
-    display: inline-block;
-}
-
-.tooltip .tooltiptext {
-    visibility: hidden;
-    width: 120px;
-    background-color: black;
-    color: #fff;
-    text-align: center;
-    border-radius: 6px;
-    padding: 5px 0;
-    position: absolute;
-    z-index: 1;
-}
-
-.tooltip:hover .tooltiptext {
-    visibility: visible;
-}
-
-.parcel_taken {
-    background:#454545;
-    padding:0px;
-    -webkit-border-radius:5px;
-    box-sizing: content-box;
-
-}
-
-.parcel_free {
-    background:#d2d2d2;
-    padding:0px;
-    -webkit-border-radius:5px;
-    box-sizing: content-box;
-
-}
-
-.parcel_button > a {
-    color:#FFFFFF;
-    text-decoration:none;
-    display: block;
-    padding: 12px 24px;
-    height: 10px
-    width: 20px
-    text-align:center;
-}
-
-
-
-
-</style>
-
 <a href="{{ url_for('pages_user.user_set_pw') }}">zmiana hasła</a>
 <br>
 
@@ -83,13 +29,13 @@
 
 {% if favourite_graves_list %}
 
-<table border>
+<table class="graves_table">
 <tr>
-    <th>Grave id</th>
     <th>Imię</th>
     <th>Nazwisko</th>
     <th>Data urodzenia</th>
-    <th>Data śmiercie</th>
+    <th>Data śmierci</th>
+    <th>Numer parceli</th>
     <th>Usuń</th>
 </tr>
 
@@ -97,11 +43,11 @@
 {% for favourite_grave in favourite_graves_list %}
 
     <tr>
-        <td>{{ favourite_grave.id }}</td>
         <td>{{ favourite_grave.name }}</td>
         <td>{{ favourite_grave.last_name }}</td>
         <td>{{ favourite_grave.day_of_birth }}</td>
         <td>{{ favourite_grave.day_of_death }}</td>
+        <td>{{ favourite_grave.parcel_id }}</td>
         <td>Usuń</td>
     </tr>
 {% endfor %}

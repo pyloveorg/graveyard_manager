@@ -28,7 +28,8 @@ def user_page():
         taken_parcels.append(p.id)
     max_p = db.session.query(func.max(Parcel.position_x)).scalar()
 
-    favourite_graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death)\
+    favourite_graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth,
+                                             Grave.day_of_death, Grave.parcel_id)\
         .join(Family)\
         .filter(and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id))).all()
 
