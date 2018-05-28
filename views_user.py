@@ -10,7 +10,7 @@ from sqlalchemy import func, and_, or_
 
 # importy nasze
 
-from data_validate import DataForm, PwForm, OldPwForm
+from data_validate import DataForm, PwForm, OldPwForm, NewGraveForm
 from db_models import db, User, Grave, Parcel, ParcelType, Family
 from data_db_manage import change_user_data, change_user_pw
 
@@ -86,46 +86,23 @@ def user_set_data():
 
 @pages_user.route('/add_grave/<p_id>', methods=['POST', 'GET'])
 def add_grave(p_id):
-    parcel = Parcel.query.filter_by(id=p_id).first()
-    p_id = parcel.id
-    parcel_grave = Parcel.query.filter_by(id=p_id).first()
-    parcel_type = ParcelType.query.filter_by(id=parcel_grave.parcel_type_id).first()
-    error = ''
-    if Grave.query.filter_by(parcel_id=p_id).first() is None:
-        if request.method == 'POST':
-            name = (request.form['name']).title()
-            last_name = (request.form['last_name']).title()
-            day_of_birth = datetime.datetime.strptime(request.form['day_of_birth'], '%Y-%m-%d')
-
-            try:
-                day_of_death = datetime.datetime.strptime(request.form['day_of_death'], '%Y-%m-%d')
-            except ValueError:
-                day_of_death = None
-
-            if day_of_birth > datetime.datetime.today() or \
-                    (day_of_death is not None and day_of_death > datetime.datetime.today()):
-                error = 'Data urodzenia oraz data śmierci nie mogą przekroczyć dzisiejszej daty!'
-            elif day_of_death is not None and day_of_birth > day_of_death:
-                error = 'Data śmierci nie może przekroczyć daty urodzenia!'
-            elif not name.isalpha() and name.isalpha() != '' \
-                    or not last_name.isalpha() and last_name.isalpha() != '':
-                error = 'Imię i nazwisko to pola obowiązkowe, mogą zawierać tylko litery!'
-            else:
-                new_grave = Grave(user_id=current_user.id,
-                                  parcel_id=p_id,
-                                  name=name,
-                                  last_name=last_name,
-                                  day_of_birth=day_of_birth,
-                                  day_of_death=day_of_death)
-                db.session.add(new_grave)
-                db.session.commit()
-                return redirect(url_for('pages_user.user_page'))
-
-        return render_template('add_grave.html', p_id=p_id, parcel=parcel, parcel_type=parcel_type, error=error)
-
-    else:
-        flash('Ta parcela jest już zajęta', 'error')
-        return redirect(url_for('pages_user.user_page'))
+    parcel = Parcel.query.get(p_id)
+    parcel_type = ParcelType.query.get(parcel.parcel_type_id)
+    if Grave.query.filter_by(parcel_id=parcel.id).first() is None:
+        form = NewGraveForm(request.form)
+        if request.method == 'POST' and form.validate():
+            new_grave = Grave(user_id=current_user.id,
+                              parcel_id=parcel.id,
+                              name=form.name.data,
+                              last_name=form.surname.data,
+                              day_of_birth=form.birth_date.data,
+                              day_of_death=form.death_date.data)
+            db.session.add(new_grave)
+            db.session.commit()
+            return redirect(url_for('pages_user.user_page'))
+        return render_template('add_grave.html', form=form, parcel_type=parcel_type, parcel=parcel)
+    flash('Ta parcela jest już zajęta', 'error')
+    return redirect(url_for('pages_user.user_page'))
 
 
 @pages_user.route('/grave/<grave_id>', methods=['POST', 'GET'])
