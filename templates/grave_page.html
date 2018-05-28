@@ -3,7 +3,7 @@
 <title>Cmentarz - panel użytkownika</title>
 {% endblock %}
 {% block body %}
-
+{% from "_formhelpers.html" import render_field %}
 <style>
 .error {
 color: #990000;
@@ -31,13 +31,14 @@ Imię: {{ grave.name }}
 <h4>Edycja danych</h4>
 
 
-<form method="post" action="{{url_for('pages_user.grave', grave_id=grave.id)}}">
-    <input type="text" name="edited_name" value="{{ grave.name }}">
-    <input type="text" name="edited_last_name" value="{{ grave.last_name }}">
-    Data urodzenia: <input type="date" name="edited_birth" value="{{ grave.day_of_birth }}">
-    Data śmierci: <input type="date" name="edited_death" value="{{ grave.day_of_death }}">
-    <button type="submit">Submit</button>
+<form method="post">
+    <div>{{ render_field(form.name, class="input_field") }}</div>
+    <div>{{ render_field(form.surname, class="input_field") }}</div>
+    <div>{{ render_field(form.birth_date, class="input_field") }}</div>
+    <div>{{ render_field(form.death_date, class="input_field") }}</div>
+    <button type="submit">Zmień</button>
 </form>
+
 
 {% if error %}
 <p class=error>{{ error }}</p>

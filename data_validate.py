@@ -5,7 +5,7 @@
 import datetime
 import re
 from urllib.parse import urlparse
-from wtforms import Form, StringField, PasswordField, IntegerField, RadioField
+from wtforms import Form, StringField, PasswordField, IntegerField, RadioField, validators
 from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to
 
@@ -107,3 +107,28 @@ class ObituaryForm(Form):
                              render_kw={'required': True, 'type': 'number', 'min': 0, 'max': 150})
     death_date = DateField('Data śmierci', format='%Y-%m-%d', render_kw={'required': True})
     gender = RadioField('Płeć', choices=[('man', 'Mężczyzna'), ('woman', 'Kobieta')], default='man')
+
+
+class NewGraveForm(Form):
+    """Klasa wtforms do walidacji danych dotyczących grobu."""
+
+    def name_validator(self, field):
+        if not re.match(r'^[A-Za-z -]+$', field.data):
+            raise ValidationError('Pole może zawierać tylko litery, spacje i myślniki!')
+
+    def date_past(self, field):
+        today = datetime.datetime.today()
+        if field.data > datetime.datetime.date(today):
+            raise ValidationError('Data musi być starsza od dzisiejszej daty!')
+
+    name = StringField('Imię', [input_required(message='Pole wymagane!'),
+                                name_validator],
+                       render_kw={'required': True})
+    surname = StringField('Nazwisko', [input_required(message='Pole wymagane!'),
+                                       name_validator],
+                          render_kw={'required': True})
+    birth_date = DateField('Data urodzenia', format='%Y-%m-%d', validators=(date_past,),
+                           render_kw={'required': True})
+
+    death_date = DateField('Data śmierci', format='%Y-%m-%d', validators=(validators.Optional(),
+                                                                          date_past))
