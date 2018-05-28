@@ -129,5 +129,6 @@ class NewGraveForm(Form):
                           render_kw={'required': True})
     birth_date = DateField('Data urodzenia', format='%Y-%m-%d', validators=(date_past,),
                            render_kw={'required': True})
+
     death_date = DateField('Data śmierci', format='%Y-%m-%d', validators=(validators.Optional(),
                                                                           date_past))
