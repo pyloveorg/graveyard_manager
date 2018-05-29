@@ -7,7 +7,7 @@ import re
 from urllib.parse import urlparse
 from wtforms import Form, StringField, PasswordField, IntegerField, RadioField, validators
 from wtforms.fields.html5 import DateField
-from wtforms.validators import ValidationError, input_required, email, length, equal_to
+from wtforms.validators import ValidationError, input_required, email, length, equal_to, Optional
 
 
 def is_safe_next(next_page):
@@ -111,7 +111,6 @@ class ObituaryForm(Form):
 
 class NewGraveForm(Form):
     """Klasa wtforms do walidacji danych dotyczących grobu."""
-
     def name_validator(self, field):
         if not re.match(r'^[A-Za-z -]+$', field.data):
             raise ValidationError('Pole może zawierać tylko litery, spacje i myślniki!')
@@ -127,8 +126,9 @@ class NewGraveForm(Form):
     surname = StringField('Nazwisko', [input_required(message='Pole wymagane!'),
                                        name_validator],
                           render_kw={'required': True})
-    birth_date = DateField('Data urodzenia', format='%Y-%m-%d', validators=(date_past,),
+    birth_date = DateField('Data urodzenia', [date_past],
+                           format='%Y-%m-%d',
                            render_kw={'required': True})
-
-    death_date = DateField('Data śmierci', format='%Y-%m-%d', validators=(validators.Optional(),
-                                                                          date_past))
+    death_date = DateField('Data śmierci',
+                           [Optional(), date_past],
+                           format='%Y-%m-%d')
