@@ -4,10 +4,26 @@
 # importy modułów py
 import datetime
 import re
+from flask import abort
+from flask_login import current_user
 from urllib.parse import urlparse
-from wtforms import Form, StringField, PasswordField, IntegerField, RadioField, validators
+from wtforms import Form, StringField, PasswordField, IntegerField, RadioField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, input_required, email, length, equal_to, Optional
+
+
+def owner_required(db_param, func_param):
+    """Funkcja z parametrami dla dekoratora."""
+    def owner_required_call(func):
+        """Prawdziwy dekorator, sprawdza czy dany element należy do użytkownika."""
+        def wrapper(*args, **kwargs):
+            param = db_param.query.get_or_404(kwargs[func_param])
+            if current_user.id == param.user_id:
+                return func(*args, **kwargs)
+            return abort(404)
+        wrapper.__name__ = func.__name__
+        return wrapper
+    return owner_required_call
 
 
 def is_safe_next(next_page):

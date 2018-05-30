@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 """Plik zawierający funkcje renderowanych stron dostępnych dla użytkownika."""
 # importy modułów py
-import datetime
 import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required, login_user
@@ -10,7 +9,7 @@ from sqlalchemy import func, and_, or_
 
 # importy nasze
 
-from data_validate import DataForm, PwForm, OldPwForm, NewGraveForm
+from data_validate import DataForm, PwForm, OldPwForm, NewGraveForm, owner_required
 from db_models import db, User, Grave, Parcel, ParcelType, Family
 from data_db_manage import change_user_data, change_user_pw
 
@@ -85,6 +84,7 @@ def user_set_data():
 
 
 @pages_user.route('/add_grave/<p_id>', methods=['POST', 'GET'])
+@login_required
 def add_grave(p_id):
     parcel = Parcel.query.get(p_id)
     parcel_type = ParcelType.query.get(parcel.parcel_type_id)
@@ -106,6 +106,8 @@ def add_grave(p_id):
 
 
 @pages_user.route('/grave/<grave_id>', methods=['POST', 'GET'])
+@login_required
+@owner_required(Grave, 'grave_id')
 def grave(grave_id):
     grave = Grave.query.get(grave_id)
     parcel_grave = Parcel.query.get(grave.parcel_id)
@@ -126,6 +128,8 @@ def grave(grave_id):
 
 
 @pages_user.route('/delete/<grave_id>', methods=['POST'])
+@login_required
+@owner_required(Grave, 'grave_id')
 def delete_grave(grave_id):
     grave = Grave.query.filter_by(id=grave_id).first()
     db.session.delete(grave)
