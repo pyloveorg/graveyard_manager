@@ -4,7 +4,7 @@
 
 # importy modułów py
 import bcrypt
-from flask import render_template, request, redirect, url_for, flash, Blueprint, abort
+from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
 
@@ -35,18 +35,6 @@ def handle_needs_login():
     """
     flash('Musisz się najpierw zalogować!', 'error')
     return redirect(url_for('pages_log_sys.login', next=request.path))
-
-
-def owner_required(db_param, func_param):
-    def owner_required_call(func):
-        def wrapper(*args, **kwargs):
-            param = db_param.query.get_or_404(kwargs[func_param])
-            if current_user.id == param.user_id:
-                return func(*args, **kwargs)
-            return abort(404)
-        wrapper.__name__ = func.__name__
-        return wrapper
-    return owner_required_call
 
 
 @pages_log_sys.route('/login', methods=['GET', 'POST'])
