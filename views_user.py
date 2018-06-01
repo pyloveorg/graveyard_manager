@@ -123,7 +123,7 @@ def grave(grave_id):
         grave.day_of_birth = form.birth_date.data
         grave.day_of_death = form.death_date.data
         db.session.commit()
-        return redirect(url_for('pages_user.user_page'))
+        return redirect(url_for('pages_user.grave', grave_id=grave.id))
     return render_template('grave_page.html', grave=grave, parcel_type=parcel_type, form=form)
 
 

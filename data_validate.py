@@ -137,6 +137,10 @@ class NewGraveForm(Form):
         if field.data > datetime.datetime.date(today):
             raise ValidationError('Data musi być starsza od dzisiejszej daty!')
 
+    def death_after(self, field):
+        if field.data < self.birth_date.data:
+            raise ValidationError('Data urodzenia nie może przekroczyć daty śmierci!')
+
     name = StringField('Imię', [input_required(message='Pole wymagane!'),
                                 name_validator],
                        render_kw={'required': True})
@@ -147,5 +151,5 @@ class NewGraveForm(Form):
                            format='%Y-%m-%d',
                            render_kw={'required': True})
     death_date = DateField('Data śmierci',
-                           [Optional(), date_past],
+                           [Optional(), date_past, death_after],
                            format='%Y-%m-%d')
