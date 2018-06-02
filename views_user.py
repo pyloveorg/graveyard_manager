@@ -3,6 +3,8 @@
 """Plik zawierający funkcje renderowanych stron dostępnych dla użytkownika."""
 # importy modułów py
 import bcrypt
+import random
+import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required, login_user
 from sqlalchemy import func, and_, or_
@@ -31,8 +33,33 @@ def user_page():
         .join(Family)\
         .filter(and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id))).all()
 
+
+    zombie_mode = False
+
+    if 'zombie_mode' in request.form:
+        zombie_mode = True
+
+    if 'follow_zombie' in request.form:
+        zombie_mode = True
+        x_moved = []
+        for x in taken_parcels:
+            moves = [-10, -1, 0, 1, 10]
+            x += random.choice(moves)
+            if x < max_p * max_p and x != 0:
+                x_moved.append(abs(x))
+            elif x == 0:
+                x_moved.append(1)
+            else:
+                x_moved.append(max_p * max_p)
+        taken_parcels = [x for x in x_moved]
+
+    elif 'end' in request.form:
+        zombie_mode = False
+        taken_parcels = [x.parcel_id for x in Grave.query.all()]
+
     return render_template('user_page.html', graves=graves, parcels=parcels, max_p=max_p,
-                           favourite_graves_list=favourite_graves_list, taken_parcels=taken_parcels)
+                           favourite_graves_list=favourite_graves_list, taken_parcels=taken_parcels,
+                           zombie_mode=zombie_mode)
 
 
 @pages_user.route('/user/password', methods=['POST', 'GET'])
@@ -135,3 +162,15 @@ def delete_grave(grave_id):
     db.session.delete(grave)
     db.session.commit()
     return redirect(url_for('pages_user.user_page'))
+
+
+@pages_user.route('/zombie_deathday', methods=['POST', 'GET'])
+@login_required
+def zombie_deathday():
+    graves = Grave.query.all()
+    deathday_boys = []
+    for grave in graves:
+        if grave.day_of_death.strftime('%m-%d') == datetime.datetime.today().strftime('%m-%d'):
+            deathday_boys.append(grave)
+
+    return render_template('zombie_deathday.html', deathday_boys=deathday_boys, graves=graves)

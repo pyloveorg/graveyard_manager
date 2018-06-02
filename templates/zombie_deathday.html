@@ -1,50 +1,52 @@
 {% extends 'layout.html' %}
 {% block head %}
-<title>Cmentarz - panel użytkownika</title>
+<title>Cmentarz - zombie urodziny</title>
 {% endblock %}
 {% block body %}
 
+<style>
+
+.center {
+display: block;
+margin-left: auto;
+margin-right: auto;
+width: 30%;
+}
+
+</style>
+
+{% if deathday_boys %}
+
+<h3>Dziś swoje grobowe urodziny obchodzą: </h3>
+
+{% for zombie in deathday_boys %}
+
+<ol>
+    {{ zombie.name }}
+    {{ zombie.last_name }},
+    parcela nr: {{ zombie.parcel_id }}
+</ol>
+
+{% endfor %}
+
+ <h4 align="center">Wpadnij złożyć życzenia !!! </h4>
 
 
-<p>Zombie page</p>
+<div>
+    <img src="{{ url_for('static', filename='pictures/zombie_party.png') }}" class="center">
+</div>
 
+{% endif %}
+{% if not deathday_boys %}
 
+<br>
+<br>
+<h3 align="center">Dziś nie obchodzimy żadnych zombie urodzin.</h3>
 
-<h3>Podgląd lokalizacji zombie</h3>
-<p>Wybierz wolną parcelę w celu rezerwacji grobu</p>
-<table width="700"  align="center" class="table">
-    {% for j in range(1, max_p+1) %}
-      <tr>
-          {% for z in range(1, max_p+1) %}
-            {% for parcel in parcels %}
-                {% if parcel.position_x == j %}
-                    {% if parcel.position_y == z %}
-                        {% if parcel.id in taken_parcels %}
-                        <th class="parcel_taken">
-                            <div class="tooltip">
-                                <div class="parcel_button">
-                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }} </a>
-                                    <span class="tooltiptext"> Parcela zajęta </span>
-                                </div>
-                            </div>
-                        </th>
-                        {% else %}
-                        <th class="parcel_free">
-                            <div class="tooltip">
-                                 <div class="parcel_button">
-                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }}  </a>
-                                    <span class="tooltiptext"> Wybierz parcelę {{ parcel.id }} </span>
-                                </div>
-                            </div>
-                        </th>
-                        {% endif %}
-                    {% endif %}
-                {% endif %}
-            {% endfor %}
-          {% endfor %}
-      </tr>
-    {% endfor %}
-</table>
+<div>
+    <img src="{{ url_for('static', filename='pictures/rose.png') }}" class="center">
+</div>
+{% endif %}
 
-
+<p><a href="{{ url_for('pages_user.user_page')}}">Powrót do strony użytkowanika</a></p>
 {% endblock %}
