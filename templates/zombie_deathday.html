@@ -1,0 +1,50 @@
+{% extends 'layout.html' %}
+{% block head %}
+<title>Cmentarz - panel użytkownika</title>
+{% endblock %}
+{% block body %}
+
+
+
+<p>Zombie page</p>
+
+
+
+<h3>Podgląd lokalizacji zombie</h3>
+<p>Wybierz wolną parcelę w celu rezerwacji grobu</p>
+<table width="700"  align="center" class="table">
+    {% for j in range(1, max_p+1) %}
+      <tr>
+          {% for z in range(1, max_p+1) %}
+            {% for parcel in parcels %}
+                {% if parcel.position_x == j %}
+                    {% if parcel.position_y == z %}
+                        {% if parcel.id in taken_parcels %}
+                        <th class="parcel_taken">
+                            <div class="tooltip">
+                                <div class="parcel_button">
+                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }} </a>
+                                    <span class="tooltiptext"> Parcela zajęta </span>
+                                </div>
+                            </div>
+                        </th>
+                        {% else %}
+                        <th class="parcel_free">
+                            <div class="tooltip">
+                                 <div class="parcel_button">
+                                    <a href="{{url_for('pages_user.add_grave', p_id=parcel.id)}}"> {{ parcel.id }}  </a>
+                                    <span class="tooltiptext"> Wybierz parcelę {{ parcel.id }} </span>
+                                </div>
+                            </div>
+                        </th>
+                        {% endif %}
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+          {% endfor %}
+      </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}
