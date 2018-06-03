@@ -4,6 +4,7 @@
 # importy modułów py
 import bcrypt
 import random
+import numpy as np
 import datetime
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import current_user, login_required, login_user
@@ -43,7 +44,7 @@ def user_page():
         zombie_mode = True
         x_moved = []
         for x in taken_parcels:
-            moves = [-10, -1, 0, 1, 10]
+            moves = np.arange(-10, 10)
             x += random.choice(moves)
             if x < max_p * max_p and x != 0:
                 x_moved.append(abs(x))
