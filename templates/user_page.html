@@ -1,9 +1,36 @@
+
+
 {% extends 'layout.html' %}
 {% block head %}
 <title>Cmentarz - panel użytkownika</title>
 {% endblock %}
 {% block body %}
+
 {% include 'flash_msg.html' %}
+
+<br>
+<form method="post">
+    <button type="submit" name="zombie_mode">TRYB ZOMBIE</button>
+</form>
+
+
+
+{% if zombie_mode %}
+<p>Uwaga! Po zmroku zombie lubią się przechadzać po cmentarzu! Kliknij "Śledź zombie",
+    by zobaczyć gdzie aktualnie przebywają.</p>
+
+
+    <div class="follow_button">
+        <form method="post">
+    <button type="submit" name="follow_zombie">Śledź zombie</button>
+            </form>
+    </div>
+
+<p>Sprawdź, czy ktoś ma dziś <a href="{{url_for('pages_user.zombie_deathday')}}"> zombie urodziny! </a></p>
+
+{% endif %}
+{% if not zombie_mode %}
+
 
 <a href="{{ url_for('pages_user.user_set_pw') }}">zmiana hasła</a>
 <br>
@@ -59,8 +86,12 @@ Nie masz znanych grobów
 
 {% endif %}
 
+
 <h3>Podgląd mapy cmentarza</h3>
 <p>Wybierz wolną parcelę w celu rezerwacji grobu</p>
+
+{% endif %}
+
 <table width="700"  align="center" class="table">
     {% for j in range(1, max_p+1) %}
       <tr>
@@ -94,5 +125,12 @@ Nie masz znanych grobów
       </tr>
     {% endfor %}
 </table>
+
+{% if zombie_mode %}
+<br>
+<form method="post" action="{{url_for('pages_user.user_page')}}">
+    <button type="submit" name="end">Zakończ tryb zombie</button>
+</form>
+{% endif %}
 
 {% endblock %}
