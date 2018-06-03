@@ -12,6 +12,14 @@ body {
     padding-top: 210px;
 }
 
+a {
+    color: #000000;
+}
+
+a:hover {
+    color: #afafaf;
+}
+
 h1 {
     display: block;
     font-size: 2em;
@@ -159,7 +167,7 @@ h4 {
 }
 
 .parcel_button > a {
-    color:#FFFFFF;
+    color:#ffffff;
     text-decoration:none;
     display: block;
     padding: 12px 24px;
