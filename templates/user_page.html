@@ -1,5 +1,3 @@
-
-
 {% extends 'layout.html' %}
 {% block head %}
 <title>Cmentarz - panel użytkownika</title>
@@ -8,13 +6,10 @@
 
 {% include 'flash_msg.html' %}
 
-<a href="{{ url_for('pages_user.user_set_pw') }}">Zmiana hasła</a>
 <br>
 <form method="post">
     <button type="submit" name="zombie_mode">TRYB ZOMBIE</button>
 </form>
-
-
 
 {% if zombie_mode %}
 <p>Uwaga! Po zmroku zombie lubią się przechadzać po cmentarzu! Kliknij "Śledź zombie",
@@ -33,13 +28,10 @@
 {% if not zombie_mode %}
 
 
-<a href="{{ url_for('pages_user.user_set_pw') }}">zmiana hasła</a>
 <br>
-
+<a href="{{ url_for('pages_user.user_set_pw') }}">Zmiana hasła</a>
+<br>
 <a href="{{ url_for('pages_user.user_set_data') }}">Zmiana danych personalnych</a>
-<br>
-<br>
-<a href="{{ url_for('pages.graves') }}">Wyszukiwarka grobów</a>
 
 
 <h3>Moje groby</h3>
@@ -76,7 +68,7 @@
         <td>{{ favourite_grave.day_of_birth }}</td>
         <td>{{ favourite_grave.day_of_death }}</td>
         <td>{{ favourite_grave.parcel_id }}</td>
-        <td>Usuń</td>
+        <td><a href="/user/delete-favourite/{{favourite_grave.id}}?back_url=/user">Usuń</a></td>
     </tr>
 {% endfor %}
 

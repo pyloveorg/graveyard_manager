@@ -1,5 +1,5 @@
 <div id="navbar">
-    <div id="up_bar"></div>
+    <div id="up_bar"><div class="up_bar_txt">Cmentarz XYZ</div></div>
     <div id="btn_container">
         <div class="nav_button nav_button--left">
             <a href="{{url_for('pages.index')}}">Strona Główna</a>
@@ -8,7 +8,7 @@
             <a href="{{url_for('pages.obituaries')}}">Nekrologi</a>
         </div>
         <div class="nav_button nav_button--left">
-            <a href="#">Kolejny guzik :)</a>
+            <a href="{{url_for('pages.graves')}}">Wyszukaj grób</a>
         </div>
         {% if current_user.is_authenticated %}
         <div class="nav_button nav_button--right">

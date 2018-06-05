@@ -1,7 +1,7 @@
 #navbar {
     position: fixed;
     width: 100%;
-    height: 200px;
+    height: 160px;
     background-color: #515151;
 }
 
@@ -12,9 +12,18 @@
 }
 
 #up_bar {
-   height: 110px;
+   height: 70px;
    background-color: #ababab;
    width: 100%;
+   margin: auto;
+}
+
+.up_bar_txt {
+   font-size: 30px;
+   width: 55%;
+   margin: auto;
+   padding: 17px;
+   color: #4d4d4d;
 }
 
 .nav_button {
@@ -22,6 +31,7 @@
     height: 42px;
     text-align: center;
     line-height: 42px;
+    padding: 3px 0px 0px 0px;
 
 }
 
@@ -58,7 +68,7 @@
 .admin_panel {
     background: #515151;
     height: 42px;
-    text-align: left;
+    text-align: center;
     line-height: 42px;
     float: left;
     margin: auto;

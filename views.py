@@ -37,17 +37,17 @@ def graves():
     search_last_name = request.args.get('search_last_name')
     if not search_name and not search_last_name:
         #tworzy listę grobów
-        graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,
-                                       Grave.parcel_id)
+        graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death, Grave.parcel_id, Family.id.label("my_family"))\
+            .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))
     else:
         #wyszukiwarka
         search_like_name = '%'+search_name+'%'
         search_like_last_name = '%' + search_last_name + '%'
-        graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id)\
+        graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id, Family.id.label("my_family"))\
+            .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))\
             .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
 
     return render_template('graves.html', graves_list=graves_list)
-
 
 @pages.route('/graves/<grave_id>/add-favourite', methods=['GET'])
 @login_required
@@ -70,11 +70,15 @@ def add_favourite(grave_id):
 @pages.route('/user/delete-favourite/<grave_id>', methods=['GET'])
 @login_required
 def delete_favourite(grave_id):
-    pass
-    # my_favourite = Family.query.filter_by(id=grave_id).first()
-    # db.session.delete(my_favourite)
-    # db.session.commit()
-    # return redirect(url_for('pages.user_page'))
+    back_url = request.args.get('back_url')
+    my_favourite = Family.query.filter_by(user_id=current_user.id, grave_id=grave_id).first()
+    if my_favourite:
+        db.session.delete(my_favourite)
+        db.session.commit()
+    if back_url:
+        return redirect(back_url)
+    else:
+        return redirect('/')
 
 
 @pages.app_errorhandler(404)

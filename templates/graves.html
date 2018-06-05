@@ -5,17 +5,15 @@
 {% block body %}
 {% include 'flash_msg.html' %}
 
-<h3>Lista grobów</h3>
-
-<h4>Filtruj</h4>
+<h3>Wyszukaj grób</h3>
 
 <form method="get" action="/graves">
-    Imię <input type="search" name="search_name">
-    Nazwisko <input type="search" name="search_last_name">
+    Imię: <input type="search" name="search_name">
+    Nazwisko: <input type="search" name="search_last_name">
     <button type="submit">Filtruj</button>
 
 </form>
-
+<br>
 <table class="graves_table">
 
     <tr>
@@ -38,7 +36,11 @@
             <td>{{ grave.day_of_birth}}</td>
             <td>{{ grave.day_of_death}}</td>
             <td>{{ grave.parcel_id}}</td>
+            {% if grave.my_family %}
+            <td><a href="/user/delete-favourite/{{grave.id}}?back_url=/graves">Usuń</a></td>
+            {% else %}
             <td><a href="/graves/{{grave.id}}/add-favourite">Dodaj</a></td>
+            {% endif %}
         </tr>
     {% endfor %}
 </table>
