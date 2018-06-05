@@ -35,19 +35,30 @@ def obituaries():
 def graves():
     search_name = request.args.get('search_name')
     search_last_name = request.args.get('search_last_name')
-    if not search_name and not search_last_name:
-        #tworzy listę grobów
-        graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death, Grave.parcel_id, Family.id.label("my_family"))\
-            .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))
+    if current_user.is_authenticated:
+        if not search_name and not search_last_name:
+            #tworzy listę grobów
+            graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death, Grave.parcel_id, Family.id.label("my_family"))\
+                .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))
+        else:
+            #wyszukiwarka
+            search_like_name = '%'+search_name+'%'
+            search_like_last_name = '%' + search_last_name + '%'
+            graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id, Family.id.label("my_family"))\
+                .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))\
+                .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
     else:
-        #wyszukiwarka
-        search_like_name = '%'+search_name+'%'
-        search_like_last_name = '%' + search_last_name + '%'
-        graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id, Family.id.label("my_family"))\
-            .outerjoin(Family, and_((Grave.id == Family.grave_id),(Family.user_id == current_user.id)))\
-            .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
+        if not search_name and not search_last_name:
+            #tworzy listę grobów
+            graves_list = db.session.query(Grave.id, Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death, Grave.parcel_id)
+        else:
+            #wyszukiwarka
+            search_like_name = '%'+search_name+'%'
+            search_like_last_name = '%' + search_last_name + '%'
+            graves_list = db.session.query(Grave.name, Grave.last_name, Grave.day_of_birth, Grave.day_of_death,Grave.parcel_id)\
+                .filter(and_(Grave.name.like(search_like_name), Grave.last_name.like(search_like_last_name)))
 
-    return render_template('graves.html', graves_list=graves_list)
+    return render_template('graves.html', graves_list=graves_list, current_user=current_user)
 
 @pages.route('/graves/<grave_id>/add-favourite', methods=['GET'])
 @login_required
