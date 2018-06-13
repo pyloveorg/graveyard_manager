@@ -1,5 +1,5 @@
 #!usr/bin/env python3
-"""Plik konfiguracyjny."""
+"""Plik konfiguracyjny produkcyjny."""
 import os
 
 
