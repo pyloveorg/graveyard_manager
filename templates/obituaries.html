@@ -23,7 +23,7 @@ Wisława Szymborska - "Rehabilitacja"
         {% endif %}
         <div><img class="cross_icon" src="{{ url_for('static', filename='pictures/cross.png') }}" alt="krzyz"></div>
         <p>Z przykrością zawiadamiamy, że dnia {{obit.death_date.strftime('%Y-%m-%d')}}<br />
-            {% if obit.gender %}Zmarł{% else %}Zmarła{% endif %} w wieku {{obit.years_old}} lat:</p>
+            {% if obit.gender == "man" %}Zmarł{% else %}Zmarła{% endif %} w wieku {{obit.years_old}} lat:</p>
         <p class="obituary_name">Ś.P. {{obit.name}} {{obit.surname}}</p>
         <p>Pogrzeb odbędzie się dnia {{obit.funeral_date.strftime('%Y-%m-%d')}} o godzinie {{obit.funeral_date.strftime('%H:%M')}}
             <br />w kościele przy cmentarzu XYZ</p>
