@@ -5,4 +5,5 @@ __pycache__
 test.py
 uwsgi.ini
 grave_env
+config_dev.py
 venv

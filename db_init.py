@@ -53,7 +53,6 @@ def insert_initial_types():
     db.session.add(inner_type)
     db.session.commit()
 
-
-insert_initial_coordinates(10)
 insert_initial_types()
+insert_initial_coordinates(10)
 print('zakonczono cały proces :)')

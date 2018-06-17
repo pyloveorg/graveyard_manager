@@ -5,7 +5,7 @@ import sys
 class CONFIG_DB:
     """Konfiguracja bazy danych."""
 
-    PATH = 'sqlite:///grave_db.db'
+    PATH = 'postgresql://zurek:test123@localhost/grave'
     TRACK_MODIFICATIONS = False
     DEFAULT_ACTIVE_USER = False
 
@@ -26,6 +26,6 @@ class CONFIG_EMAIL:
     PORT = 465
     SSL = True
     USERNAME = 'graveyard_manager'
-    PASSWORD = '@T15x?q7'
+    PASSWORD = '@T15x?q1'
     DEFAULT_SENDER = 'graveyard_manager@o2.pl'
     FILES_PATH = 'static\\emails\\' if sys.platform == 'win32' else 'static/emails/'
