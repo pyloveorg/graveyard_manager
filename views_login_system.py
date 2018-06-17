@@ -47,8 +47,6 @@ def login():
     if request.method == 'POST' and form_login.validate():
         user_request = User.query.filter_by(email=form_login.email_login.data).first()
         if user_request and user_request.active_user:
-            print(user_request.password)
-            print(form_login.password.data.encode('utf-8'))
             if bcrypt.checkpw(form_login.password.data.encode('utf-8'), user_request.password):
                 login_user(user_request)
                 flash('Zostałeś poprawnie zalogowany!', 'succes')
