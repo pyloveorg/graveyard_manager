@@ -58,3 +58,9 @@
   font-size: 12px;
   color: #ee1111;
 }
+
+.succes_msg {
+  text-align: left;
+  font-size: 12px;
+  color: #11ee11;
+}

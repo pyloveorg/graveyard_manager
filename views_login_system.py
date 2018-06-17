@@ -7,6 +7,7 @@ import bcrypt
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_user, logout_user, current_user, login_required
 from itsdangerous import URLSafeTimedSerializer, SignatureExpired, BadSignature
+from functools import wraps
 
 # importy nasze
 from config import APP
@@ -37,11 +38,20 @@ def handle_needs_login():
     return redirect(url_for('pages_log_sys.login', next=request.path))
 
 
+def logout_required(func):
+    """Dekorator sprawdzający czy użytkownik jest wylogowany."""
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if current_user.is_authenticated:
+            return redirect(url_for('pages.index'))
+        return func(*args, **kwargs)
+    return wrapper
+
+
 @pages_log_sys.route('/login', methods=['GET', 'POST'])
+@logout_required
 def login():
     """Strona logowania."""
-    if current_user.is_authenticated:
-        return redirect(url_for('pages.index'))
     next_page = request.args.get('next')
     form_login = LoginForm(request.form)
     if request.method == 'POST' and form_login.validate():
@@ -59,13 +69,12 @@ def login():
 
 
 @pages_log_sys.route('/pw_recovery', methods=['POST', 'GET'])
+@logout_required
 def password_recovery():
     """Strona do odzyskiwania hasła.
 
     Wymaga podania jedynie adresu email, dalsze instrukcje zostają wysłane na podany adres.
     """
-    if current_user.is_authenticated:
-        return redirect(url_for('pages.index'))
     form_email = EmailForm(request.form)
     if request.method == 'POST' and form_email.validate():
         user = User.query.filter_by(email=form_email.email.data).first()
@@ -83,6 +92,7 @@ def password_recovery():
 
 
 @pages_log_sys.route('/pw_recovery/<pw_token>', methods=['GET', 'POST'])
+@logout_required
 def recovery_password(pw_token):
     """Strona do generowania nowego hasła.
 
@@ -115,10 +125,9 @@ def logout():
 
 
 @pages_log_sys.route('/register', methods=['GET', 'POST'])
+@logout_required
 def register():
     """Strona rejestracji."""
-    if current_user.is_authenticated:
-        return redirect(url_for('pages.index'))
     form_email = EmailForm(request.form)
     form_pw = PwForm(request.form)
     form_data = DataForm(request.form)

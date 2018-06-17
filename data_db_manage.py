@@ -19,7 +19,6 @@ serializer = URLSafeSerializer(APP.APP_KEY)
 def register_new_user(form_email, form_pw, form_data):
     """Funkcja rejestrująca nowego użytkownika, parametry funkcji z wtforms."""
     unique_value = str(uuid.uuid4())
-    print('value: {}'.format(form_data.flat_number.data))
     new_user = User(email=form_email.email.data,
                     password=bcrypt.hashpw(form_pw.password.data.encode('UTF_8'), bcrypt.gensalt()),
                     token_id=serializer.dumps([form_email.email.data, unique_value]),
