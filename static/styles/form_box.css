@@ -64,3 +64,27 @@
   font-size: 12px;
   color: #11ee11;
 }
+
+#board
+{
+	width: 300px;
+    height: 20px;
+    margin: 2px;
+}
+
+.password_square {
+    width: 30px;
+    height: 10px;
+    margin-right: 5px;
+    float: left;
+}
+
+.password_square--green {
+	border: 2px solid #006400;
+	background-color: #32CD32;
+}
+
+.password_square--red {
+	border: 2px solid #cc0033;
+	background-color: #ff3366;
+}

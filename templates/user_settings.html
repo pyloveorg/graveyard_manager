@@ -40,6 +40,7 @@
 {% if request.url_rule.endpoint in ['pages_log_sys.register', 'pages_user.user_set_pw', 'pages_log_sys.recovery_password']  %}
 <!-- rejestracja uzytkownika/zmiana hasła, podanie hasła -->
 <div>{{ render_field(form_pw.password, class="input_field") }}</div>
+<div id="board"></div>
 <!-- rejestracja uzytkownika/zmiana hasła, powtórz hasło -->
 <div>{{ render_field(form_pw.repeat_password, class="input_field") }}</div>
 <div class="error_msg" id="pw_field_error"></div>
